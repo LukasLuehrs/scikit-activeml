@@ -18,6 +18,11 @@
 
 scikit-activeml
 ===============
+.. image:: docs/logo_tr.png
+   :scale: 50
+   :width: 50 px
+   :height: 50 px
+   :align: center
 
 *scikit-activeml* is a Python module for active learning on top of SciPy and scikit-learn. It is distributed under the 3-Clause BSD licence.
 
