@@ -2,7 +2,8 @@ import numpy as np
 
 from ..base import SingleAnnotStreamBasedQueryStrategy
 
-from .budget_manager import FixedBudget
+from .budget_manager import FixedThresholdBudget
+from ..utils import call_func
 
 
 class RandomSampler(SingleAnnotStreamBasedQueryStrategy):
@@ -17,20 +18,20 @@ class RandomSampler(SingleAnnotStreamBasedQueryStrategy):
     ----------
     budget_manager : BudgetManager
         The BudgetManager which models the budgeting constraint used in
-        the stream-based active learning setting. The budget attribute set for
-        the budget_manager will be used to determine the probability to sample
-        instances
+        the stream-based active learning setting. if set to None,
+        FixedThresholdBudget will be used by default.
 
     random_state : int, RandomState instance, default=None
         Controls the randomness of the estimator.
     """
 
-    def __init__(self, budget_manager=FixedBudget(), random_state=None):
+    def __init__(self, budget_manager=None,
+                 random_state=None):
         super().__init__(
             budget_manager=budget_manager, random_state=random_state
         )
 
-    def query(self, X_cand, return_utilities=False, **kwargs):
+    def query(self, X_cand, return_utilities=False):
         """Ask the query strategy which instances in X_cand to acquire.
 
         Please note that, when the decisions from this function may differ from
@@ -58,20 +59,25 @@ class RandomSampler(SingleAnnotStreamBasedQueryStrategy):
             The utilities based on the query strategy. Only provided if
             return_utilities is True.
         """
-        self._validate_data(X_cand, return_utilities)
+        X_Cand, return_utilities = self._validate_data(
+            X_cand, return_utilities
+        )
+
+        # copy random state in case of simulating the query
+        prior_random_state_state = self.random_state_.get_state()
 
         utilities = self.random_state_.random_sample(len(X_cand))
 
-        queried_indices = self.budget_manager_.query(utilities)
+        self.random_state_.set_state(prior_random_state_state)
+
+        queried_indices = self.budget_manager_.query_by_utility(utilities)
 
         if return_utilities:
             return queried_indices, utilities
         else:
             return queried_indices
 
-    def update(
-        self, X_cand, queried_indices, budget_manager_kwargs={}, **kwargs
-    ):
+    def update(self, X_cand, queried_indices, budget_manager_param_dict=None):
         """Updates the budget manager and the count for seen and queried
         instances
 
@@ -84,7 +90,7 @@ class RandomSampler(SingleAnnotStreamBasedQueryStrategy):
         queried_indices : array-like of shape (n_samples,)
             Indicates which instances from X_cand have been queried.
 
-        budget_manager_kwargs : kwargs
+        budget_manager_param_dict : kwargs
             Optional kwargs for budget_manager.
 
         Returns
@@ -96,13 +102,28 @@ class RandomSampler(SingleAnnotStreamBasedQueryStrategy):
         self._validate_random_state()
         # check if a budget_manager is set
         self._validate_budget_manager()
+        budget_manager_param_dict = ({} if budget_manager_param_dict is None
+                                     else budget_manager_param_dict)
         # update the random state assuming, that query(..., simulate=True) was
         # used
-        self.random_state_.random_sample(len(queried_indices))
-        self.budget_manager_.update(
-            X_cand, queried_indices, **budget_manager_kwargs
+        self.random_state_.random_sample(len(X_cand))
+        call_func(
+            self.budget_manager_.update,
+            X_cand=X_cand,
+            queried_indices=queried_indices,
+            **budget_manager_param_dict
         )
         return self
+
+    def get_default_budget_manager(self):
+        """Provide the budget manager that will be used as default.
+
+        Returns
+        -------
+        budget_manager : BudgetManager
+            The BudgetManager that should be used by default.
+        """
+        return FixedThresholdBudget()
 
     def _validate_data(
         self, X_cand, return_utilities, reset=True, **check_X_cand_params
@@ -153,20 +174,20 @@ class PeriodicSampler(SingleAnnotStreamBasedQueryStrategy):
     ----------
     budget_manager : BudgetManager
         The BudgetManager which models the budgeting constraint used in
-        the stream-based active learning setting. The budget attribute set for
-        the budget_manager will be used to determine the interval between
-        sampling instnces
+        the stream-based active learning setting. if set to None,
+        FixedThresholdBudget will be used by default.
 
     random_state : int, RandomState instance, default=None
         Controls the randomness of the estimator.
     """
 
-    def __init__(self, budget_manager=FixedBudget(), random_state=None):
+    def __init__(self, budget_manager=None,
+                 random_state=None):
         super().__init__(
             budget_manager=budget_manager, random_state=random_state
         )
 
-    def query(self, X_cand, return_utilities=False, **kwargs):
+    def query(self, X_cand, return_utilities=False):
         """Ask the query strategy which instances in X_cand to acquire.
 
         This query strategy only evaluates the time each instance arrives at.
@@ -197,12 +218,10 @@ class PeriodicSampler(SingleAnnotStreamBasedQueryStrategy):
             The utilities based on the query strategy. Only provided if
             return_utilities is True.
         """
-        self._validate_data(X_cand, return_utilities)
-        # check if counting of instances has begun
-        if not hasattr(self, "observed_instances_"):
-            self.observed_instances_ = 0
-        if not hasattr(self, "queried_instances_"):
-            self.queried_instances_ = 0
+        X_cand, return_utilities = self._validate_data(
+            X_cand,
+            return_utilities
+            )
 
         utilities = np.zeros(X_cand.shape[0])
         budget = getattr(self.budget_manager_, "budget_", 0)
@@ -220,16 +239,14 @@ class PeriodicSampler(SingleAnnotStreamBasedQueryStrategy):
             else:
                 utilities[i] = 0
 
-        queried_indices = self.budget_manager_.query(utilities)
+        queried_indices = self.budget_manager_.query_by_utility(utilities)
 
         if return_utilities:
             return queried_indices, utilities
         else:
             return queried_indices
 
-    def update(
-        self, X_cand, queried_indices, budget_manager_kwargs={}, **kwargs
-    ):
+    def update(self, X_cand, queried_indices, budget_manager_param_dict=None):
         """Updates the budget manager and the count for seen and queried
         instances
 
@@ -242,7 +259,7 @@ class PeriodicSampler(SingleAnnotStreamBasedQueryStrategy):
         queried_indices : array-like of shape (n_samples,)
             Indicates which instances from X_cand have been queried.
 
-        budget_manager_kwargs : kwargs
+        budget_manager_param_dict : kwargs
             Optional kwargs for budget_manager.
 
         Returns
@@ -251,15 +268,14 @@ class PeriodicSampler(SingleAnnotStreamBasedQueryStrategy):
             The PeriodicSampler returns itself, after it is updated.
         """
         # check if a budget_manager is set
-        self._validate_budget_manager()
-        # check if counting of instances has begun
-        if not hasattr(self, "observed_instances_"):
-            self.observed_instances_ = 0
-        if not hasattr(self, "queried_instances_"):
-            self.queried_instances_ = 0
-
-        self.budget_manager_.update(
-            X_cand, queried_indices, **budget_manager_kwargs
+        self._validate_data(np.array([[0]]), False)
+        budget_manager_param_dict = ({} if budget_manager_param_dict is None
+                                     else budget_manager_param_dict)
+        call_func(
+            self.budget_manager_.update,
+            X_cand=X_cand,
+            queried_indices=queried_indices,
+            **budget_manager_param_dict
         )
         queried = np.zeros(len(X_cand))
         queried[queried_indices] = 1
@@ -267,6 +283,16 @@ class PeriodicSampler(SingleAnnotStreamBasedQueryStrategy):
         self.queried_instances_ += np.sum(queried)
         # print("queried_instances_", self.queried_instances_)
         return self
+
+    def get_default_budget_manager(self):
+        """Provide the budget manager that will be used as default.
+
+        Returns
+        -------
+        budget_manager : BudgetManager
+            The BudgetManager that should be used by default.
+        """
+        return FixedThresholdBudget()
 
     def _validate_data(
         self, X_cand, return_utilities, reset=True, **check_X_cand_params
@@ -301,5 +327,11 @@ class PeriodicSampler(SingleAnnotStreamBasedQueryStrategy):
         )
 
         self._validate_random_state()
+
+        # check if counting of instances has begun
+        if not hasattr(self, "observed_instances_"):
+            self.observed_instances_ = 0
+        if not hasattr(self, "queried_instances_"):
+            self.queried_instances_ = 0
 
         return X_cand, return_utilities

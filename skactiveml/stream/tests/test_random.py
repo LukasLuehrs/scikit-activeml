@@ -3,11 +3,10 @@ import numpy as np
 
 from sklearn.datasets import make_classification
 
-from ...classifier import PWC
-from .._random import PeriodicSampler, RandomSampler
+from skactiveml.stream import PeriodicSampler, RandomSampler
 
 
-class TestRandom(unittest.TestCase):
+class TemplateTestRandom:
     def setUp(self):
         # initialise valid data to test uncertainty parameters
         rand = np.random.RandomState(0)
@@ -19,34 +18,68 @@ class TestRandom(unittest.TestCase):
             shuffle=True,
         )
 
-        self.X = X[:train_init_size, :]
+        self.X = X[[train_init_size], :]
         self.X_cand = X[train_init_size:, :]
         self.y = y[:train_init_size]
-        self.clf = PWC()
         self.kwargs = dict(
-            X_cand=self.X_cand, clf=self.clf, X=self.X, y=self.y
+            X_cand=self.X_cand
         )
 
-    def test_periodic_sampler(self):
-        # init param test
-        self._test_init_param_budget_manager(PeriodicSampler)
-
-        # update test
-        self._test_update_without_query(PeriodicSampler)
-
-    def test_random_sampler(self):
-        # init param test
-        self._test_init_param_budget_manager(RandomSampler)
-
-        # update test
-        self._test_update_without_query(RandomSampler)
-
-    def _test_init_param_budget_manager(self, query_strategy_name):
+    def test_init_param_budget_manager(self):
         # budget_manager must be defined as an object of an budget manager
         # class
-        query_strategy = query_strategy_name(budget_manager=[])
+        query_strategy = self.get_query_strategy()(budget_manager=[])
         self.assertRaises(TypeError, query_strategy.query, **(self.kwargs))
 
-    def _test_update_without_query(self, query_strategy_name):
-        qs = query_strategy_name()
+    def test_query_param_X_cand(self):
+        # X_cand must be defined as a two dimensinal array
+        query_strategy = self.get_query_strategy()()
+        self.assertRaises(
+            ValueError,
+            query_strategy.query,
+            X_cand=1
+        )
+        self.assertRaises(
+            ValueError,
+            query_strategy.query,
+            X_cand=None
+        )
+        self.assertRaises(
+            ValueError,
+            query_strategy.query,
+            X_cand=np.ones(5)
+        )
+
+    def test_init_param_random_state(self):
+        query_strategy = self.get_query_strategy()(random_state="string",)
+        self.assertRaises(ValueError, query_strategy.query, **(self.kwargs))
+
+    def test_query_param_return_utilities(self):
+        # return_utilities needs to be a boolean
+        query_strategy = self.get_query_strategy()()
+        self.assertRaises(
+            TypeError,
+            query_strategy.query,
+            X_cand=self.X_cand,
+            return_utilities="string",
+        )
+        self.assertRaises(
+            TypeError,
+            query_strategy.query,
+            X_cand=self.X_cand,
+            return_utilities=1,
+        )
+
+    def test_update_without_query(self):
+        qs = self.get_query_strategy()()
         qs.update(np.array([[0], [1], [2]]), np.array([0, 2]))
+
+
+class TestRandomSampler(TemplateTestRandom, unittest.TestCase):
+    def get_query_strategy(self):
+        return RandomSampler
+
+
+class TestPeriodicSampler(TemplateTestRandom, unittest.TestCase):
+    def get_query_strategy(self):
+        return PeriodicSampler
