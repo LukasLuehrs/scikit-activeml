@@ -479,7 +479,7 @@ class QueryTests(ABC):
             return_utilities=False,
         )
         self.assertRaises(
-            TypeError,
+            ValueError,
             self.delay_wrapper.query,
             X_cand=self.X_cand,
             clf=self.clf,
@@ -559,34 +559,6 @@ class TestForgettingWrapper(unittest.TestCase, QueryTests):
             acquisitions=self.acquisitions,
             sample_weight=self.sample_weight,
         )
-
-    # query param test
-    def test_query_param_X_cand(self):
-        return super().test_query_param_X_cand()
-
-    def test_query_param_clf(self):
-        return super().test_query_param_clf()
-
-    def test_query_param_tX(self):
-        return super().test_query_param_tX()
-
-    def test_query_param_tX_cand(self):
-        return super().test_query_param_tX_cand()
-
-    def test_query_param_ty(self):
-        return super().test_query_param_ty()
-
-    def test_query_param_ty_cand(self):
-        return super().test_query_param_ty_cand()
-
-    def test_query_param_acquisitions(self):
-        return super().test_query_param_acquisitions()
-
-    def test_query_param_return_utilities(self):
-        return super().test_query_param_return_utilities()
-
-    def test_query_param_sample_weight(self):
-        return super().test_query_param_sample_weight()
 
     # init param test
     def test_init_param_base_query_strategy(self):
@@ -714,40 +686,6 @@ class TestFuzzyDelaySimulationWrapper(unittest.TestCase, QueryTests):
             acquisitions=self.acquisitions,
             sample_weight=self.sample_weight,
         )
-
-    # query param test
-    def test_query_param_X_cand(self):
-        return super().test_query_param_X_cand()
-
-    def test_query_param_clf(self):
-        return super().test_query_param_clf()
-
-    def test_query_param_X(self):
-        return super().test_query_param_X()
-
-    def test_query_param_y(self):
-        return super().test_query_param_y()
-
-    def test_query_param_tX(self):
-        return super().test_query_param_tX()
-
-    def test_query_param_tX_cand(self):
-        return super().test_query_param_tX_cand()
-
-    def test_query_param_ty(self):
-        return super().test_query_param_ty()
-
-    def test_query_param_ty_cand(self):
-        return super().test_query_param_ty_cand()
-
-    def test_query_param_acquisitions(self):
-        return super().test_query_param_acquisitions()
-
-    def test_query_param_return_utilities(self):
-        return super().test_query_param_return_utilities()
-
-    def test_query_param_sample_weight(self):
-        return super().test_query_param_sample_weight()
 
     # init param test
     def test_init_param_base_query_strategy(self):
@@ -878,40 +816,6 @@ class TestBaggingDelaySimulationWrapper(unittest.TestCase, QueryTests):
             acquisitions=self.acquisitions,
             sample_weight=self.sample_weight,
         )
-
-    # query param test
-    def test_query_param_X_cand(self):
-        return super().test_query_param_X_cand()
-
-    def test_query_param_clf(self):
-        return super().test_query_param_clf()
-
-    def test_query_param_X(self):
-        return super().test_query_param_X()
-
-    def test_query_param_y(self):
-        return super().test_query_param_y()
-
-    def test_query_param_tX(self):
-        return super().test_query_param_tX()
-
-    def test_query_param_tX_cand(self):
-        return super().test_query_param_tX_cand()
-
-    def test_query_param_ty(self):
-        return super().test_query_param_ty()
-
-    def test_query_param_ty_cand(self):
-        return super().test_query_param_ty_cand()
-
-    def test_query_param_acquisitions(self):
-        return super().test_query_param_acquisitions()
-
-    def test_query_param_return_utilities(self):
-        return super().test_query_param_return_utilities()
-
-    def test_query_param_sample_weight(self):
-        return super().test_query_param_sample_weight()
 
     # init param test
     def test_init_param_base_query_strategy(self):

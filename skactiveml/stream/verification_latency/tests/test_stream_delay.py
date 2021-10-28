@@ -46,7 +46,7 @@ class TestStreamDelay(unittest.TestCase):
 
         # Test predictions of classifiers.
         for qs_name, qs_class in query_strategy_classes.items():
-            self._test_selection_strategy(
+            num_acquisitions = self._test_selection_strategy(
                 rand.randint(2 ** 31 - 1),
                 qs_class,
                 clf,
@@ -60,6 +60,7 @@ class TestStreamDelay(unittest.TestCase):
                 ty_stream,
                 training_size,
             )
+            print(f"{qs_name} acquired {num_acquisitions} labels")
 
     def _test_selection_strategy(
         self,
@@ -95,7 +96,7 @@ class TestStreamDelay(unittest.TestCase):
         for t, (x_t, y_t, tX_t, ty_t) in enumerate(
             zip(X_stream, y_stream, tX_stream, ty_stream)
         ):
-            queried_indices = query_strategy.query(
+            queried_indices, utilities = query_strategy.query(
                 X_cand=x_t.reshape([1, -1]),
                 clf=clf,
                 X=X_train,
@@ -105,9 +106,14 @@ class TestStreamDelay(unittest.TestCase):
                 tX_cand=np.array([tX_t]),
                 ty_cand=np.array([ty_t]),
                 acquisitions=acquisitions,
+                return_utilities=True,
             )
+            budget_manager_param_dict = {"utilities": utilities}
+
             query_strategy.update(
-                x_t.reshape([1, -1]), queried_indices, X=X_train, y=y_train
+                x_t.reshape([1, -1]),
+                queried_indices,
+                budget_manager_param_dict=budget_manager_param_dict,
             )
 
             acquisitions.append((len(queried_indices) > 0))
@@ -116,4 +122,5 @@ class TestStreamDelay(unittest.TestCase):
             ty_train.append(ty_t)
             X_train.append(x_t)
             y_train.append(y_t)
-            # clf.fit(X_train, y_train)
+            clf.fit(X_train, y_train)
+        return np.sum(acquisitions)

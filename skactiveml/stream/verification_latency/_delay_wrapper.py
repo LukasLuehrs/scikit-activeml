@@ -2,16 +2,23 @@ import numpy as np
 
 from abc import abstractmethod
 from copy import deepcopy
-from ...base import SingleAnnotStreamBasedQueryStrategy, SkactivemlClassifier
-from ...utils import fit_if_not_fitted, check_type, check_random_state
-from sklearn.base import is_classifier, clone
-from ...classifier import PWC
-
+from sklearn.base import clone
 from sklearn.utils import check_array, check_scalar, check_consistent_length
-from skactiveml.base import SingleAnnotStreamBasedQueryStrategyWrapper
+from ...base import SingleAnnotStreamBasedQueryStrategy, SkactivemlClassifier
+from ...utils import (
+    fit_if_not_fitted,
+    check_type,
+    check_random_state,
+    call_func,
+)
+from ...base import SingleAnnotStreamBasedQueryStrategyWrapper
 from .._uncertainty import Split
+import inspect
 
-from skactiveml.utils import check_random_state
+
+def _has_kwargs(f):
+    f_sig = inspect.signature(f)
+    return "kwargs" in f_sig.parameters
 
 
 class SingleAnnotStreamBasedQueryStrategyDelayWrapper(
@@ -23,8 +30,8 @@ class SingleAnnotStreamBasedQueryStrategyDelayWrapper(
     Parameters
     ----------
     base_query_strategy : QuaryStrategy
-        The QuaryStrategy which evaluates the utility of given instances used
-        in the stream-based active learning setting.
+        The QuaryStrategy which evaluates the utility of given instances used
+        in the stream-based active learning setting.
 
     random_state : int, RandomState instance, default=None
         Controls the randomness of the estimator.
@@ -37,9 +44,7 @@ class SingleAnnotStreamBasedQueryStrategyDelayWrapper(
         self.base_query_strategy = base_query_strategy
 
     @abstractmethod
-    def query(
-        self, X_cand, *args, return_utilities=False, **kwargs
-    ):
+    def query(self, X_cand, *args, return_utilities=False, **kwargs):
         """Ask the query strategy which instances in X_cand to acquire.
 
         The query startegy determines the most useful instances in X_cand,
@@ -151,7 +156,8 @@ class SingleAnnotStreamBasedQueryStrategyDelayWrapper(
         X : array-like of shape (n_samples, n_features)
             Checked Input samples.
         y : array-like of shape (n_samples)
-            Checked Labels of the input samples 'X'. Converts y to a numpy array
+            Checked Labels of the input samples 'X'. Converts y to a numpy
+            array
         """
         if sample_weight is not None:
             sample_weight = np.array(sample_weight)
@@ -289,10 +295,7 @@ class SingleAnnotStreamBasedQueryStrategyDelayWrapper(
         """
         self._validate_base_query_strategy()
         X_cand, return_utilities = super()._validate_data(
-            X_cand,
-            return_utilities,
-            reset=reset,
-            **check_X_cand_params
+            X_cand, return_utilities, reset=reset, **check_X_cand_params
         )
         X, y, sample_weight = self._validate_X_y_sample_weight(
             X, y, sample_weight
@@ -311,7 +314,7 @@ class SingleAnnotStreamBasedQueryStrategyDelayWrapper(
             ty_cand,
             acquisitions,
             sample_weight,
-            return_utilities
+            return_utilities,
         )
 
 
@@ -323,18 +326,18 @@ class ForgettingWrapper(SingleAnnotStreamBasedQueryStrategyDelayWrapper):
     ty_cand - w_train + verification_latency <= tX does not hold, are
     discarded.
 
-    Parameters
-    ----------
-    base_query_strategy : QuaryStrategy
-        The QuaryStrategy which evaluates the utility of given instances used
-        in the stream-based active learning setting.
+    Parameters
+    ----------
+    base_query_strategy : QuaryStrategy
+        The QuaryStrategy which evaluates the utility of given instances used
+        in the stream-based active learning setting.
 
-    w_train : int, default=500
-        Size of the forgetting window
+    w_train : int, default=500
+        Size of the forgetting window
 
-    random_state : int, RandomState instance, default=None
-        Controls the randomness of the estimator.
-    """
+    random_state : int, RandomState instance, default=None
+        Controls the randomness of the estimator.
+    """
 
     def __init__(
         self, base_query_strategy=None, w_train=500, random_state=None
@@ -359,11 +362,6 @@ class ForgettingWrapper(SingleAnnotStreamBasedQueryStrategyDelayWrapper):
         **kwargs
     ):
         """Ask the query strategy which instances in X_cand to acquire.
-
-        Please note that, when the decisions from this function may differ from
-        the final sampling, simulate=True can be set, so that the query strategy
-        can be updated later with update(...) with the final sampling. This is
-        especially helpful when developing wrapper query strategies.
 
         Parameters
         ----------
@@ -438,20 +436,31 @@ class ForgettingWrapper(SingleAnnotStreamBasedQueryStrategyDelayWrapper):
             A_n_sample_weight = (
                 None if sample_weight is None else sample_weight[tX_in_A_n]
             )
-            sample, utility = self.base_query_strategy_.query(
-                X_cand=X_cand_current.reshape([1, -1]),
-                clf=clone(clf),
-                X=A_n_X,
-                y=A_n_y,
-                tX=A_n_tX,
-                ty=A_n_ty,
-                tX_cand=[tX_cand_current],
-                ty_cand=[ty_cand_current],
-                acquisitions=A_n_acquisitions,
-                sample_weight=A_n_sample_weight,
-                return_utilities=True,
-                **al_kwargs,
-                **kwargs
+
+            query_kwargs = {
+                "X_cand": X_cand_current.reshape([1, -1]),
+                "clf": clone(clf),
+                "X": A_n_X,
+                "y": A_n_y,
+                "tX": A_n_tX,
+                "ty": A_n_ty,
+                "tX_cand": [tX_cand_current],
+                "ty_cand": [ty_cand_current],
+                "acquisitions": A_n_acquisitions,
+                "sample_weight": A_n_sample_weight,
+                "return_utilities": True,
+            }
+            base_query_strategy_is_delay_wrapper = isinstance(
+                self.base_query_strategy_,
+                SingleAnnotStreamBasedQueryStrategyDelayWrapper,
+            )
+            if base_query_strategy_is_delay_wrapper:
+                query_kwargs["al_kwargs"] = al_kwargs
+            else:
+                query_kwargs.update(al_kwargs)
+
+            sample, utility = call_func(
+                self.base_query_strategy_.query, **query_kwargs
             )
             if len(sample):
                 queried_indices.append(i)
@@ -462,7 +471,7 @@ class ForgettingWrapper(SingleAnnotStreamBasedQueryStrategyDelayWrapper):
         else:
             return queried_indices
 
-    def update(self, X_cand, queried, **kwargs):
+    def update(self, X_cand, queried, budget_manager_param_dict=None):
         """Updates the budget manager and the count for seen and queried
         instances
 
@@ -484,7 +493,11 @@ class ForgettingWrapper(SingleAnnotStreamBasedQueryStrategyDelayWrapper):
             The ForgettingWrapper returns itself, after it is updated.
         """
         self._validate_base_query_strategy()
-        self.base_query_strategy_.update(X_cand, queried, **kwargs)
+        self.base_query_strategy_.update(
+            X_cand,
+            queried,
+            budget_manager_param_dict=budget_manager_param_dict,
+        )
         return self
 
     def _validate_data(
@@ -542,7 +555,8 @@ class ForgettingWrapper(SingleAnnotStreamBasedQueryStrategyDelayWrapper):
         X : array-like of shape (n_samples, n_features)
             Checked input samples used to fit the classifier.
         y : array-like of shape (n_samples)
-            Checked Labels of the input samples 'X'. There may be missing labels.
+            Checked Labels of the input samples 'X'. There may be missing
+            labels.
         tX : array-like of shape (n_samples)
             Checked arrival time of the input samples 'X'
         ty : array-like of shape (n_samples)
@@ -600,8 +614,7 @@ class ForgettingWrapper(SingleAnnotStreamBasedQueryStrategyDelayWrapper):
         )
 
     def _validate_w_train(self):
-        """Validate if w_train is a positive float.
-        """
+        """Validate if w_train is a positive float."""
         if self.w_train is not None:
             if not (
                 isinstance(self.w_train, float)
@@ -628,24 +641,25 @@ class BaggingDelaySimulationWrapper(
     To simulate the labels we estimate the class probabilities for each label
     using bayesian estimation.
 
-    Parameters
-    ----------
-    base_query_strategy : QuaryStrategy
-        The QuaryStrategy which evaluates the utility of given instances used
-        in the stream-based active learning setting.
+    Parameters
+    ----------
+    base_query_strategy : QuaryStrategy
+        The QuaryStrategy which evaluates the utility of given instances used
+        in the stream-based active learning setting.
 
-    K : int, default=2
-        Number of instances that will be Simulated
+    K : int, default=2
+        Number of instances that will be Simulated
 
     delay_prior : float, default=0.001
         Value to correct the predicted frequancy
 
-    clf : BaseEstimator
-        The classifier which is trained using this query startegy.
+    clf : BaseEstimator
+        The classifier which is trained using this query startegy.
 
-    random_state : int, RandomState instance, default=None
-        Controls the randomness of the estimator.
-    """
+    random_state : int, RandomState instance, default=None
+        Controls the randomness of the estimator.
+    """
+
     def __init__(
         self,
         base_query_strategy=None,
@@ -674,11 +688,6 @@ class BaggingDelaySimulationWrapper(
         **kwargs
     ):
         """Ask the query strategy which instances in X_cand to acquire.
-
-        Please note that, when the decisions from this function may differ from
-        the final sampling, simulate=True can be set, so that the query strategy
-        can be updated later with update(...) with the final sampling. This is
-        especially helpful when developing wrapper query strategies.
 
         Parameters
         ----------
@@ -740,9 +749,11 @@ class BaggingDelaySimulationWrapper(
         )
 
         # Check if the classifier and its arguments are valid.
-        check_type(clf, SkactivemlClassifier, 'clf')
+        check_type(clf, SkactivemlClassifier, "clf")
 
-        clf_fitted = fit_if_not_fitted(clf, X, y, sample_weight, print_warning=False)
+        clf_fitted = fit_if_not_fitted(
+            clf, X, y, sample_weight, print_warning=False
+        )
 
         sum_utilities = np.zeros(len(X))
         queried_indices = []
@@ -765,7 +776,7 @@ class BaggingDelaySimulationWrapper(
                 probabilities = self.get_class_probabilities(
                     X_B_n, clf_fitted, X, y, sample_weight
                 )
-                tmp_queried_indices = []
+                # tmp_queried_indices = []
                 tmp_avg_utilities = []
                 sum_utilities = np.zeros(self.K)
                 # simulate randomly sampleing future instances
@@ -782,52 +793,71 @@ class BaggingDelaySimulationWrapper(
                     new_y[map_B_n] = y_B_n
                     new_ty = np.copy(ty)
                     new_ty[map_B_n] = (np.max([ty, tX]) + tX_cand_current) / 2
-                    _, utilities = self.base_query_strategy_.query(
-                        X_cand=X_cand[[i], :],
-                        X=X,
-                        clf=clone(clf_fitted),
-                        y=new_y,
-                        tX=tX,
-                        ty=new_ty,
-                        tX_cand=[tX_cand[i]],
-                        ty_cand=[ty_cand[i]],
-                        sample_weight=sample_weight,
-                        acquisitions=acquisitions,
-                        return_utilities=True,
-                        **al_kwargs,
-                        **kwargs
+
+                    query_kwargs = {
+                        "X_cand": X_cand[[i], :],
+                        "clf": clone(clf),
+                        "X": X,
+                        "y": new_y,
+                        "tX": tX,
+                        "ty": new_ty,
+                        "tX_cand": [tX_cand[i]],
+                        "ty_cand": [ty_cand[i]],
+                        "acquisitions": acquisitions,
+                        "sample_weight": sample_weight,
+                        "return_utilities": True,
+                    }
+                    base_query_strategy_is_delay_wrapper = isinstance(
+                        self.base_query_strategy_,
+                        SingleAnnotStreamBasedQueryStrategyDelayWrapper,
+                    )
+                    if base_query_strategy_is_delay_wrapper:
+                        query_kwargs["al_kwargs"] = al_kwargs
+                    else:
+                        query_kwargs.update(al_kwargs)
+
+                    _, utilities = call_func(
+                        self.base_query_strategy_.query, **query_kwargs
                     )
                     sum_utilities += utilities[0]
                 tmp_avg_utilities = sum_utilities / self.K
                 avg_utilities.append(tmp_avg_utilities[0])
             else:
-                (
-                    tmp_queried_indices,
-                    tmp_utilities,
-                ) = self.base_query_strategy_.query(
-                    X_cand=X_cand[[i], :],
-                    clf=clone(clf_fitted),
-                    X=X,
-                    y=y,
-                    tX=tX,
-                    ty=ty,
-                    tX_cand=[tX_cand[i]],
-                    ty_cand=[ty_cand[i]],
-                    sample_weight=sample_weight,
-                    acquisitions=acquisitions,
-                    return_utilities=True,
-                    **al_kwargs,
-                    **kwargs
+                query_kwargs = {
+                    "X_cand": X_cand[[i], :],
+                    "clf": clone(clf_fitted),
+                    "X": X,
+                    "y": y,
+                    "tX": tX,
+                    "ty": ty,
+                    "tX_cand": [tX_cand[i]],
+                    "ty_cand": [ty_cand[i]],
+                    "acquisitions": acquisitions,
+                    "sample_weight": sample_weight,
+                    "return_utilities": True,
+                }
+                base_query_strategy_is_delay_wrapper = isinstance(
+                    self.base_query_strategy_,
+                    SingleAnnotStreamBasedQueryStrategyDelayWrapper,
                 )
-                avg_utilities.append(tmp_utilities[0])
+                if base_query_strategy_is_delay_wrapper:
+                    query_kwargs["al_kwargs"] = al_kwargs
+                else:
+                    query_kwargs.update(al_kwargs)
+                _, utilities = call_func(
+                    self.base_query_strategy_.query, **query_kwargs
+                )
+                avg_utilities.append(utilities[0])
 
         avg_utilities = np.array(avg_utilities)
-        queried_indices = self.base_query_strategy_.budget_manager_.query(
-            avg_utilities
+        queried_indices = (
+            self.base_query_strategy_.budget_manager_.query_by_utility(
+                avg_utilities
+            )
         )
         queried = np.zeros(len(X_cand))
         queried[queried_indices] = 1
-        kwargs = dict(utilities=avg_utilities)
+        # kwargs = dict(utilities=avg_utilities)
 
         if return_utilities:
             return queried_indices, avg_utilities
@@ -863,7 +893,7 @@ class BaggingDelaySimulationWrapper(
         )
         return probabilities
 
-    def update(self, X_cand, queried, **kwargs):
+    def update(self, X_cand, queried, budget_manager_param_dict):
         """Updates the budget manager and the count for seen and queried
         instances
 
@@ -882,10 +912,15 @@ class BaggingDelaySimulationWrapper(
         Returns
         -------
         self : BaggingDelaySimulationWrapper
-            The BaggingDelaySimulationWrapper returns itself, after it is updated.
+            The BaggingDelaySimulationWrapper returns itself, after it is
+            updated.
         """
         self._validate_base_query_strategy()
-        self.base_query_strategy_.update(X_cand, queried, **kwargs)
+        self.base_query_strategy_.update(
+            X_cand,
+            queried,
+            budget_manager_param_dict=budget_manager_param_dict,
+        )
         return self
 
     def _validate_data(
@@ -943,7 +978,8 @@ class BaggingDelaySimulationWrapper(
         X : array-like of shape (n_samples, n_features)
             Checked input samples used to fit the classifier.
         y : array-like of shape (n_samples)
-            Checked Labels of the input samples 'X'. There may be missing labels.
+            Checked Labels of the input samples 'X'. There may be missing
+            labels.
         tX : array-like of shape (n_samples)
             Checked arrival time of the input samples 'X'
         ty : array-like of shape (n_samples)
@@ -984,7 +1020,7 @@ class BaggingDelaySimulationWrapper(
             reset=reset,
             **check_X_cand_params
         )
-        
+
         self._validate_delay_prior()
         self._validate_K()
 
@@ -1002,8 +1038,7 @@ class BaggingDelaySimulationWrapper(
         )
 
     def _validate_K(self):
-        """Validate if K is an integer and greater than 0.
-        """
+        """Validate if K is an integer and greater than 0."""
         if self.K is not None:
             if not isinstance(self.K, int):
                 raise TypeError(
@@ -1016,8 +1051,7 @@ class BaggingDelaySimulationWrapper(
                 )
 
     def _validate_delay_prior(self):
-        """Validate if delay_prior a float and greater than 0.
-        """
+        """Validate if delay_prior a float and greater than 0."""
         if self.delay_prior is not None:
             check_scalar(
                 self.delay_prior, "delay_prior", (float, int), min_val=0.0
@@ -1032,21 +1066,22 @@ class FuzzyDelaySimulationWrapper(
     labels via using the sample weight. The class probabilities for each label
     are estimated using bayesian estimation.
 
-    Parameters
-    ----------
-    base_query_strategy : QuaryStrategy
-        The QuaryStrategy which evaluates the utility of given instances used
-        in the stream-based active learning setting.
+    Parameters
+    ----------
+    base_query_strategy : QuaryStrategy
+        The QuaryStrategy which evaluates the utility of given instances used
+        in the stream-based active learning setting.
 
     delay_prior : float, default=0.001
         Value to correct the predicted frequancy
 
-    clf : BaseEstimator
-        The classifier which is trained using this query startegy.
+    clf : BaseEstimator
+        The classifier which is trained using this query startegy.
 
-    random_state : int, RandomState instance, default=None
-        Controls the randomness of the estimator.
-    """
+    random_state : int, RandomState instance, default=None
+        Controls the randomness of the estimator.
+    """
+
     def __init__(
         self,
         base_query_strategy=None,
@@ -1073,11 +1108,6 @@ class FuzzyDelaySimulationWrapper(
         **kwargs
     ):
         """Ask the query strategy which instances in X_cand to acquire.
-
-        Please note that, when the decisions from this function may differ from
-        the final sampling, simulate=True can be set, so that the query strategy
-        can be updated later with update(...) with the final sampling. This is
-        especially helpful when developing wrapper query strategies.
 
         Parameters
         ----------
@@ -1139,9 +1169,11 @@ class FuzzyDelaySimulationWrapper(
         )
 
         # Check if the classifier and its arguments are valid.
-        check_type(clf, SkactivemlClassifier, 'clf')
+        check_type(clf, SkactivemlClassifier, "clf")
 
-        clf_fitted = fit_if_not_fitted(clf, X, y, sample_weight, print_warning=False)
+        clf_fitted = fit_if_not_fitted(
+            clf, X, y, sample_weight, print_warning=False
+        )
 
         queried_indices = []
         utilities = []
@@ -1193,54 +1225,67 @@ class FuzzyDelaySimulationWrapper(
                 new_sample_weight = np.concatenate(
                     [sample_weight, add_sample_weight]
                 )
-                (
-                    tmp_queried_indices,
-                    tmp_utilities,
-                ) = self.base_query_strategy_.query(
-                    X_cand=X_cand[[i], :],
-                    clf=clone(clf_fitted),
-                    X=new_X,
-                    y=new_y,
-                    tX=new_tX,
-                    ty=new_ty,
-                    tX_cand=[tX_cand[i]],
-                    ty_cand=[ty_cand[i]],
-                    sample_weight=new_sample_weight,
-                    aquisitions=new_acquisitions,
-                    return_utilities=True,
-                    **al_kwargs,
-                    **kwargs
+
+                query_kwargs = {
+                    "X_cand": X_cand[[i], :],
+                    "clf": clone(clf_fitted),
+                    "X": new_X,
+                    "y": new_y,
+                    "tX": new_tX,
+                    "ty": new_ty,
+                    "tX_cand": [tX_cand[i]],
+                    "ty_cand": [ty_cand[i]],
+                    "acquisitions": new_acquisitions,
+                    "sample_weight": new_sample_weight,
+                    "return_utilities": True,
+                }
+                base_query_strategy_is_delay_wrapper = isinstance(
+                    self.base_query_strategy_,
+                    SingleAnnotStreamBasedQueryStrategyDelayWrapper,
+                )
+                if base_query_strategy_is_delay_wrapper:
+                    query_kwargs["al_kwargs"] = al_kwargs
+                else:
+                    query_kwargs.update(al_kwargs)
+                tmp_queried_indices, tmp_utilities = call_func(
+                    self.base_query_strategy_.query, **query_kwargs
                 )
                 if len(tmp_queried_indices):
                     queried_indices.append(i)
                 utilities.append(tmp_utilities[0])
             else:
-                (
-                    tmp_queried_indices,
-                    tmp_utilities,
-                ) = self.base_query_strategy_.query(
-                    X_cand=X_cand[[i], :],
-                    clf=clone(clf_fitted),
-                    X=X,
-                    y=y,
-                    tX=tX,
-                    ty=ty,
-                    tX_cand=[tX_cand[i]],
-                    ty_cand=[ty_cand[i]],
-                    aquisitions=acquisitions,
-                    sample_weight=sample_weight,
-                    return_utilities=True,
-                    **al_kwargs,
-                    **kwargs
+                query_kwargs = {
+                    "X_cand": X_cand[[i], :],
+                    "clf": clone(clf_fitted),
+                    "X": X,
+                    "y": y,
+                    "tX": tX,
+                    "ty": ty,
+                    "tX_cand": [tX_cand[i]],
+                    "ty_cand": [ty_cand[i]],
+                    "acquisitions": acquisitions,
+                    "sample_weight": sample_weight,
+                    "return_utilities": True,
+                }
+                base_query_strategy_is_delay_wrapper = isinstance(
+                    self.base_query_strategy_,
+                    SingleAnnotStreamBasedQueryStrategyDelayWrapper,
+                )
+                if base_query_strategy_is_delay_wrapper:
+                    query_kwargs["al_kwargs"] = al_kwargs
+                else:
+                    query_kwargs.update(al_kwargs)
+                tmp_queried_indices, tmp_utilities = call_func(
+                    self.base_query_strategy_.query, **query_kwargs
                 )
                 if len(tmp_queried_indices):
                     queried_indices.append(i)
                 utilities.append(tmp_utilities[0])
 
         # update base_query_strategy
-        queried = np.zeros(len(X_cand))
-        queried[tmp_queried_indices] = 1
-        kwargs = dict(utilities=utilities)
+        # queried = np.zeros(len(X_cand))
+        # queried[tmp_queried_indices] = 1
+        # kwargs = dict(utilities=utilities)
 
         if return_utilities:
             return queried_indices, utilities
@@ -1276,7 +1321,7 @@ class FuzzyDelaySimulationWrapper(
         )
         return probabilities
 
-    def update(self, X_cand, queried, **kwargs):
+    def update(self, X_cand, queried, budget_manager_param_dict):
         """Updates the budget manager and the count for seen and queried
         instances
 
@@ -1295,10 +1340,15 @@ class FuzzyDelaySimulationWrapper(
         Returns
         -------
         self : FuzzyDelaySimulationWrapper
-            The FuzzyDelaySimulationWrapper returns itself, after it is updated.
+            The FuzzyDelaySimulationWrapper returns itself, after it is
+            updated.
         """
         self._validate_base_query_strategy()
-        self.base_query_strategy_.update(X_cand, queried, **kwargs)
+        self.base_query_strategy_.update(
+            X_cand,
+            queried,
+            budget_manager_param_dict=budget_manager_param_dict,
+        )
         return self
 
     def _validate_data(
@@ -1356,7 +1406,8 @@ class FuzzyDelaySimulationWrapper(
         X : array-like of shape (n_samples, n_features)
             Checked input samples used to fit the classifier.
         y : array-like of shape (n_samples)
-            Checked Labels of the input samples 'X'. There may be missing labels.
+            Checked Labels of the input samples 'X'. There may be missing
+            labels.
         tX : array-like of shape (n_samples)
             Checked arrival time of the input samples 'X'
         ty : array-like of shape (n_samples)
@@ -1413,8 +1464,7 @@ class FuzzyDelaySimulationWrapper(
         )
 
     def _validate_delay_prior(self):
-        """Validate if delay_prior a float and greater than 0.
-        """
+        """Validate if delay_prior a float and greater than 0."""
         if self.delay_prior is not None:
             check_scalar(
                 self.delay_prior, "delay_prior", (float, int), min_val=0.0
