@@ -187,15 +187,14 @@
 <span class="sd">    ----------</span>
 <span class="sd">    budget_manager : BudgetManager</span>
 <span class="sd">        The BudgetManager which models the budgeting constraint used in</span>
-<span class="sd">        the stream-based active learning setting. The budget attribute set for</span>
-<span class="sd">        the budget_manager will be used to determine the probability to sample</span>
-<span class="sd">        instances</span>
+<span class="sd">        the stream-based active learning setting. if set to None,</span>
+<span class="sd">        FixedThresholdBudget will be used by default.</span>
 
 <span class="sd">    random_state : int, RandomState instance, default=None</span>
 <span class="sd">        Controls the randomness of the estimator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget_manager</span><span class="o">=</span><span class="n">FixedThresholdBudget</span><span class="p">(),</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget_manager</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">budget_manager</span><span class="o">=</span><span class="n">budget_manager</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
@@ -285,6 +284,16 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
+<div class="viewcode-block" id="RandomSampler.get_default_budget_manager"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.RandomSampler.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        budget_manager : BudgetManager</span>
+<span class="sd">            The BudgetManager that should be used by default.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FixedThresholdBudget</span><span class="p">()</span></div>
+
     <span class="k">def</span> <span class="nf">_validate_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">return_utilities</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">check_X_cand_params</span>
     <span class="p">):</span>
@@ -334,15 +343,14 @@
 <span class="sd">    ----------</span>
 <span class="sd">    budget_manager : BudgetManager</span>
 <span class="sd">        The BudgetManager which models the budgeting constraint used in</span>
-<span class="sd">        the stream-based active learning setting. The budget attribute set for</span>
-<span class="sd">        the budget_manager will be used to determine the interval between</span>
-<span class="sd">        sampling instnces</span>
+<span class="sd">        the stream-based active learning setting. if set to None,</span>
+<span class="sd">        FixedThresholdBudget will be used by default.</span>
 
 <span class="sd">    random_state : int, RandomState instance, default=None</span>
 <span class="sd">        Controls the randomness of the estimator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget_manager</span><span class="o">=</span><span class="n">FixedThresholdBudget</span><span class="p">(),</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget_manager</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">budget_manager</span><span class="o">=</span><span class="n">budget_manager</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
@@ -444,6 +452,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">queried_instances_</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">queried</span><span class="p">)</span>
         <span class="c1"># print(&quot;queried_instances_&quot;, self.queried_instances_)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="PeriodicSampler.get_default_budget_manager"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PeriodicSampler.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        budget_manager : BudgetManager</span>
+<span class="sd">            The BudgetManager that should be used by default.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FixedThresholdBudget</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_validate_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">return_utilities</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">check_X_cand_params</span>

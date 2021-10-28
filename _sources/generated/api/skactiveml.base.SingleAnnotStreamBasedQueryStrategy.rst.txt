@@ -11,6 +11,7 @@
 
    .. autosummary::
    
+      ~SingleAnnotStreamBasedQueryStrategy.get_default_budget_manager
       ~SingleAnnotStreamBasedQueryStrategy.get_params
       ~SingleAnnotStreamBasedQueryStrategy.query
       ~SingleAnnotStreamBasedQueryStrategy.set_params

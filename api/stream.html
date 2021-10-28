@@ -189,7 +189,7 @@
 stream-based active learning.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="skactiveml.stream.FixedUncertainty">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">FixedUncertainty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FixedUncertaintyBudget()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#FixedUncertainty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.FixedUncertainty" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">FixedUncertainty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#FixedUncertainty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.FixedUncertainty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../generated/api/skactiveml.base.SingleAnnotStreamBasedQueryStrategy.html#skactiveml.base.SingleAnnotStreamBasedQueryStrategy" title="skactiveml.base.SingleAnnotStreamBasedQueryStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">skactiveml.base.SingleAnnotStreamBasedQueryStrategy</span></code></a></p>
 <p>The FixedUncertainty (Fixed-Uncertainty in [1]) query strategy samples
 instances based on the classifiers uncertainty assessed based on the
@@ -200,9 +200,8 @@ and the number of classes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager which models the budgeting constraint used in
-the stream-based active learning setting. The budget attribute set for
-the budget_manager will be used to determine the interval between
-sampling instances</p>
+the stream-based active learning setting. if set to None,
+FixedUncertaintyBudget will be used by default.</p>
 </dd>
 <dt><strong>random_state</strong><span class="classifier">int, RandomState instance, default=None</span></dt><dd><p>Controls the randomness of the estimator.</p>
 </dd>
@@ -215,6 +214,20 @@ sampling instances</p>
 Networks and Learning Systems, IEEE Transactions on. 25. 27-39.</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="skactiveml.stream.FixedUncertainty.get_default_budget_manager">
+<span class="sig-name descname"><span class="pre">get_default_budget_manager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#FixedUncertainty.get_default_budget_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.FixedUncertainty.get_default_budget_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide the budget manager that will be used as default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager that should be used by default.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="skactiveml.stream.FixedUncertainty.get_params">
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skactiveml.stream.FixedUncertainty.get_params" title="Permalink to this definition">¶</a></dt>
@@ -241,9 +254,9 @@ contained subobjects that are estimators.</p>
 <span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_cand</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_utilities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#FixedUncertainty.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.FixedUncertainty.query" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask the query strategy which instances in X_cand to acquire.</p>
 <p>Please note that, when the decisions from this function may differ from
-the final sampling, simulate=True can be set, so that the query strategy
-can be updated later with update(…) with the final sampling. This is
-especially helpful when developing wrapper query strategies.</p>
+the final sampling, simulate=True can be set, so that the query
+strategy can be updated later with update(…) with the final sampling.
+This is especially helpful when developing wrapper query strategies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -252,11 +265,11 @@ only if they are supported by the base query strategy.</p>
 </dd>
 <dt><strong>clf</strong><span class="classifier">SkactivemlClassifier</span></dt><dd><p>Model implementing the methods <cite>fit</cite> and <cite>predict_freq</cite>.</p>
 </dd>
-<dt><strong>X</strong><span class="classifier">array-like of shape (n_samples, n_features), optional (default=None)</span></dt><dd><p>Input samples used to fit the classifier.</p>
+<dt><strong>X</strong><span class="classifier">array-like of shape (n_samples, n_features), optional</span></dt><dd><p>Input samples used to fit the classifier.</p>
 </dd>
-<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples), optional (default=None)</span></dt><dd><p>Labels of the input samples ‘X’. There may be missing labels.</p>
+<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples), optional</span></dt><dd><p>Labels of the input samples ‘X’. There may be missing labels.</p>
 </dd>
-<dt><strong>sample_weight</strong><span class="classifier">array-like of shape (n_samples,) (default=None)</span></dt><dd><p>Sample weights for X, used to fit the clf.</p>
+<dt><strong>sample_weight</strong><span class="classifier">array-like of shape (n_samples,), optional</span></dt><dd><p>Sample weights for X, used to fit the clf.</p>
 </dd>
 <dt><strong>return_utilities</strong><span class="classifier">bool, optional</span></dt><dd><p>If true, also return the utilities based on the query strategy.
 The default is False.</p>
@@ -330,7 +343,7 @@ only if they are supported by the base query strategy.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="skactiveml.stream.PALS">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">PALS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">BIQF()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_pals.html#PALS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.PALS" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">PALS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_pals.html#PALS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.PALS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../generated/api/skactiveml.base.SingleAnnotStreamBasedQueryStrategy.html#skactiveml.base.SingleAnnotStreamBasedQueryStrategy" title="skactiveml.base.SingleAnnotStreamBasedQueryStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">skactiveml.base.SingleAnnotStreamBasedQueryStrategy</span></code></a></p>
 <p>Probabilistic Active Learning in Datastreams (PALS) is an extension to
 Multi-Class Probabilistic Active Learning (see pool.McPAL). It assesses
@@ -342,11 +355,10 @@ budget_manager, is used to evaluate the temporal utility
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager which models the budgeting constraint used in
-the stream-based active learning setting. The budget attribute set for
-the budget_manager will be used to determine the probability to sample
-instances</p>
+the stream-based active learning setting. if set to None, BIQF will be
+used by default.</p>
 </dd>
-<dt><strong>random_state</strong><span class="classifier">int, RandomState instance, default=None</span></dt><dd><p>Controls the randomness of the estimator.</p>
+<dt><strong>random_state</strong><span class="classifier">int, RandomState instance, default=None</span></dt><dd><p>Controls the randomness of the query strategy.</p>
 </dd>
 <dt><strong>prior</strong><span class="classifier">float</span></dt><dd><p>The prior value that is passed onto McPAL (see pool.McPAL).</p>
 </dd>
@@ -362,6 +374,20 @@ instances</p>
 Notes in Computer Science, vol 9385. Springer, Cham.</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="skactiveml.stream.PALS.get_default_budget_manager">
+<span class="sig-name descname"><span class="pre">get_default_budget_manager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_pals.html#PALS.get_default_budget_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.PALS.get_default_budget_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide the budget manager that will be used as default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager that should be used by default.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="skactiveml.stream.PALS.get_params">
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skactiveml.stream.PALS.get_params" title="Permalink to this definition">¶</a></dt>
@@ -480,7 +506,7 @@ only if they are supported by the base query strategy.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="skactiveml.stream.PeriodicSampler">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">PeriodicSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FixedThresholdBudget()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_random.html#PeriodicSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.PeriodicSampler" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">PeriodicSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_random.html#PeriodicSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.PeriodicSampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../generated/api/skactiveml.base.SingleAnnotStreamBasedQueryStrategy.html#skactiveml.base.SingleAnnotStreamBasedQueryStrategy" title="skactiveml.base.SingleAnnotStreamBasedQueryStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">skactiveml.base.SingleAnnotStreamBasedQueryStrategy</span></code></a></p>
 <p>The PeriodicSampler samples instances periodically. The length of that
 period is determined by the budget specified in the budget_manager. For
@@ -494,15 +520,28 @@ as a baseline strategy.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager which models the budgeting constraint used in
-the stream-based active learning setting. The budget attribute set for
-the budget_manager will be used to determine the interval between
-sampling instnces</p>
+the stream-based active learning setting. if set to None,
+FixedThresholdBudget will be used by default.</p>
 </dd>
 <dt><strong>random_state</strong><span class="classifier">int, RandomState instance, default=None</span></dt><dd><p>Controls the randomness of the estimator.</p>
 </dd>
 </dl>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="skactiveml.stream.PeriodicSampler.get_default_budget_manager">
+<span class="sig-name descname"><span class="pre">get_default_budget_manager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_random.html#PeriodicSampler.get_default_budget_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.PeriodicSampler.get_default_budget_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide the budget manager that will be used as default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager that should be used by default.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="skactiveml.stream.PeriodicSampler.get_params">
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skactiveml.stream.PeriodicSampler.get_params" title="Permalink to this definition">¶</a></dt>
@@ -613,7 +652,7 @@ only if they are supported by the base query strategy.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="skactiveml.stream.RandomSampler">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">RandomSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">FixedThresholdBudget()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_random.html#RandomSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.RandomSampler" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">RandomSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_random.html#RandomSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.RandomSampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../generated/api/skactiveml.base.SingleAnnotStreamBasedQueryStrategy.html#skactiveml.base.SingleAnnotStreamBasedQueryStrategy" title="skactiveml.base.SingleAnnotStreamBasedQueryStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">skactiveml.base.SingleAnnotStreamBasedQueryStrategy</span></code></a></p>
 <p>The RandomSampler samples instances completely randomly. The probability
 to sample an instance is dependent on the budget specified in the
@@ -625,15 +664,28 @@ the instance. Thus, it should only be used as a baseline strategy.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager which models the budgeting constraint used in
-the stream-based active learning setting. The budget attribute set for
-the budget_manager will be used to determine the probability to sample
-instances</p>
+the stream-based active learning setting. if set to None,
+FixedThresholdBudget will be used by default.</p>
 </dd>
 <dt><strong>random_state</strong><span class="classifier">int, RandomState instance, default=None</span></dt><dd><p>Controls the randomness of the estimator.</p>
 </dd>
 </dl>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="skactiveml.stream.RandomSampler.get_default_budget_manager">
+<span class="sig-name descname"><span class="pre">get_default_budget_manager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_random.html#RandomSampler.get_default_budget_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.RandomSampler.get_default_budget_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide the budget manager that will be used as default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager that should be used by default.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="skactiveml.stream.RandomSampler.get_params">
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skactiveml.stream.RandomSampler.get_params" title="Permalink to this definition">¶</a></dt>
@@ -741,17 +793,16 @@ only if they are supported by the base query strategy.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="skactiveml.stream.Split">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">Split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SplitBudget()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#Split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.Split" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">Split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#Split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.Split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../generated/api/skactiveml.base.SingleAnnotStreamBasedQueryStrategy.html#skactiveml.base.SingleAnnotStreamBasedQueryStrategy" title="skactiveml.base.SingleAnnotStreamBasedQueryStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">skactiveml.base.SingleAnnotStreamBasedQueryStrategy</span></code></a></p>
 <p>The Split [1] query strategy samples in 100*v% of instances randomly and
-in 100*(1-v)% of cases according to VarUncertainty.</p>
+in 100*(1-v)% of cases according to VariableUncertainty.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager which models the budgeting constraint used in
-the stream-based active learning setting. The budget attribute set for
-the budget_manager will be used to determine the interval between
-sampling instances</p>
+the stream-based active learning setting. if set to None, SplitBudget
+will be used by default.</p>
 </dd>
 <dt><strong>random_state</strong><span class="classifier">int, RandomState instance, default=None</span></dt><dd><p>Controls the randomness of the estimator.</p>
 </dd>
@@ -764,6 +815,20 @@ sampling instances</p>
 Networks and Learning Systems, IEEE Transactions on. 25. 27-39.</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="skactiveml.stream.Split.get_default_budget_manager">
+<span class="sig-name descname"><span class="pre">get_default_budget_manager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#Split.get_default_budget_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.Split.get_default_budget_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide the budget manager that will be used as default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager that should be used by default.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="skactiveml.stream.Split.get_params">
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skactiveml.stream.Split.get_params" title="Permalink to this definition">¶</a></dt>
@@ -790,9 +855,9 @@ contained subobjects that are estimators.</p>
 <span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_cand</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_utilities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#Split.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.Split.query" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask the query strategy which instances in X_cand to acquire.</p>
 <p>Please note that, when the decisions from this function may differ from
-the final sampling, simulate=True can be set, so that the query strategy
-can be updated later with update(…) with the final sampling. This is
-especially helpful when developing wrapper query strategies.</p>
+the final sampling, simulate=True can be set, so that the query
+strategy can be updated later with update(…) with the final sampling.
+This is especially helpful when developing wrapper query strategies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -801,11 +866,11 @@ only if they are supported by the base query strategy.</p>
 </dd>
 <dt><strong>clf</strong><span class="classifier">SkactivemlClassifier</span></dt><dd><p>Model implementing the methods <cite>fit</cite> and <cite>predict_freq</cite>.</p>
 </dd>
-<dt><strong>X</strong><span class="classifier">array-like of shape (n_samples, n_features), optional (default=None)</span></dt><dd><p>Input samples used to fit the classifier.</p>
+<dt><strong>X</strong><span class="classifier">array-like of shape (n_samples, n_features), optional</span></dt><dd><p>Input samples used to fit the classifier.</p>
 </dd>
-<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples), optional (default=None)</span></dt><dd><p>Labels of the input samples ‘X’. There may be missing labels.</p>
+<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples), optional</span></dt><dd><p>Labels of the input samples ‘X’. There may be missing labels.</p>
 </dd>
-<dt><strong>sample_weight</strong><span class="classifier">array-like of shape (n_samples,) (default=None)</span></dt><dd><p>Sample weights for X, used to fit the clf.</p>
+<dt><strong>sample_weight</strong><span class="classifier">array-like of shape (n_samples,)</span></dt><dd><p>Sample weights for X, used to fit the clf.</p>
 </dd>
 <dt><strong>return_utilities</strong><span class="classifier">bool, optional</span></dt><dd><p>If true, also return the utilities based on the query strategy.
 The default is False.</p>
@@ -879,7 +944,7 @@ only if they are supported by the base query strategy.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="skactiveml.stream.VariableUncertainty">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">VariableUncertainty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">VarUncertaintyBudget()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#VariableUncertainty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.VariableUncertainty" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.stream.</span></span><span class="sig-name descname"><span class="pre">VariableUncertainty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">budget_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#VariableUncertainty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.VariableUncertainty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../generated/api/skactiveml.base.SingleAnnotStreamBasedQueryStrategy.html#skactiveml.base.SingleAnnotStreamBasedQueryStrategy" title="skactiveml.base.SingleAnnotStreamBasedQueryStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">skactiveml.base.SingleAnnotStreamBasedQueryStrategy</span></code></a></p>
 <p>The VariableUncertainty (Var-Uncertainty in [1]) query strategy samples
 instances based on the classifiers uncertainty assessed based on the
@@ -891,9 +956,8 @@ acquired samples.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager which models the budgeting constraint used in
-the stream-based active learning setting. The budget attribute set for
-the budget_manager will be used to determine the interval between
-sampling instances</p>
+the stream-based active learning setting. if set to None,
+VariableUncertaintyBudget will be used by default.</p>
 </dd>
 <dt><strong>random_state</strong><span class="classifier">int, RandomState instance, default=None</span></dt><dd><p>Controls the randomness of the estimator.</p>
 </dd>
@@ -906,6 +970,20 @@ sampling instances</p>
 Networks and Learning Systems, IEEE Transactions on. 25. 27-39.</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="skactiveml.stream.VariableUncertainty.get_default_budget_manager">
+<span class="sig-name descname"><span class="pre">get_default_budget_manager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#VariableUncertainty.get_default_budget_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.VariableUncertainty.get_default_budget_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide the budget manager that will be used as default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>budget_manager</strong><span class="classifier">BudgetManager</span></dt><dd><p>The BudgetManager that should be used by default.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="skactiveml.stream.VariableUncertainty.get_params">
 <span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skactiveml.stream.VariableUncertainty.get_params" title="Permalink to this definition">¶</a></dt>
@@ -932,9 +1010,9 @@ contained subobjects that are estimators.</p>
 <span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_cand</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_utilities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/skactiveml/stream/_uncertainty.html#VariableUncertainty.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.stream.VariableUncertainty.query" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask the query strategy which instances in X_cand to acquire.</p>
 <p>Please note that, when the decisions from this function may differ from
-the final sampling, simulate=True can be set, so that the query strategy
-can be updated later with update(…) with the final sampling. This is
-especially helpful when developing wrapper query strategies.</p>
+the final sampling, simulate=True can be set, so that the query
+strategy can be updated later with update(…) with the final sampling.
+This is especially helpful when developing wrapper query strategies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -943,11 +1021,11 @@ only if they are supported by the base query strategy.</p>
 </dd>
 <dt><strong>clf</strong><span class="classifier">SkactivemlClassifier</span></dt><dd><p>Model implementing the methods <cite>fit</cite> and <cite>predict_freq</cite>.</p>
 </dd>
-<dt><strong>X</strong><span class="classifier">array-like of shape (n_samples, n_features), optional (default=None)</span></dt><dd><p>Input samples used to fit the classifier.</p>
+<dt><strong>X</strong><span class="classifier">array-like of shape (n_samples, n_features), optional</span></dt><dd><p>Input samples used to fit the classifier.</p>
 </dd>
-<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples), optional (default=None)</span></dt><dd><p>Labels of the input samples ‘X’. There may be missing labels.</p>
+<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples), optional</span></dt><dd><p>Labels of the input samples ‘X’. There may be missing labels.</p>
 </dd>
-<dt><strong>sample_weight</strong><span class="classifier">array-like of shape (n_samples,) (default=None)</span></dt><dd><p>Sample weights for X, used to fit the clf.</p>
+<dt><strong>sample_weight</strong><span class="classifier">array-like of shape (n_samples,)</span></dt><dd><p>Sample weights for X, used to fit the clf.</p>
 </dd>
 <dt><strong>return_utilities</strong><span class="classifier">bool, optional</span></dt><dd><p>If true, also return the utilities based on the query strategy.
 The default is False.</p>

@@ -640,6 +640,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
+<div class="viewcode-block" id="SingleAnnotStreamBasedQueryStrategy.get_default_budget_manager"><a class="viewcode-back" href="../../generated/api/skactiveml.base.SingleAnnotStreamBasedQueryStrategy.html#skactiveml.base.SingleAnnotStreamBasedQueryStrategy.get_default_budget_manager">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        budget_manager : BudgetManager</span>
+<span class="sd">            The BudgetManager that should be used by default.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
     <span class="k">def</span> <span class="nf">_validate_random_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates a copy &#39;random_state_&#39; if random_state is an instance of</span>
 <span class="sd">        np.random_state. If not create a new random state. See also</span>
@@ -654,7 +665,10 @@
 <span class="sd">        copy &#39;budget_manager_&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;budget_manager_&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">budget_manager_</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget_manager</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">budget_manager_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_budget_manager</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">budget_manager_</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget_manager</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget_manager_</span><span class="p">,</span> <span class="n">BudgetManager</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid Type for budget_manager&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
