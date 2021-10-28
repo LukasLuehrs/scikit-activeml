@@ -13,7 +13,7 @@ from skactiveml.utils import MISSING_LABEL, unlabeled_indices, labeled_indices
 from skactiveml.visualization import plot_utility, plot_decision_boundary
 from skactiveml.pool import FourDS
 from skactiveml.classifier import CMM
-from sklearn.mixture import BayesianGaussianMixture
+from sklearn.mixture import GaussianMixture
 
 random_state = np.random.RandomState(0)
 
@@ -25,7 +25,7 @@ y_true = y_true % 2
 y = np.full(shape=y_true.shape, fill_value=MISSING_LABEL)
 
 # Initialise the classifier.
-clf = CMM(classes=[0, 1], mixture_model=BayesianGaussianMixture(n_components=8))
+clf = CMM(classes=[0, 1], mixture_model=GaussianMixture(n_components=5))
 # Initialise the query strategy.
 qs = FourDS(random_state=random_state)
 

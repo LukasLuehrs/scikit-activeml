@@ -96,6 +96,30 @@ Classes
    pool.multi.IEAnnotModel
    pool.multi.MultiAnnotWrapper
 
+:mod:`skactiveml.stream`:
+=========================
+
+.. automodule:: skactiveml.stream
+    :no-members:
+    :no-inherited-members:
+
+.. currentmodule:: skactiveml
+
+Classes
+-------
+
+.. autosummary::
+   :nosignatures:
+   :toctree: api
+   :template: class.rst
+
+   stream.RandomSampler
+   stream.PeriodicSampler
+   stream.FixedUncertainty
+   stream.VariableUncertainty
+   stream.Split
+   stream.PALS
+
 :mod:`skactiveml.classifier`:
 =============================
 

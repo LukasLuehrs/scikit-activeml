@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>API Reference &#8212; scikit-activeml 0.0.0 documentation</title>
+    <title>API Reference &#8212; scikit-activeml 0.1.0 documentation</title>
     
   <link href="../_static/css/theme.css" rel="stylesheet">
   <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -283,6 +283,38 @@
 </ul>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="api/skactiveml.stream.RandomSampler.html">
+   skactiveml.stream.RandomSampler
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="api/skactiveml.stream.PeriodicSampler.html">
+   skactiveml.stream.PeriodicSampler
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="api/skactiveml.stream.FixedUncertainty.html">
+   skactiveml.stream.FixedUncertainty
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="api/skactiveml.stream.VariableUncertainty.html">
+   skactiveml.stream.VariableUncertainty
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="api/skactiveml.stream.Split.html">
+   skactiveml.stream.Split
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="api/skactiveml.stream.PALS.html">
+   skactiveml.stream.PALS
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
   <a class="reference internal" href="api/skactiveml.classifier.PWC.html">
    skactiveml.classifier.PWC
   </a>
@@ -510,6 +542,23 @@
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-skactiveml.stream">
+   <code class="xref py py-mod docutils literal notranslate">
+    <span class="pre">
+     skactiveml.stream
+    </span>
+   </code>
+   :
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     Classes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#module-skactiveml.classifier">
    <code class="xref py py-mod docutils literal notranslate">
     <span class="pre">
@@ -520,7 +569,7 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id4">
+    <a class="reference internal nav-link" href="#id5">
      Classes
     </a>
    </li>
@@ -537,7 +586,7 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id5">
+    <a class="reference internal nav-link" href="#id6">
      Functions
     </a>
    </li>
@@ -554,12 +603,12 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id6">
+    <a class="reference internal nav-link" href="#id7">
      Classes
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id7">
+    <a class="reference internal nav-link" href="#id8">
      Functions
     </a>
    </li>
@@ -721,11 +770,45 @@ pool-based active learning.</p>
 </table>
 </section>
 </section>
+<section id="module-skactiveml.stream">
+<span id="skactiveml-stream"></span><h2><a class="reference internal" href="#module-skactiveml.stream" title="skactiveml.stream"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skactiveml.stream</span></code></a>:<a class="headerlink" href="#module-skactiveml.stream" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-skactiveml.stream" title="skactiveml.stream"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skactiveml.stream</span></code></a> module implements query strategies for
+stream-based active learning.</p>
+<section id="id4">
+<h3>Classes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/skactiveml.stream.RandomSampler.html#skactiveml.stream.RandomSampler" title="skactiveml.stream.RandomSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream.RandomSampler</span></code></a></p></td>
+<td><p>The RandomSampler samples instances completely randomly.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/skactiveml.stream.PeriodicSampler.html#skactiveml.stream.PeriodicSampler" title="skactiveml.stream.PeriodicSampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream.PeriodicSampler</span></code></a></p></td>
+<td><p>The PeriodicSampler samples instances periodically.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/skactiveml.stream.FixedUncertainty.html#skactiveml.stream.FixedUncertainty" title="skactiveml.stream.FixedUncertainty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream.FixedUncertainty</span></code></a></p></td>
+<td><p>The FixedUncertainty (Fixed-Uncertainty in [1]) query strategy samples instances based on the classifiers uncertainty assessed based on the classifier's predictions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/skactiveml.stream.VariableUncertainty.html#skactiveml.stream.VariableUncertainty" title="skactiveml.stream.VariableUncertainty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream.VariableUncertainty</span></code></a></p></td>
+<td><p>The VariableUncertainty (Var-Uncertainty in [1]) query strategy samples instances based on the classifiers uncertainty assessed based on the classifier's predictions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/skactiveml.stream.Split.html#skactiveml.stream.Split" title="skactiveml.stream.Split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream.Split</span></code></a></p></td>
+<td><p>The Split [1] query strategy samples in 100*v% of instances randomly and in 100*(1-v)% of cases according to VariableUncertainty.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/skactiveml.stream.PALS.html#skactiveml.stream.PALS" title="skactiveml.stream.PALS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stream.PALS</span></code></a></p></td>
+<td><p>Probabilistic Active Learning in Datastreams (PALS) is an extension to Multi-Class Probabilistic Active Learning (see pool.McPAL).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
 <section id="module-skactiveml.classifier">
 <span id="skactiveml-classifier"></span><h2><a class="reference internal" href="#module-skactiveml.classifier" title="skactiveml.classifier"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skactiveml.classifier</span></code></a>:<a class="headerlink" href="#module-skactiveml.classifier" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#module-skactiveml.classifier" title="skactiveml.classifier"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skactiveml.classifier</span></code></a> module # TODO.</p>
-<section id="id4">
-<h3>Classes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<section id="id5">
+<h3>Classes<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <table class="longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
@@ -755,8 +838,8 @@ pool-based active learning.</p>
 <span id="skactiveml-visualization"></span><h2><a class="reference internal" href="#module-skactiveml.visualization" title="skactiveml.visualization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skactiveml.visualization</span></code></a>:<a class="headerlink" href="#module-skactiveml.visualization" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#module-skactiveml.visualization" title="skactiveml.visualization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skactiveml.visualization</span></code></a> module includes various tools for
 visualization.</p>
-<section id="id5">
-<h3>Functions<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<section id="id6">
+<h3>Functions<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <table class="longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
@@ -776,8 +859,8 @@ visualization.</p>
 <section id="module-skactiveml.utils">
 <span id="skactiveml-utils"></span><h2><a class="reference internal" href="#module-skactiveml.utils" title="skactiveml.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skactiveml.utils</span></code></a>:<a class="headerlink" href="#module-skactiveml.utils" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#module-skactiveml.utils" title="skactiveml.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skactiveml.utils</span></code></a> module includes various utilities.</p>
-<section id="id6">
-<h3>Classes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<section id="id7">
+<h3>Classes<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <table class="longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />
@@ -790,8 +873,8 @@ visualization.</p>
 </tbody>
 </table>
 </section>
-<section id="id7">
-<h3>Functions<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<section id="id8">
+<h3>Functions<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <table class="longtable table autosummary">
 <colgroup>
 <col style="width: 10%" />

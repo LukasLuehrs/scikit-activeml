@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>skactiveml.stream._random &#8212; scikit-activeml 0.0.0 documentation</title>
+    <title>skactiveml.stream._random &#8212; scikit-activeml 0.1.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -175,7 +175,7 @@
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">call_func</span>
 
 
-<div class="viewcode-block" id="RandomSampler"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.RandomSampler">[docs]</a><span class="k">class</span> <span class="nc">RandomSampler</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomSampler"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.RandomSampler.html#skactiveml.stream.RandomSampler">[docs]</a><span class="k">class</span> <span class="nc">RandomSampler</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The RandomSampler samples instances completely randomly. The probability</span>
 <span class="sd">    to sample an instance is dependent on the budget specified in the</span>
 <span class="sd">    budget_manager. Given a budget of 10%, the utility exceeds 0.9 (1-0.1) with</span>
@@ -200,7 +200,7 @@
             <span class="n">budget_manager</span><span class="o">=</span><span class="n">budget_manager</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="RandomSampler.query"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.RandomSampler.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">return_utilities</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomSampler.query"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.RandomSampler.html#skactiveml.stream.RandomSampler.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">return_utilities</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Ask the query strategy which instances in X_cand to acquire.</span>
 
 <span class="sd">        Please note that, when the decisions from this function may differ from</span>
@@ -246,7 +246,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">queried_indices</span></div>
 
-<div class="viewcode-block" id="RandomSampler.update"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.RandomSampler.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomSampler.update"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.RandomSampler.html#skactiveml.stream.RandomSampler.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the budget manager and the count for seen and queried</span>
 <span class="sd">        instances</span>
 
@@ -284,7 +284,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="RandomSampler.get_default_budget_manager"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.RandomSampler.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomSampler.get_default_budget_manager"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.RandomSampler.html#skactiveml.stream.RandomSampler.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
 
 <span class="sd">        Returns</span>
@@ -329,7 +329,7 @@
         <span class="k">return</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">return_utilities</span></div>
 
 
-<div class="viewcode-block" id="PeriodicSampler"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PeriodicSampler">[docs]</a><span class="k">class</span> <span class="nc">PeriodicSampler</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="PeriodicSampler"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.PeriodicSampler.html#skactiveml.stream.PeriodicSampler">[docs]</a><span class="k">class</span> <span class="nc">PeriodicSampler</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The PeriodicSampler samples instances periodically. The length of that</span>
 <span class="sd">    period is determined by the budget specified in the budget_manager. For</span>
 <span class="sd">    instance, a budget of 25% would result in the PeriodicSampler sampling</span>
@@ -356,7 +356,7 @@
             <span class="n">budget_manager</span><span class="o">=</span><span class="n">budget_manager</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="PeriodicSampler.query"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PeriodicSampler.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">return_utilities</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="PeriodicSampler.query"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.PeriodicSampler.html#skactiveml.stream.PeriodicSampler.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">return_utilities</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Ask the query strategy which instances in X_cand to acquire.</span>
 
 <span class="sd">        This query strategy only evaluates the time each instance arrives at.</span>
@@ -415,7 +415,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">queried_indices</span></div>
 
-<div class="viewcode-block" id="PeriodicSampler.update"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PeriodicSampler.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PeriodicSampler.update"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.PeriodicSampler.html#skactiveml.stream.PeriodicSampler.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the budget manager and the count for seen and queried</span>
 <span class="sd">        instances</span>
 
@@ -453,7 +453,7 @@
         <span class="c1"># print(&quot;queried_instances_&quot;, self.queried_instances_)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PeriodicSampler.get_default_budget_manager"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PeriodicSampler.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PeriodicSampler.get_default_budget_manager"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.PeriodicSampler.html#skactiveml.stream.PeriodicSampler.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
 
 <span class="sd">        Returns</span>

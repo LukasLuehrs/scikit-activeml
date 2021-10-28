@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>skactiveml.visualization.plot_decision_boundary &#8212; scikit-activeml 0.0.0 documentation</title>
+    <title>skactiveml.visualization.plot_decision_boundary &#8212; scikit-activeml 0.1.0 documentation</title>
     
   <link href="../../_static/css/theme.css" rel="stylesheet">
   <link href="../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -283,6 +283,38 @@
 </ul>
 <ul class="nav bd-sidenav">
  <li class="toctree-l1">
+  <a class="reference internal" href="skactiveml.stream.RandomSampler.html">
+   skactiveml.stream.RandomSampler
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="skactiveml.stream.PeriodicSampler.html">
+   skactiveml.stream.PeriodicSampler
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="skactiveml.stream.FixedUncertainty.html">
+   skactiveml.stream.FixedUncertainty
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="skactiveml.stream.VariableUncertainty.html">
+   skactiveml.stream.VariableUncertainty
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="skactiveml.stream.Split.html">
+   skactiveml.stream.Split
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="skactiveml.stream.PALS.html">
+   skactiveml.stream.PALS
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
   <a class="reference internal" href="skactiveml.classifier.PWC.html">
    skactiveml.classifier.PWC
   </a>
@@ -488,7 +520,7 @@
 <h1>skactiveml.visualization.plot_decision_boundary<a class="headerlink" href="#skactiveml-visualization-plot-decision-boundary" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="skactiveml.visualization.plot_decision_boundary">
-<span class="sig-prename descclassname"><span class="pre">skactiveml.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_decision_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'coolwarm_r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skactiveml/visualization/_feature_space.html#plot_decision_boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.visualization.plot_decision_boundary" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">skactiveml.visualization.</span></span><span class="sig-name descname"><span class="pre">plot_decision_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">21</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'coolwarm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skactiveml/visualization/_feature_space.html#plot_decision_boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.visualization.plot_decision_boundary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the decision boundary of the given classifier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -579,16 +611,16 @@ colormap because cmap is used.</p>
 <p><span class="caption-text"><a class="reference internal" href="../sphinx_gallery_examples/pool/plot_ExpectedErrorReduction_Log_Loss_Expected_Error_Reduction.html#sphx-glr-generated-sphinx-gallery-examples-pool-plot-expectederrorreduction-log-loss-expected-error-reduction-py"><span class="std std-ref">Log Loss Expected Error Reduction</span></a></span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-</div><div class="sphx-glr-thumbcontainer" tooltip="Expected Average Precision"><figure class="align-default" id="id10">
-<img alt="Expected Average Precision" src="../../_images/sphx_glr_plot_UncertaintySampling_Expected_Average_Precision_thumb.gif" />
-<figcaption>
-<p><span class="caption-text"><a class="reference internal" href="../sphinx_gallery_examples/pool/plot_UncertaintySampling_Expected_Average_Precision.html#sphx-glr-generated-sphinx-gallery-examples-pool-plot-uncertaintysampling-expected-average-precision-py"><span class="std std-ref">Expected Average Precision</span></a></span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-</div><div class="sphx-glr-thumbcontainer" tooltip="4DS"><figure class="align-default" id="id11">
+</div><div class="sphx-glr-thumbcontainer" tooltip="4DS"><figure class="align-default" id="id10">
 <img alt="4DS" src="../../_images/sphx_glr_plot_FourDS_4DS_thumb.gif" />
 <figcaption>
-<p><span class="caption-text"><a class="reference internal" href="../sphinx_gallery_examples/pool/plot_FourDS_4DS.html#sphx-glr-generated-sphinx-gallery-examples-pool-plot-fourds-4ds-py"><span class="std std-ref">4DS</span></a></span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text"><a class="reference internal" href="../sphinx_gallery_examples/pool/plot_FourDS_4DS.html#sphx-glr-generated-sphinx-gallery-examples-pool-plot-fourds-4ds-py"><span class="std std-ref">4DS</span></a></span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Expected Average Precision"><figure class="align-default" id="id11">
+<img alt="Expected Average Precision" src="../../_images/sphx_glr_plot_UncertaintySampling_Expected_Average_Precision_thumb.gif" />
+<figcaption>
+<p><span class="caption-text"><a class="reference internal" href="../sphinx_gallery_examples/pool/plot_UncertaintySampling_Expected_Average_Precision.html#sphx-glr-generated-sphinx-gallery-examples-pool-plot-uncertaintysampling-expected-average-precision-py"><span class="std std-ref">Expected Average Precision</span></a></span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </div><div class="sphx-glr-thumbcontainer" tooltip="Query-by-Committee with Vote Entropy"><figure class="align-default" id="id12">

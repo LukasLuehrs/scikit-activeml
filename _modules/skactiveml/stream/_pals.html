@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>skactiveml.stream._pals &#8212; scikit-activeml 0.0.0 documentation</title>
+    <title>skactiveml.stream._pals &#8212; scikit-activeml 0.1.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -185,7 +185,7 @@
 <span class="kn">from</span> <span class="nn">.budget_manager</span> <span class="kn">import</span> <span class="n">BIQF</span>
 
 
-<div class="viewcode-block" id="PALS"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PALS">[docs]</a><span class="k">class</span> <span class="nc">PALS</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="PALS"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.PALS.html#skactiveml.stream.PALS">[docs]</a><span class="k">class</span> <span class="nc">PALS</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Probabilistic Active Learning in Datastreams (PALS) is an extension to</span>
 <span class="sd">    Multi-Class Probabilistic Active Learning (see pool.McPAL). It assesses</span>
 <span class="sd">    MCPAL spatial to assess the spatial utility. The Balanced Incremental</span>
@@ -222,7 +222,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">m_max</span> <span class="o">=</span> <span class="n">m_max</span>
 
-<div class="viewcode-block" id="PALS.query"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PALS.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
+<div class="viewcode-block" id="PALS.query"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.PALS.html#skactiveml.stream.PALS.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">X_cand</span><span class="p">,</span>
         <span class="n">clf</span><span class="p">,</span>
@@ -300,7 +300,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">queried_indices</span></div>
 
-<div class="viewcode-block" id="PALS.update"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PALS.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PALS.update"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.PALS.html#skactiveml.stream.PALS.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the budget manager</span>
 
 <span class="sd">        Parameters</span>
@@ -330,7 +330,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PALS.get_default_budget_manager"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.PALS.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PALS.get_default_budget_manager"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.PALS.html#skactiveml.stream.PALS.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
 
 <span class="sd">        Returns</span>

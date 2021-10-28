@@ -210,27 +210,6 @@ Pool Based
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Expected Average Precision">
-
-.. only:: html
-
- .. figure:: /generated/sphinx_gallery_examples/pool/images/thumb/sphx_glr_plot_UncertaintySampling_Expected_Average_Precision_thumb.gif
-     :alt: Expected Average Precision
-
-     :ref:`sphx_glr_generated_sphinx_gallery_examples_pool_plot_UncertaintySampling_Expected_Average_Precision.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /generated/sphinx_gallery_examples/pool/plot_UncertaintySampling_Expected_Average_Precision
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="4DS">
 
 .. only:: html
@@ -249,6 +228,27 @@ Pool Based
    :hidden:
 
    /generated/sphinx_gallery_examples/pool/plot_FourDS_4DS
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Expected Average Precision">
+
+.. only:: html
+
+ .. figure:: /generated/sphinx_gallery_examples/pool/images/thumb/sphx_glr_plot_UncertaintySampling_Expected_Average_Precision_thumb.gif
+     :alt: Expected Average Precision
+
+     :ref:`sphx_glr_generated_sphinx_gallery_examples_pool_plot_UncertaintySampling_Expected_Average_Precision.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /generated/sphinx_gallery_examples/pool/plot_UncertaintySampling_Expected_Average_Precision
 
 .. raw:: html
 

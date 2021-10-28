@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>skactiveml.stream._uncertainty &#8212; scikit-activeml 0.0.0 documentation</title>
+    <title>skactiveml.stream._uncertainty &#8212; scikit-activeml 0.1.0 documentation</title>
     
   <link href="../../../_static/css/theme.css" rel="stylesheet">
   <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -181,7 +181,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="FixedUncertainty"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.FixedUncertainty">[docs]</a><span class="k">class</span> <span class="nc">FixedUncertainty</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="FixedUncertainty"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.FixedUncertainty.html#skactiveml.stream.FixedUncertainty">[docs]</a><span class="k">class</span> <span class="nc">FixedUncertainty</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The FixedUncertainty (Fixed-Uncertainty in [1]) query strategy samples</span>
 <span class="sd">    instances based on the classifiers uncertainty assessed based on the</span>
 <span class="sd">    classifier&#39;s predictions. The instance is queried when the probability of</span>
@@ -213,7 +213,7 @@
             <span class="n">budget_manager</span><span class="o">=</span><span class="n">budget_manager</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="FixedUncertainty.query"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.FixedUncertainty.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
+<div class="viewcode-block" id="FixedUncertainty.query"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.FixedUncertainty.html#skactiveml.stream.FixedUncertainty.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">X_cand</span><span class="p">,</span>
         <span class="n">clf</span><span class="p">,</span>
@@ -282,7 +282,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">queried_indices</span></div>
 
-<div class="viewcode-block" id="FixedUncertainty.update"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.FixedUncertainty.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="FixedUncertainty.update"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.FixedUncertainty.html#skactiveml.stream.FixedUncertainty.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the budget manager and the count for seen and queried</span>
 <span class="sd">        instances</span>
 
@@ -315,7 +315,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="FixedUncertainty.get_default_budget_manager"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.FixedUncertainty.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FixedUncertainty.get_default_budget_manager"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.FixedUncertainty.html#skactiveml.stream.FixedUncertainty.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
 
 <span class="sd">        Returns</span>
@@ -406,7 +406,7 @@
         <span class="k">return</span> <span class="n">fit_if_not_fitted</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="VariableUncertainty"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.VariableUncertainty">[docs]</a><span class="k">class</span> <span class="nc">VariableUncertainty</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableUncertainty"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.VariableUncertainty.html#skactiveml.stream.VariableUncertainty">[docs]</a><span class="k">class</span> <span class="nc">VariableUncertainty</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The VariableUncertainty (Var-Uncertainty in [1]) query strategy samples</span>
 <span class="sd">    instances based on the classifiers uncertainty assessed based on the</span>
 <span class="sd">    classifier&#39;s predictions. The instance is queried when the probability of</span>
@@ -439,7 +439,7 @@
             <span class="n">budget_manager</span><span class="o">=</span><span class="n">budget_manager</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="VariableUncertainty.query"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.VariableUncertainty.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
+<div class="viewcode-block" id="VariableUncertainty.query"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.VariableUncertainty.html#skactiveml.stream.VariableUncertainty.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">X_cand</span><span class="p">,</span>
         <span class="n">clf</span><span class="p">,</span>
@@ -513,7 +513,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">queried_indices</span></div>
 
-<div class="viewcode-block" id="VariableUncertainty.update"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.VariableUncertainty.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableUncertainty.update"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.VariableUncertainty.html#skactiveml.stream.VariableUncertainty.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the budget manager and the count for seen and queried</span>
 <span class="sd">        instances</span>
 
@@ -546,7 +546,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="VariableUncertainty.get_default_budget_manager"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.VariableUncertainty.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VariableUncertainty.get_default_budget_manager"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.VariableUncertainty.html#skactiveml.stream.VariableUncertainty.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
 
 <span class="sd">        Returns</span>
@@ -638,7 +638,7 @@
         <span class="k">return</span> <span class="n">fit_if_not_fitted</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Split"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.Split">[docs]</a><span class="k">class</span> <span class="nc">Split</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
+<div class="viewcode-block" id="Split"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.Split.html#skactiveml.stream.Split">[docs]</a><span class="k">class</span> <span class="nc">Split</span><span class="p">(</span><span class="n">SingleAnnotStreamBasedQueryStrategy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The Split [1] query strategy samples in 100*v% of instances randomly and</span>
 <span class="sd">    in 100*(1-v)% of cases according to VariableUncertainty.</span>
 
@@ -665,7 +665,7 @@
             <span class="n">budget_manager</span><span class="o">=</span><span class="n">budget_manager</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="Split.query"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.Split.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
+<div class="viewcode-block" id="Split.query"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.Split.html#skactiveml.stream.Split.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">X_cand</span><span class="p">,</span>
         <span class="n">clf</span><span class="p">,</span>
@@ -740,7 +740,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">queried_indices</span></div>
 
-<div class="viewcode-block" id="Split.update"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.Split.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Split.update"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.Split.html#skactiveml.stream.Split.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X_cand</span><span class="p">,</span> <span class="n">queried_indices</span><span class="p">,</span> <span class="n">budget_manager_param_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Updates the budget manager and the count for seen and queried</span>
 <span class="sd">        instances</span>
 
@@ -775,7 +775,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Split.get_default_budget_manager"><a class="viewcode-back" href="../../../api/stream.html#skactiveml.stream.Split.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Split.get_default_budget_manager"><a class="viewcode-back" href="../../../generated/api/skactiveml.stream.Split.html#skactiveml.stream.Split.get_default_budget_manager">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_budget_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Provide the budget manager that will be used as default.</span>
 
 <span class="sd">        Returns</span>
