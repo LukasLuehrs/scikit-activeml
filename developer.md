@@ -33,11 +33,11 @@ We use GitHub Issues as our issue tracker...
 
 ## Get Started
 
-Before you can start contributing to this project, you have to do some busy work.
+Before you can contribute to this project, you need to do some work.
 
-### Setup a python environment
+### Setup development environment
 
-There are several ways to create a local python environment like virtualenv[], pipenv[], miniconda[] etc. One possible workflow is to install miniconda and create a python environment with that. And use pip to install packages in this environment.
+There are several ways to create a local Python environment, such as virtualenv[], pipenv[], miniconda[], etc. One possible workflow is to install miniconda and use it to create a Python environment. And use pip to install packages in this environment.
 
 #### Example with miniconda
 
@@ -69,15 +69,15 @@ conda install pip
 > - matplotlib>=3.3.4
 > - iteration-utilities>=0.11.0
 
-Now, we can install some required dependencies for scikit-activeml, which defined in the requirements.txt file.
+Now we can install some required dependencies for scikit-activeml, which are defined in the requirements.txt file.
 
 ```bash
-# Be sure that your scikit-activeml python env is active!
+# Make sure your scikit-activeml python env is active!
 cd <project-root>
 pip install -r requirements.txt
 ```
 
-After the pip installation is succeed, we can also install pandoc if it is already not installed
+After the pip installation was successful, we can also install pandoc if it is not already installed.
 
 ```bash
 # Check pandoc installation
@@ -133,7 +133,7 @@ scikit-activeml
 
 ### Coding Conventions
 
-As this library conforms to the convention of scikit-learn, the code should conform to PEP 8 Sytle Guide for Python Code. For linting, the use of flake8 is recommended.
+As this library conforms to the convention of scikit-learn, the code should conform to PEP 8 Style Guide for Python Code. For linting, the use of flake8 is recommended.
 
 - File organization
 - Comments?
@@ -159,22 +159,35 @@ As this library conforms to the convention of scikit-learn, the code should conf
 
 > TODO-MMUEJDE: Explain the common lifecycle...
 
+### Local Builds
+
+#### Build documentation (User Guide + Developer Guide)
+
+```bash
+# command
+```
+
+#### Build scikit-activeml
+
+```bash
+#  command
+```
+
 ### Issue Tracking
 
 We use GitHub[] ....
 
-If you think you have found a bug in Python, you can report it to the issue tracker. The issue tracker is also commonly referred to as bugs.python.org and bpo. Documentation bugs can also be reported there.
-You can report bugs with the issue tracker itself to the meta tracker.
-If you would like to file an issue about this devguide, please do so at the devguide repo.
+If you think you have found a bug in scikit-activeml, you can report it to the issue tracker. Documentation bugs can also be reported there. If you would like to file an issue about this devguide, please do so at the devguide repo.
 
 #### Checking if a bug already exists
 
 The first step before filing an issue report is to see whether the problem has already been reported. Checking if the problem is an existing issue will:
-help you see if the problem has already been resolved or has been fixed for the next release
-save time for you and the developers
-help you learn what needs to be done to fix it
+
+- help you see if the problem has already been resolved or has been fixed for the next release
+- save time for you and the developers
+- help you learn what needs to be done to fix it
 determine if additional information, such as how to replicate the issue, is needed
-To do see if the issue already exists, search the bug database using the search box on the top of the issue tracker page. An advanced search is also available by clicking on “Search” in the sidebar.
+- To do see if the issue already exists, search the bug database using the search box on the top of the issue tracker page.
 
 #### Reporting an issue
 
@@ -206,7 +219,7 @@ This is a short summary:
 
 The triaging team will take care of setting other fields, and possibly assign the issue to a specific developer. You will automatically receive an update each time an action is taken on the bug.
 
-### Adding new strategies
+### Feature Development
 
 > TODO-MMUEJDE: Wie läuft das ab?
 
@@ -245,27 +258,48 @@ $ git commit -m 'commit message explaning the changes briefly'
 $ git push origin new-feature
 ```
 
-### Best Praticses
+## Deep Dive
+
+### Handling of unlabeled instances
+
+Active learning generally uses labeled and unlabeled instances. To simplify the data handling, the SkactivemlClassifier is able to handle unlabeled data. The unlabeled data is marked as such by setting corresponding entry in y (the label) during fitting to missing_label which is set during the initialization of the classifier. All classifier and the wrappers (e.g. for scikit-learn classifiers) are compatible with unlabeled instances.
+
+### Handling of Batch / Non-Batch scenarios
+
+All query strategies, except the stream based approaches, support the batch scenario. All strategies that are not explicitly designed to support the batch scenario shall employ a greedy strategy to iteratively select instances to fill the queried batch. The query methods have a batch_size parameter to specify the number of instances to queried instances. If the batch size is dynamic, the batch_size parameter shall be set to 'adaptive'. The utilities that are returned, when return_utilities is set to true, have the following shape: batch_size x n_cand, reflect the utilities for each individual acquisition.
+
+### Handling of pool-based, stream-based AL and membership query synthesis
+
+- separate packages and classes follow *PoolBasedQueryStrategy, *StreamBasedQueryStrategy, *MembershipQuerySynthesis
+
+### Handling of active learning with multiple annotators
+
+### Handling of uncertain oracles
+
+### Transductive and inductive active learning
+
+### Classification and regression
+
+### Evaluation
+
+### Stopping criteria
+
+## Best Praticses
+
+### Json example file structure
 
 > TODO-MMUEJDE: Hier kann man paar habits mitgeben.
 
 - Before contributing a new feature, please open a new issue. This helps us to discuss your idea and makes sure that you are not working in parallel with other contributors.
 
-### Troubleshooting
+## Troubleshooting
 
 > TODO-MMUEJDE: Bekannte Probleme auflisten und issues sparen
 
-#### Pandoc error on mac
+### Pandoc error on mac
 
 ```bash
 error 0001: pandoc.py not found
 ```
 
 A Solution is ...
-
-
-
-# TODO
-
-- How build the docu local
-- How to build the package local
