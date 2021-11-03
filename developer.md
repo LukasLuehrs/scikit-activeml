@@ -186,11 +186,15 @@ $ git commit -m 'commit message explaning the changes briefly'
 $ git push origin new-feature
 ```
 
-## Developing scikit-activeml Query Strategy
+## Developing scikit-activeml Query Strategies
 
 > TODO: Implement me
 
-## Developing scikit-activeml Estimator
+### Pool Strategies
+
+> TODO: Implement me
+
+## Developing scikit-activeml Estimators
 
 > TODO: Implement me
 
@@ -204,12 +208,17 @@ $ git push origin new-feature
 
 ## Documentation
 
+> TODO: Implement me
+
 ### Guidelines for writing documentation
+
+> TODO: Implement me
 
 https://scikit-learn.org/stable/developers/contributing.html#guidelines-for-writing-documentation
 
 ### Building the documentation
 
+> TODO: Implement me
 
 ## Issue Tracking
 
