@@ -21,7 +21,7 @@
 Random Sampling
 ===============
 
-.. GENERATED FROM PYTHON SOURCE LINES 8-78
+.. GENERATED FROM PYTHON SOURCE LINES 8-72
 
 
 
@@ -214,42 +214,42 @@ Random Sampling
      </style>
 
      <div class="animation">
-       <img id="_anim_img945adc117eb340a28a8aac3fb9bd4833">
+       <img id="_anim_img8a5f038d14214e17846f873a7990bdb4">
        <div class="anim-controls">
-         <input id="_anim_slider945adc117eb340a28a8aac3fb9bd4833" type="range" class="anim-slider"
+         <input id="_anim_slider8a5f038d14214e17846f873a7990bdb4" type="range" class="anim-slider"
                 name="points" min="0" max="1" step="1" value="0"
-                oninput="anim945adc117eb340a28a8aac3fb9bd4833.set_frame(parseInt(this.value));"></input>
+                oninput="anim8a5f038d14214e17846f873a7990bdb4.set_frame(parseInt(this.value));"></input>
          <div class="anim-buttons">
-           <button title="Decrease speed" aria-label="Decrease speed" onclick="anim945adc117eb340a28a8aac3fb9bd4833.slower()">
+           <button title="Decrease speed" aria-label="Decrease speed" onclick="anim8a5f038d14214e17846f873a7990bdb4.slower()">
                <i class="fa fa-minus"></i></button>
-           <button title="First frame" aria-label="First frame" onclick="anim945adc117eb340a28a8aac3fb9bd4833.first_frame()">
+           <button title="First frame" aria-label="First frame" onclick="anim8a5f038d14214e17846f873a7990bdb4.first_frame()">
              <i class="fa fa-fast-backward"></i></button>
-           <button title="Previous frame" aria-label="Previous frame" onclick="anim945adc117eb340a28a8aac3fb9bd4833.previous_frame()">
+           <button title="Previous frame" aria-label="Previous frame" onclick="anim8a5f038d14214e17846f873a7990bdb4.previous_frame()">
                <i class="fa fa-step-backward"></i></button>
-           <button title="Play backwards" aria-label="Play backwards" onclick="anim945adc117eb340a28a8aac3fb9bd4833.reverse_animation()">
+           <button title="Play backwards" aria-label="Play backwards" onclick="anim8a5f038d14214e17846f873a7990bdb4.reverse_animation()">
                <i class="fa fa-play fa-flip-horizontal"></i></button>
-           <button title="Pause" aria-label="Pause" onclick="anim945adc117eb340a28a8aac3fb9bd4833.pause_animation()">
+           <button title="Pause" aria-label="Pause" onclick="anim8a5f038d14214e17846f873a7990bdb4.pause_animation()">
                <i class="fa fa-pause"></i></button>
-           <button title="Play" aria-label="Play" onclick="anim945adc117eb340a28a8aac3fb9bd4833.play_animation()">
+           <button title="Play" aria-label="Play" onclick="anim8a5f038d14214e17846f873a7990bdb4.play_animation()">
                <i class="fa fa-play"></i></button>
-           <button title="Next frame" aria-label="Next frame" onclick="anim945adc117eb340a28a8aac3fb9bd4833.next_frame()">
+           <button title="Next frame" aria-label="Next frame" onclick="anim8a5f038d14214e17846f873a7990bdb4.next_frame()">
                <i class="fa fa-step-forward"></i></button>
-           <button title="Last frame" aria-label="Last frame" onclick="anim945adc117eb340a28a8aac3fb9bd4833.last_frame()">
+           <button title="Last frame" aria-label="Last frame" onclick="anim8a5f038d14214e17846f873a7990bdb4.last_frame()">
                <i class="fa fa-fast-forward"></i></button>
-           <button title="Increase speed" aria-label="Increase speed" onclick="anim945adc117eb340a28a8aac3fb9bd4833.faster()">
+           <button title="Increase speed" aria-label="Increase speed" onclick="anim8a5f038d14214e17846f873a7990bdb4.faster()">
                <i class="fa fa-plus"></i></button>
          </div>
-         <form title="Repetition mode" aria-label="Repetition mode" action="#n" name="_anim_loop_select945adc117eb340a28a8aac3fb9bd4833"
+         <form title="Repetition mode" aria-label="Repetition mode" action="#n" name="_anim_loop_select8a5f038d14214e17846f873a7990bdb4"
                class="anim-state">
-           <input type="radio" name="state" value="once" id="_anim_radio1_945adc117eb340a28a8aac3fb9bd4833"
+           <input type="radio" name="state" value="once" id="_anim_radio1_8a5f038d14214e17846f873a7990bdb4"
                   >
-           <label for="_anim_radio1_945adc117eb340a28a8aac3fb9bd4833">Once</label>
-           <input type="radio" name="state" value="loop" id="_anim_radio2_945adc117eb340a28a8aac3fb9bd4833"
+           <label for="_anim_radio1_8a5f038d14214e17846f873a7990bdb4">Once</label>
+           <input type="radio" name="state" value="loop" id="_anim_radio2_8a5f038d14214e17846f873a7990bdb4"
                   checked>
-           <label for="_anim_radio2_945adc117eb340a28a8aac3fb9bd4833">Loop</label>
-           <input type="radio" name="state" value="reflect" id="_anim_radio3_945adc117eb340a28a8aac3fb9bd4833"
+           <label for="_anim_radio2_8a5f038d14214e17846f873a7990bdb4">Loop</label>
+           <input type="radio" name="state" value="reflect" id="_anim_radio3_8a5f038d14214e17846f873a7990bdb4"
                   >
-           <label for="_anim_radio3_945adc117eb340a28a8aac3fb9bd4833">Reflect</label>
+           <label for="_anim_radio3_8a5f038d14214e17846f873a7990bdb4">Reflect</label>
          </form>
        </div>
      </div>
@@ -259,9 +259,9 @@ Random Sampling
        /* Instantiate the Animation class. */
        /* The IDs given should match those used in the template above. */
        (function() {
-         var img_id = "_anim_img945adc117eb340a28a8aac3fb9bd4833";
-         var slider_id = "_anim_slider945adc117eb340a28a8aac3fb9bd4833";
-         var loop_select_id = "_anim_loop_select945adc117eb340a28a8aac3fb9bd4833";
+         var img_id = "_anim_img8a5f038d14214e17846f873a7990bdb4";
+         var slider_id = "_anim_slider8a5f038d14214e17846f873a7990bdb4";
+         var loop_select_id = "_anim_loop_select8a5f038d14214e17846f873a7990bdb4";
          var frames = new Array(25);
     
        frames[0] = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnwAAAHeCAYAAAAB0dYuAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90\
@@ -22169,7 +22169,7 @@ Random Sampling
          /* set a timeout to make sure all the above elements are created before
             the object is initialized. */
          setTimeout(function() {
-             anim945adc117eb340a28a8aac3fb9bd4833 = new Animation(frames, img_id, slider_id, 1000.0,
+             anim8a5f038d14214e17846f873a7990bdb4 = new Animation(frames, img_id, slider_id, 1000.0,
                                       loop_select_id);
          }, 0);
        })()
@@ -22177,20 +22177,8 @@ Random Sampling
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    Looks like N_CYCLES!
 
 
-
-
-
-
-|
 
 .. code-block:: default
    :lineno-start: 9
@@ -22222,12 +22210,6 @@ Random Sampling
     fig, ax = plt.subplots()
     feature_bound = [[min(X[:, 0]), min(X[:, 1])], [max(X[:, 0]), max(X[:, 1])]]
     artists = []
-
-    import os
-    if os.getenv('N_CYCLES'):
-        print('Looks like N_CYCLES!')
-    else:
-        print('Ohhh... There is no N_CYCLES!')
 
     # The active learning cycle:
     n_cycles = 25
@@ -22269,7 +22251,7 @@ Random Sampling
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  6.123 seconds)
+   **Total running time of the script:** ( 0 minutes  7.153 seconds)
 
 
 .. _sphx_glr_download_generated_sphinx_gallery_examples_pool_plot_RandomSampler_Random_Sampling.py:

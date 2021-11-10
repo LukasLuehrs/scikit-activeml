@@ -522,9 +522,8 @@
 <dt class="sig sig-object py" id="skactiveml.pool.QBC">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">skactiveml.pool.</span></span><span class="sig-name descname"><span class="pre">QBC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'KL_divergence'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/skactiveml/pool/_qbc.html#QBC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#skactiveml.pool.QBC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="skactiveml.base.SingleAnnotPoolBasedQueryStrategy.html#skactiveml.base.SingleAnnotPoolBasedQueryStrategy" title="skactiveml.base.SingleAnnotPoolBasedQueryStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">skactiveml.base.SingleAnnotPoolBasedQueryStrategy</span></code></a></p>
-<p>The Query-By-Committee (QBC) algorithm minimizes the version space, which
-is the set of hypotheses that are consistent with the current labeled
-training data.</p>
+<p>The Query-By-Committee (QBC) strategy uses an ensemble of classifiers to
+identify on which instances many classifiers disagree.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
