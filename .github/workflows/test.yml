@@ -39,6 +39,8 @@ jobs:
       with:
         fail_ci_if_error: true
     - name: Create documentation with sphinx
+      env:
+        N_CYCLES: 1
       run: |
         pip install jupyter
         pip install sphinx>=4.2.0
