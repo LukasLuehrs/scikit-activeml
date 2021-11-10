@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from matplotlib import pyplot as plt, animation
 from sklearn.datasets import make_blobs
@@ -26,14 +27,10 @@ fig, ax = plt.subplots()
 feature_bound = [[min(X[:, 0]), min(X[:, 1])], [max(X[:, 0]), max(X[:, 1])]]
 artists = []
 
-import os
-if os.getenv('N_CYCLES'):
-    print('Looks like N_CYCLES!')
-else:
-    print('Ohhh... There is no N_CYCLES!')
 
 # The active learning cycle:
-n_cycles = 25
+n_cycles = os.getenv('N_CYCLES', default=25)
+
 for c in range(n_cycles):
     # Fit the classifier.
     clf.fit(X, y)
