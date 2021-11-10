@@ -21,7 +21,7 @@
 Margin-based Uncertainty Sampling
 =================================
 
-.. GENERATED FROM PYTHON SOURCE LINES 8-72
+.. GENERATED FROM PYTHON SOURCE LINES 8-78
 
 .. code-block:: default
    :lineno-start: 9
@@ -53,6 +53,12 @@ Margin-based Uncertainty Sampling
     fig, ax = plt.subplots()
     feature_bound = [[min(X[:, 0]), min(X[:, 1])], [max(X[:, 0]), max(X[:, 1])]]
     artists = []
+
+    import os
+    if os.getenv('N_CYCLES'):
+        print('Looks like N_CYCLES!')
+    else:
+        print('Ohhh... There is no N_CYCLES!')
 
     # The active learning cycle:
     n_cycles = 25
@@ -282,42 +288,42 @@ Margin-based Uncertainty Sampling
      </style>
 
      <div class="animation">
-       <img id="_anim_img11c68a96d6da47609365c03f9cdb1bfe">
+       <img id="_anim_imgf8d3c2dc7803420dafe495defc0c77c2">
        <div class="anim-controls">
-         <input id="_anim_slider11c68a96d6da47609365c03f9cdb1bfe" type="range" class="anim-slider"
+         <input id="_anim_sliderf8d3c2dc7803420dafe495defc0c77c2" type="range" class="anim-slider"
                 name="points" min="0" max="1" step="1" value="0"
-                oninput="anim11c68a96d6da47609365c03f9cdb1bfe.set_frame(parseInt(this.value));"></input>
+                oninput="animf8d3c2dc7803420dafe495defc0c77c2.set_frame(parseInt(this.value));"></input>
          <div class="anim-buttons">
-           <button title="Decrease speed" aria-label="Decrease speed" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.slower()">
+           <button title="Decrease speed" aria-label="Decrease speed" onclick="animf8d3c2dc7803420dafe495defc0c77c2.slower()">
                <i class="fa fa-minus"></i></button>
-           <button title="First frame" aria-label="First frame" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.first_frame()">
+           <button title="First frame" aria-label="First frame" onclick="animf8d3c2dc7803420dafe495defc0c77c2.first_frame()">
              <i class="fa fa-fast-backward"></i></button>
-           <button title="Previous frame" aria-label="Previous frame" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.previous_frame()">
+           <button title="Previous frame" aria-label="Previous frame" onclick="animf8d3c2dc7803420dafe495defc0c77c2.previous_frame()">
                <i class="fa fa-step-backward"></i></button>
-           <button title="Play backwards" aria-label="Play backwards" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.reverse_animation()">
+           <button title="Play backwards" aria-label="Play backwards" onclick="animf8d3c2dc7803420dafe495defc0c77c2.reverse_animation()">
                <i class="fa fa-play fa-flip-horizontal"></i></button>
-           <button title="Pause" aria-label="Pause" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.pause_animation()">
+           <button title="Pause" aria-label="Pause" onclick="animf8d3c2dc7803420dafe495defc0c77c2.pause_animation()">
                <i class="fa fa-pause"></i></button>
-           <button title="Play" aria-label="Play" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.play_animation()">
+           <button title="Play" aria-label="Play" onclick="animf8d3c2dc7803420dafe495defc0c77c2.play_animation()">
                <i class="fa fa-play"></i></button>
-           <button title="Next frame" aria-label="Next frame" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.next_frame()">
+           <button title="Next frame" aria-label="Next frame" onclick="animf8d3c2dc7803420dafe495defc0c77c2.next_frame()">
                <i class="fa fa-step-forward"></i></button>
-           <button title="Last frame" aria-label="Last frame" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.last_frame()">
+           <button title="Last frame" aria-label="Last frame" onclick="animf8d3c2dc7803420dafe495defc0c77c2.last_frame()">
                <i class="fa fa-fast-forward"></i></button>
-           <button title="Increase speed" aria-label="Increase speed" onclick="anim11c68a96d6da47609365c03f9cdb1bfe.faster()">
+           <button title="Increase speed" aria-label="Increase speed" onclick="animf8d3c2dc7803420dafe495defc0c77c2.faster()">
                <i class="fa fa-plus"></i></button>
          </div>
-         <form title="Repetition mode" aria-label="Repetition mode" action="#n" name="_anim_loop_select11c68a96d6da47609365c03f9cdb1bfe"
+         <form title="Repetition mode" aria-label="Repetition mode" action="#n" name="_anim_loop_selectf8d3c2dc7803420dafe495defc0c77c2"
                class="anim-state">
-           <input type="radio" name="state" value="once" id="_anim_radio1_11c68a96d6da47609365c03f9cdb1bfe"
+           <input type="radio" name="state" value="once" id="_anim_radio1_f8d3c2dc7803420dafe495defc0c77c2"
                   >
-           <label for="_anim_radio1_11c68a96d6da47609365c03f9cdb1bfe">Once</label>
-           <input type="radio" name="state" value="loop" id="_anim_radio2_11c68a96d6da47609365c03f9cdb1bfe"
+           <label for="_anim_radio1_f8d3c2dc7803420dafe495defc0c77c2">Once</label>
+           <input type="radio" name="state" value="loop" id="_anim_radio2_f8d3c2dc7803420dafe495defc0c77c2"
                   checked>
-           <label for="_anim_radio2_11c68a96d6da47609365c03f9cdb1bfe">Loop</label>
-           <input type="radio" name="state" value="reflect" id="_anim_radio3_11c68a96d6da47609365c03f9cdb1bfe"
+           <label for="_anim_radio2_f8d3c2dc7803420dafe495defc0c77c2">Loop</label>
+           <input type="radio" name="state" value="reflect" id="_anim_radio3_f8d3c2dc7803420dafe495defc0c77c2"
                   >
-           <label for="_anim_radio3_11c68a96d6da47609365c03f9cdb1bfe">Reflect</label>
+           <label for="_anim_radio3_f8d3c2dc7803420dafe495defc0c77c2">Reflect</label>
          </form>
        </div>
      </div>
@@ -327,9 +333,9 @@ Margin-based Uncertainty Sampling
        /* Instantiate the Animation class. */
        /* The IDs given should match those used in the template above. */
        (function() {
-         var img_id = "_anim_img11c68a96d6da47609365c03f9cdb1bfe";
-         var slider_id = "_anim_slider11c68a96d6da47609365c03f9cdb1bfe";
-         var loop_select_id = "_anim_loop_select11c68a96d6da47609365c03f9cdb1bfe";
+         var img_id = "_anim_imgf8d3c2dc7803420dafe495defc0c77c2";
+         var slider_id = "_anim_sliderf8d3c2dc7803420dafe495defc0c77c2";
+         var loop_select_id = "_anim_loop_selectf8d3c2dc7803420dafe495defc0c77c2";
          var frames = new Array(25);
     
        frames[0] = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnwAAAHeCAYAAAAB0dYuAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90\
@@ -24313,7 +24319,7 @@ Margin-based Uncertainty Sampling
          /* set a timeout to make sure all the above elements are created before
             the object is initialized. */
          setTimeout(function() {
-             anim11c68a96d6da47609365c03f9cdb1bfe = new Animation(frames, img_id, slider_id, 1000.0,
+             animf8d3c2dc7803420dafe495defc0c77c2 = new Animation(frames, img_id, slider_id, 1000.0,
                                       loop_select_id);
          }, 0);
        })()
@@ -24321,10 +24327,18 @@ Margin-based Uncertainty Sampling
 
 
 
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    Looks like N_CYCLES!
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 73-78
+
+.. GENERATED FROM PYTHON SOURCE LINES 79-84
 
 .. rubric:: References:
 
@@ -24335,7 +24349,7 @@ The implementation of this strategy is based on :footcite:t:`settles2009active`.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  8.937 seconds)
+   **Total running time of the script:** ( 0 minutes  6.978 seconds)
 
 
 .. _sphx_glr_download_generated_sphinx_gallery_examples_pool_plot_UncertaintySampling_Margin-based_Uncertainty_Sampling.py:
