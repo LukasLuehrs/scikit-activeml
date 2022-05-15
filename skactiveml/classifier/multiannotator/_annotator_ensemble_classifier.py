@@ -7,14 +7,25 @@ Classifier Ensemble for Multiple Annotators
 from copy import deepcopy
 
 import numpy as np
-from sklearn.ensemble._base import _BaseHeterogeneousEnsemble
-from sklearn.utils.validation import check_array, check_is_fitted
+from sklearn.ensemble._base import (
+    _BaseHeterogeneousEnsemble,
+)
+from sklearn.utils.validation import (
+    check_array,
+    check_is_fitted,
+)
 
 from ...base import SkactivemlClassifier
-from ...utils import MISSING_LABEL, is_labeled, compute_vote_vectors
+from ...utils import (
+    MISSING_LABEL,
+    is_labeled,
+    compute_vote_vectors,
+)
 
 
-class AnnotatorEnsembleClassifier(_BaseHeterogeneousEnsemble, SkactivemlClassifier):
+class AnnotatorEnsembleClassifier(
+    _BaseHeterogeneousEnsemble, SkactivemlClassifier
+):
     """AnnotatorEnsembleClassifier
 
     This strategy consists of fitting one classifier per annotator.
@@ -137,7 +148,8 @@ class AnnotatorEnsembleClassifier(_BaseHeterogeneousEnsemble, SkactivemlClassifi
         # Check voting scheme.
         if self.voting not in ("soft", "hard"):
             raise ValueError(
-                f"Voting must be 'soft' or 'hard'; " f"got `voting='{self.voting}'`)"
+                f"Voting must be 'soft' or 'hard'; "
+                f"got `voting='{self.voting}'`)"
             )
 
         # Fit each estimator
@@ -148,7 +160,11 @@ class AnnotatorEnsembleClassifier(_BaseHeterogeneousEnsemble, SkactivemlClassifi
             if sample_weight is None:
                 est[1].fit(X=X, y=y[:, i])
             else:
-                est[1].fit(X=X, y=y[:, i], sample_weight=sample_weight[:, i])
+                est[1].fit(
+                    X=X,
+                    y=y[:, i],
+                    sample_weight=sample_weight[:, i],
+                )
         return self
 
     def predict_proba(self, X):

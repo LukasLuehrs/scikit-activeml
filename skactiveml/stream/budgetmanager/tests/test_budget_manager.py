@@ -29,7 +29,10 @@ class TestBudgetManager(unittest.TestCase):
         random_state = rand.randint(2**31 - 1)
         utilities = rand.rand(100)
 
-        for bm_name, bm_class in self.budget_managers.items():
+        for (
+            bm_name,
+            bm_class,
+        ) in self.budget_managers.items():
             bm_kwargs = {}
             bm_init_sig = inspect.signature(bm_class.__init__)
             bm_init_params = bm_init_sig.parameters.keys()
@@ -48,7 +51,10 @@ class TestBudgetManager(unittest.TestCase):
                         bm2.query_by_utility,
                         utilities=u.reshape([1, -1]),
                     )
-                self.assertEqual(len(queried_indices), len(queried_indices2))
+                self.assertEqual(
+                    len(queried_indices),
+                    len(queried_indices2),
+                )
                 call_func(
                     bm.update,
                     candidates=u.reshape([1, -1]),
@@ -89,7 +95,10 @@ class TestBudgetManager(unittest.TestCase):
 
                 # Get class to check.
                 class_filename = path.basename(inspect.getfile(bm_class))[:-3]
-                mod = "skactiveml.stream.budgetmanager.tests.test" + class_filename
+                mod = (
+                    "skactiveml.stream.budgetmanager.tests.test"
+                    + class_filename
+                )
                 mod = import_module(mod)
                 test_class_name = "Test" + bm_class.__name__
                 msg = f"{bm_class} has no test called {test_class_name}."
@@ -112,7 +121,10 @@ class TestBudgetManager(unittest.TestCase):
                         f"'{test_func_name}()' missing for parameter "
                         f"'{param}' of {bm_name}.query()"
                     )
-                    self.assertTrue(hasattr(test_obj, test_func_name), msg)
+                    self.assertTrue(
+                        hasattr(test_obj, test_func_name),
+                        msg,
+                    )
 
 
 class Dummy:

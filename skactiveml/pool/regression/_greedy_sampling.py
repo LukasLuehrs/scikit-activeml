@@ -45,10 +45,20 @@ class GreedySamplingX(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
         self.metric = metric if metric is not None else "euclidean"
 
-    def query(self, X, y, candidates=None, batch_size=1, return_utilities=False):
+    def query(
+        self,
+        X,
+        y,
+        candidates=None,
+        batch_size=1,
+        return_utilities=False,
+    ):
         """Determines for which candidate samples labels are to be queried.
 
         Parameters
@@ -96,8 +106,13 @@ class GreedySamplingX(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
 
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         X_cand, mapping = self._transform_candidates(candidates, X, y)
@@ -129,7 +144,9 @@ class GreedySamplingX(SingleAnnotatorPoolQueryStrategy):
             idx = rand_argmax(util, random_state=self.random_state)
             query_indices[i] = candidate_indices[idx]
             selected_indices = np.append(
-                selected_indices, candidate_indices[idx], axis=0
+                selected_indices,
+                candidate_indices[idx],
+                axis=0,
             )
             candidate_indices = np.delete(candidate_indices, idx, axis=0)
 
@@ -180,7 +197,10 @@ class GreedySamplingY(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
         self.x_metric = x_metric
         self.y_metric = y_metric
         self.k_0 = k_0
@@ -250,8 +270,13 @@ class GreedySamplingY(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
 
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         check_type(reg, "reg", SkactivemlRegressor)
@@ -275,7 +300,10 @@ class GreedySamplingY(SingleAnnotatorPoolQueryStrategy):
             utilities = np.full((batch_size, len(X)), np.nan)
 
         if batch_size_x > 0:
-            gs = GreedySamplingX(metric=self.x_metric, random_state=self.random_state)
+            gs = GreedySamplingX(
+                metric=self.x_metric,
+                random_state=self.random_state,
+            )
             query_indices_x, utilities_x = gs.query(
                 X=X,
                 y=y,
@@ -311,7 +339,10 @@ class GreedySamplingY(SingleAnnotatorPoolQueryStrategy):
                 y_to_X[mapping] = y_pred
                 y_candidate = mapping[~is_queried]
 
-            gs = GreedySamplingX(metric=self.y_metric, random_state=self.random_state)
+            gs = GreedySamplingX(
+                metric=self.y_metric,
+                random_state=self.random_state,
+            )
             query_indices_y, utilities_y = gs.query(
                 # replace missing_value by 0, since it does not implement
                 X=np.where(is_labeled(y_to_X), y_to_X, 0).reshape(-1, 1),
@@ -322,7 +353,9 @@ class GreedySamplingY(SingleAnnotatorPoolQueryStrategy):
             )
 
             if mapping is None:
-                query_indices[batch_size_x:batch_size] = indices_nq[query_indices_y]
+                query_indices[batch_size_x:batch_size] = indices_nq[
+                    query_indices_y
+                ]
                 utilities[batch_size_x:batch_size][:, indices_nq] = utilities_y
             else:
                 query_indices[batch_size_x:batch_size] = query_indices_y

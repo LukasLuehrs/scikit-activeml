@@ -45,8 +45,16 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
         4DS. Information Sciences, 230, 106-131.
     """
 
-    def __init__(self, lmbda=None, missing_label=MISSING_LABEL, random_state=None):
-        super().__init__(missing_label=missing_label, random_state=random_state)
+    def __init__(
+        self,
+        lmbda=None,
+        missing_label=MISSING_LABEL,
+        random_state=None,
+    ):
+        super().__init__(
+            missing_label=missing_label,
+            random_state=random_state,
+        )
         self.lmbda = lmbda
 
     def query(
@@ -114,7 +122,13 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
         # Check standard parameters.
-        (X, y, candidates, batch_size, return_utilities,) = super()._validate_data(
+        (
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+        ) = super()._validate_data(
             X=X,
             y=y,
             candidates=candidates,
@@ -132,7 +146,13 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
         lmbda = self.lmbda
         if lmbda is None:
             lmbda = np.min(((batch_size - 1) * 0.05, 0.5))
-        check_scalar(lmbda, target_type=float, name="lmbda", min_val=0, max_val=1)
+        check_scalar(
+            lmbda,
+            target_type=float,
+            name="lmbda",
+            min_val=0,
+            max_val=1,
+        )
 
         # Obtain candidates plus mapping.
         X_cand, mapping = self._transform_candidates(candidates, X, y)
@@ -172,12 +192,15 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
         R_mean = R_sum / (len(R_lbld) + 1)
         distribution_cand = clf.mixture_model_.weights_ - R_mean
         distribution_cand = np.maximum(
-            np.zeros_like(distribution_cand), distribution_cand
+            np.zeros_like(distribution_cand),
+            distribution_cand,
         )
         distribution_cand = 1 - np.sum(distribution_cand, axis=1)
 
         # Compute rho according to Eq. 15  in [1].
-        diff = np.sum(np.abs(clf.mixture_model_.weights_ - np.mean(R_lbld, axis=0)))
+        diff = np.sum(
+            np.abs(clf.mixture_model_.weights_ - np.mean(R_lbld, axis=0))
+        )
         rho = min(1, diff)
 
         # Compute e_dwus according to Eq. 13  in [1].
@@ -190,9 +213,13 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
         # Compute utilities to select sample.
         utilities_cand = np.empty((batch_size, len(X_cand)), dtype=float)
         utilities_cand[0] = (
-            alpha * (1 - distance_cand) + beta * density_cand + rho * distribution_cand
+            alpha * (1 - distance_cand)
+            + beta * density_cand
+            + rho * distribution_cand
         )
-        query_indices_cand[0] = rand_argmax(utilities_cand[0], self.random_state_)
+        query_indices_cand[0] = rand_argmax(
+            utilities_cand[0], self.random_state_
+        )
         is_selected = np.zeros(len(X_cand), dtype=bool)
         is_selected[query_indices_cand[0]] = True
 
@@ -211,13 +238,18 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
                 # Update distributions according to Eq. 11 in [1].
                 R_sum = (
                     R_cand
-                    + np.sum(R_cand[is_selected], axis=0, keepdims=True)
+                    + np.sum(
+                        R_cand[is_selected],
+                        axis=0,
+                        keepdims=True,
+                    )
                     + R_lbld_sum
                 )
                 R_mean = R_sum / (len(R_lbld) + len(query_indices_cand) + 1)
                 distribution_cand = clf.mixture_model_.weights_ - R_mean
                 distribution_cand = np.maximum(
-                    np.zeros_like(distribution_cand), distribution_cand
+                    np.zeros_like(distribution_cand),
+                    distribution_cand,
                 )
                 distribution_cand = 1 - np.sum(distribution_cand, axis=1)
 

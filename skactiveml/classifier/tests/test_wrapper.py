@@ -9,7 +9,10 @@ from sklearn.gaussian_process import (
 )
 from sklearn.linear_model import Perceptron
 from sklearn.naive_bayes import GaussianNB
-from sklearn.utils.validation import NotFittedError, check_is_fitted
+from sklearn.utils.validation import (
+    NotFittedError,
+    check_is_fitted,
+)
 
 from skactiveml.classifier import SklearnClassifier
 
@@ -27,7 +30,8 @@ class TestSklearnClassifier(unittest.TestCase):
         clf = SklearnClassifier(estimator="Test")
         self.assertEqual(clf.estimator, "Test")
         clf = SklearnClassifier(
-            missing_label="nan", estimator=GaussianProcessRegressor()
+            missing_label="nan",
+            estimator=GaussianProcessRegressor(),
         )
         self.assertRaises(TypeError, clf.fit, X=self.X, y=self.y1)
 
@@ -57,12 +61,18 @@ class TestSklearnClassifier(unittest.TestCase):
             missing_label="nan",
         )
         self.assertRaises(NotFittedError, check_is_fitted, estimator=clf)
-        clf.fit(self.X, self.y1, sample_weight=np.ones_like(self.y1))
+        clf.fit(
+            self.X,
+            self.y1,
+            sample_weight=np.ones_like(self.y1),
+        )
         self.assertTrue(clf.is_fitted_)
         clf.fit(self.X, self.y1)
         self.assertTrue(clf.is_fitted_)
         self.assertTrue(hasattr(clf, "kernel_"))
-        np.testing.assert_array_equal(clf.classes_, ["new york", "paris", "tokyo"])
+        np.testing.assert_array_equal(
+            clf.classes_, ["new york", "paris", "tokyo"]
+        )
         self.assertEqual(clf.missing_label, "nan")
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -89,22 +99,30 @@ class TestSklearnClassifier(unittest.TestCase):
         clf.partial_fit(self.X, self.y1)
         self.assertTrue(clf.is_fitted_)
         self.assertTrue(hasattr(clf, "class_count_"))
-        np.testing.assert_array_equal(clf.classes_, ["new york", "paris", "tokyo"])
+        np.testing.assert_array_equal(
+            clf.classes_, ["new york", "paris", "tokyo"]
+        )
         self.assertEqual(clf.missing_label, "nan")
-        clf.partial_fit(self.X, self.y2, sample_weight=np.ones_like(self.y2))
+        clf.partial_fit(
+            self.X,
+            self.y2,
+            sample_weight=np.ones_like(self.y2),
+        )
         self.assertTrue(clf.is_fitted_)
         self.assertFalse(hasattr(clf, "kernel_"))
         self.assertTrue(hasattr(clf, "partial_fit"))
 
     def test_predict_proba(self):
         clf = SklearnClassifier(
-            estimator=GaussianProcessClassifier(), missing_label="nan"
+            estimator=GaussianProcessClassifier(),
+            missing_label="nan",
         )
         self.assertRaises(NotFittedError, clf.predict_proba, X=self.X)
         clf.fit(X=self.X, y=self.y1)
         P = clf.predict_proba(X=self.X)
         est = GaussianProcessClassifier().fit(
-            X=np.zeros((3, 1)), y=["tokyo", "paris", "tokyo"]
+            X=np.zeros((3, 1)),
+            y=["tokyo", "paris", "tokyo"],
         )
         P_exp = est.predict_proba(X=self.X)
         np.testing.assert_array_equal(P_exp, P)
@@ -133,13 +151,15 @@ class TestSklearnClassifier(unittest.TestCase):
 
     def test_predict(self):
         clf = SklearnClassifier(
-            estimator=GaussianProcessClassifier(), missing_label="nan"
+            estimator=GaussianProcessClassifier(),
+            missing_label="nan",
         )
         self.assertRaises(NotFittedError, clf.predict, X=self.X)
         clf.fit(X=self.X, y=self.y1)
         y = clf.predict(X=self.X)
         est = GaussianProcessClassifier().fit(
-            X=np.zeros((3, 1)), y=["tokyo", "paris", "tokyo"]
+            X=np.zeros((3, 1)),
+            y=["tokyo", "paris", "tokyo"],
         )
         y_exp = est.predict(X=self.X)
         np.testing.assert_array_equal(y, y_exp)

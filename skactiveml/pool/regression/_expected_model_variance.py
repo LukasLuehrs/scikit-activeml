@@ -5,7 +5,11 @@ from skactiveml.base import (
     ProbabilisticRegressor,
     SingleAnnotatorPoolQueryStrategy,
 )
-from skactiveml.utils import check_type, simple_batch, MISSING_LABEL
+from skactiveml.utils import (
+    check_type,
+    simple_batch,
+    MISSING_LABEL,
+)
 from .utils._integration import conditional_expect
 from .utils._model_fitting import update_reg
 
@@ -41,7 +45,10 @@ class ExpectedModelVarianceReduction(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
         if integration_dict is not None:
             self.integration_dict = integration_dict
         else:
@@ -111,12 +118,21 @@ class ExpectedModelVarianceReduction(SingleAnnotatorPoolQueryStrategy):
             If candidates is of shape (n_candidates, n_features), the indexing
             refers to samples in candidates.
         """
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         check_type(reg, "reg", ProbabilisticRegressor)
-        check_type(self.integration_dict, "self.integration_dict", dict)
+        check_type(
+            self.integration_dict,
+            "self.integration_dict",
+            dict,
+        )
         check_type(fit_reg, "fit_reg", bool)
         X_cand, mapping = self._transform_candidates(candidates, X, y)
         X_eval = X
@@ -124,7 +140,9 @@ class ExpectedModelVarianceReduction(SingleAnnotatorPoolQueryStrategy):
         if fit_reg:
             reg = clone(reg).fit(X, y, sample_weight)
 
-        old_model_variance = np.average(reg.predict(X_eval, return_std=True)[1] ** 2)
+        old_model_variance = np.average(
+            reg.predict(X_eval, return_std=True)[1] ** 2
+        )
 
         def new_model_variance(idx, x_cand, y_pot):
             reg_new = update_reg(

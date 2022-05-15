@@ -1,7 +1,9 @@
 import unittest
 
 import numpy as np
-from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process import (
+    GaussianProcessRegressor,
+)
 
 from skactiveml.pool.regression.utils import (
     update_X_y,
@@ -23,7 +25,9 @@ class TestFunctions(unittest.TestCase):
 
     def test_update_X_y(self):
 
-        X_new, y_new = update_X_y(self.X, self.y, self.y_pot, X_update=self.x_pot)
+        X_new, y_new = update_X_y(
+            self.X, self.y, self.y_pot, X_update=self.x_pot
+        )
 
         self.assertEqual(X_new.shape, (8, 2))
         self.assertEqual(y_new.shape, (8,))
@@ -41,14 +45,23 @@ class TestFunctions(unittest.TestCase):
         np.testing.assert_array_equal(y_new, np.append(self.y, self.y))
 
         X_new, y_new = update_X_y(
-            self.X, self.y, np.array([3, 4]), idx_update=np.array([0, 2])
+            self.X,
+            self.y,
+            np.array([3, 4]),
+            idx_update=np.array([0, 2]),
         )
 
         np.testing.assert_array_equal(X_new, self.X)
         self.assertEqual(y_new[0], 3)
         self.assertEqual(y_new[2], 4)
 
-        self.assertRaises(ValueError, update_X_y, self.X, self.y, self.y_pot)
+        self.assertRaises(
+            ValueError,
+            update_X_y,
+            self.X,
+            self.y,
+            self.y_pot,
+        )
 
     def test_update_reg(self):
         self.assertRaises(
@@ -63,9 +76,16 @@ class TestFunctions(unittest.TestCase):
         )
         self.reg.fit(self.X, self.y)
         reg_new = update_reg(
-            self.reg, self.X, self.y, self.y_pot, mapping=self.mapping, idx_update=1
+            self.reg,
+            self.X,
+            self.y,
+            self.y_pot,
+            mapping=self.mapping,
+            idx_update=1,
         )
-        self.assertTrue(np.any(reg_new.predict(self.X) != self.reg.predict(self.X)))
+        self.assertTrue(
+            np.any(reg_new.predict(self.X) != self.reg.predict(self.X))
+        )
         reg_new = update_reg(
             self.reg,
             self.X,
@@ -74,7 +94,9 @@ class TestFunctions(unittest.TestCase):
             mapping=self.mapping,
             idx_update=np.array([1]),
         )
-        self.assertTrue(np.any(reg_new.predict(self.X) != self.reg.predict(self.X)))
+        self.assertTrue(
+            np.any(reg_new.predict(self.X) != self.reg.predict(self.X))
+        )
         reg_new = update_reg(
             self.reg,
             self.X,
@@ -83,7 +105,9 @@ class TestFunctions(unittest.TestCase):
             mapping=None,
             X_update=np.array([8, 4]),
         )
-        self.assertTrue(np.any(reg_new.predict(self.X) != self.reg.predict(self.X)))
+        self.assertTrue(
+            np.any(reg_new.predict(self.X) != self.reg.predict(self.X))
+        )
         self.assertRaises(
             ValueError,
             update_reg,
@@ -101,6 +125,10 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(len(reg_s), 5)
 
         reg_s = bootstrap_estimators(
-            self.reg, self.X, self.y, sample_weight=self.sample_weight, k_bootstrap=5
+            self.reg,
+            self.X,
+            self.y,
+            sample_weight=self.sample_weight,
+            k_bootstrap=5,
         )
         self.assertEqual(len(reg_s), 5)

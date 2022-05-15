@@ -28,7 +28,9 @@ from skactiveml.utils import (
     is_labeled,
     unlabeled_indices,
 )
-from skactiveml.utils._label import check_equal_missing_label
+from skactiveml.utils._label import (
+    check_equal_missing_label,
+)
 
 
 class TestGeneral(unittest.TestCase):
@@ -65,7 +67,9 @@ class TestGeneral(unittest.TestCase):
         self.query_strategies = {}
         for qs_name in pool.__all__:
             qs = getattr(pool, qs_name)
-            if inspect.isclass(qs) and issubclass(qs, SingleAnnotatorPoolQueryStrategy):
+            if inspect.isclass(qs) and issubclass(
+                qs, SingleAnnotatorPoolQueryStrategy
+            ):
                 self.query_strategies[qs_name] = qs
         print(self.query_strategies.keys())
 
@@ -130,7 +134,9 @@ class TestGeneral(unittest.TestCase):
 
                 self.assertEqual(len(ids), 5)
                 self.assertEqual(
-                    len(u), 5, msg="utility score should " "have shape (5xN)"
+                    len(u),
+                    5,
+                    msg="utility score should " "have shape (5xN)",
                 )
                 self.assertEqual(
                     len(u[0]),
@@ -140,7 +146,10 @@ class TestGeneral(unittest.TestCase):
 
                 unlabeled = np.where(is_unlabeled(y))[0]
                 labeled = np.where(is_labeled(y))[0]
-                self.assertEqual(sum(np.isnan(u[0][labeled])), len(labeled))
+                self.assertEqual(
+                    sum(np.isnan(u[0][labeled])),
+                    len(labeled),
+                )
                 self.assertEqual(sum(np.isnan(u[0][unlabeled])), 0)
 
                 self.assertWarns(
@@ -329,7 +338,10 @@ class TestGeneral(unittest.TestCase):
                         f"'{test_func_name}()' missing for parameter "
                         f"'{param}' of query()"
                     )
-                    self.assertTrue(hasattr(test_obj, test_func_name), msg)
+                    self.assertTrue(
+                        hasattr(test_obj, test_func_name),
+                        msg,
+                    )
 
                 # Check standard parameters of `__init__` method.
                 self._test_init_param_random_state(qs_class, clf)
@@ -495,7 +507,10 @@ class TestExamples(unittest.TestCase):
             if filename.endswith(".py"):
                 with self.subTest(msg=filename):
                     file_path = path.join(pool_examples_path, filename)
-                    exec(open(file_path, "r").read(), locals())
+                    exec(
+                        open(file_path, "r").read(),
+                        locals(),
+                    )
 
         # Remove the created examples from disk.
         shutil.rmtree(examples_path)

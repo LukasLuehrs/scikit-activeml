@@ -1,6 +1,8 @@
 import unittest
 
-from skactiveml.pool.regression import ExpectedModelVarianceReduction
+from skactiveml.pool.regression import (
+    ExpectedModelVarianceReduction,
+)
 from skactiveml.pool.regression.tests.provide_test_pool_regression import (
     provide_test_regression_query_strategy_init_random_state,
     provide_test_regression_query_strategy_init_missing_label,
@@ -44,7 +46,9 @@ class TestExpectedModelVarianceMinimization(unittest.TestCase):
 
     def test_query_param_reg(self):
         provide_test_regression_query_strategy_query_reg(
-            self, ExpectedModelVarianceReduction, is_probabilistic=True
+            self,
+            ExpectedModelVarianceReduction,
+            is_probabilistic=True,
         )
 
     def test_query_param_fit_reg(self):

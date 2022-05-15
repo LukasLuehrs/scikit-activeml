@@ -5,12 +5,19 @@ from skactiveml.base import (
     SingleAnnotatorPoolQueryStrategy,
     ProbabilisticRegressor,
 )
-from skactiveml.utils import check_type, simple_batch, MISSING_LABEL, check_random_state
+from skactiveml.utils import (
+    check_type,
+    simple_batch,
+    MISSING_LABEL,
+    check_random_state,
+)
 from skactiveml.pool.regression.utils._integration import (
     conditional_expect,
     reshape_dist,
 )
-from skactiveml.pool.regression.utils._model_fitting import update_reg
+from skactiveml.pool.regression.utils._model_fitting import (
+    update_reg,
+)
 
 
 class MutualInformationGainMaximization(SingleAnnotatorPoolQueryStrategy):
@@ -45,7 +52,10 @@ class MutualInformationGainMaximization(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
         if integration_dict is not None:
             self.integration_dict = integration_dict
         else:
@@ -116,13 +126,22 @@ class MutualInformationGainMaximization(SingleAnnotatorPoolQueryStrategy):
             If candidates is of shape (n_candidates, n_features), the indexing
             refers to samples in candidates.
         """
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         check_type(reg, "reg", ProbabilisticRegressor)
         check_type(fit_reg, "fit_reg", bool)
-        check_type(self.integration_dict, "self.integration_dict", dict)
+        check_type(
+            self.integration_dict,
+            "self.integration_dict",
+            dict,
+        )
 
         X_cand, mapping = self._transform_candidates(candidates, X, y)
 
@@ -147,7 +166,14 @@ class MutualInformationGainMaximization(SingleAnnotatorPoolQueryStrategy):
         )
 
     def _mutual_information(
-        self, X_eval, X_cand, mapping, reg, X, y, sample_weight=None
+        self,
+        X_eval,
+        X_cand,
+        mapping,
+        reg,
+        X,
+        y,
+        sample_weight=None,
     ):
         """Calculates the mutual information gain over the evaluation set if each
         candidate where to be labeled.
@@ -219,7 +245,7 @@ class KLDivergenceMaximization(SingleAnnotatorPoolQueryStrategy):
 
     Parameters
     ----------
-    integration_dict_potential_y_val: dict, optional (default=None)
+    integration_dict_target_val: dict, optional (default=None)
         Dictionary for integration arguments, i.e. `integration method` etc.,
         used for calculating the expected `y` value for the candidate samples.
         For details see method `conditional_expect`.
@@ -243,17 +269,20 @@ class KLDivergenceMaximization(SingleAnnotatorPoolQueryStrategy):
 
     def __init__(
         self,
-        integration_dict_potential_y_val=None,
+        integration_dict_target_val=None,
         integration_dict_cross_entropy=None,
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
 
-        if integration_dict_potential_y_val is not None:
-            self.integration_dict_potential_y_val = integration_dict_potential_y_val
+        if integration_dict_target_val is not None:
+            self.integration_dict_target_val = integration_dict_target_val
         else:
-            self.integration_dict_potential_y_val = {"method": "assume_linear"}
+            self.integration_dict_target_val = {"method": "assume_linear"}
 
         if integration_dict_cross_entropy is not None:
             self.integration_dict_cross_entropy = integration_dict_cross_entropy
@@ -328,8 +357,13 @@ class KLDivergenceMaximization(SingleAnnotatorPoolQueryStrategy):
             If candidates is of shape (n_candidates, n_features), the indexing
             refers to samples in candidates.
         """
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         check_type(reg, "reg", ProbabilisticRegressor)
@@ -341,7 +375,13 @@ class KLDivergenceMaximization(SingleAnnotatorPoolQueryStrategy):
             reg = clone(reg).fit(X, y, sample_weight)
 
         utilities_cand = self._kullback_leibler_divergence(
-            X, X_cand, mapping, reg, X, y, sample_weight=sample_weight
+            X,
+            X_cand,
+            mapping,
+            reg,
+            X,
+            y,
+            sample_weight=sample_weight,
         )
 
         if mapping is None:
@@ -358,10 +398,17 @@ class KLDivergenceMaximization(SingleAnnotatorPoolQueryStrategy):
         )
 
     def _kullback_leibler_divergence(
-        self, X_eval, X_cand, mapping, reg, X, y, sample_weight=None
+        self,
+        X_eval,
+        X_cand,
+        mapping,
+        reg,
+        X,
+        y,
+        sample_weight=None,
     ):
-        """Calculates the mutual information gain over the evaluation set if each
-        candidate sample where to be labeled.
+        """Calculates the mutual information gain over the evaluation set if
+        each candidate sample where to be labeled.
 
         Parameters
         ----------
@@ -399,7 +446,9 @@ class KLDivergenceMaximization(SingleAnnotatorPoolQueryStrategy):
                 X_update=x_cand,
                 mapping=mapping,
             )
-            entropy_post = np.sum(reg_new.predict(X_eval, return_entropy=True)[1])
+            entropy_post = np.sum(
+                reg_new.predict(X_eval, return_entropy=True)[1]
+            )
             cross_ent = np.sum(
                 cross_entropy(
                     X_eval,
@@ -418,14 +467,18 @@ class KLDivergenceMaximization(SingleAnnotatorPoolQueryStrategy):
             random_state=self.random_state_,
             include_idx=True,
             include_x=True,
-            **self.integration_dict_potential_y_val
+            **self.integration_dict_target_val
         )
 
         return kl_div
 
 
 def cross_entropy(
-    X_eval, true_reg, other_reg, integration_dict=None, random_state=None
+    X_eval,
+    true_reg,
+    other_reg,
+    integration_dict=None,
+    random_state=None,
 ):
     """Calculates the cross entropy.
 
@@ -458,7 +511,8 @@ def cross_entropy(
     random_state = check_random_state(random_state)
 
     dist = reshape_dist(
-        other_reg.predict_target_distribution(X_eval), shape=(len(X_eval), 1)
+        other_reg.predict_target_distribution(X_eval),
+        shape=(len(X_eval), 1),
     )
 
     cross_ent = -conditional_expect(

@@ -9,7 +9,10 @@ import numpy as np
 from sklearn import clone
 from sklearn.utils.validation import check_array
 
-from ..base import SingleAnnotatorPoolQueryStrategy, SkactivemlClassifier
+from ..base import (
+    SingleAnnotatorPoolQueryStrategy,
+    SkactivemlClassifier,
+)
 from ..utils import (
     MISSING_LABEL,
     check_cost_matrix,
@@ -61,7 +64,10 @@ class UncertaintySampling(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(missing_label=missing_label, random_state=random_state)
+        super().__init__(
+            missing_label=missing_label,
+            random_state=random_state,
+        )
         self.method = method
         self.cost_matrix = cost_matrix
 
@@ -130,8 +136,13 @@ class UncertaintySampling(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
         # Validate input parameters.
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         X_cand, mapping = self._transform_candidates(candidates, X, y)
@@ -234,7 +245,9 @@ def uncertainty_scores(probas, cost_matrix=None, method="least_confident"):
     probas = check_array(probas)
 
     if not np.allclose(np.sum(probas, axis=1), 1, rtol=0, atol=1.0e-3):
-        raise ValueError("'probas' are invalid. The sum over axis 1 must be one.")
+        raise ValueError(
+            "'probas' are invalid. The sum over axis 1 must be one."
+        )
 
     n_classes = probas.shape[1]
 
@@ -314,7 +327,9 @@ def expected_average_precision(classes, probas):
     )
 
     if (np.sum(probas, axis=1) - 1).all():
-        raise ValueError("probas are invalid. The sum over axis 1 must be " "one.")
+        raise ValueError(
+            "probas are invalid. The sum over axis 1 must be " "one."
+        )
 
     # Check if `classes` are valid.
     check_classes(classes)

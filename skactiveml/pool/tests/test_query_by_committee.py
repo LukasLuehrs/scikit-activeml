@@ -6,9 +6,14 @@ from sklearn.ensemble import (
     RandomForestClassifier,
     VotingClassifier,
 )
-from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process import (
+    GaussianProcessClassifier,
+)
 
-from skactiveml.classifier import ParzenWindowClassifier, SklearnClassifier
+from skactiveml.classifier import (
+    ParzenWindowClassifier,
+    SklearnClassifier,
+)
 from skactiveml.pool._query_by_committee import (
     QueryByCommittee,
     average_kl_divergence,
@@ -20,8 +25,17 @@ from skactiveml.utils import MISSING_LABEL
 class TestQueryByCommittee(unittest.TestCase):
     def setUp(self):
         self.random_state = 41
-        self.candidates = [[8, 1, 6, 8], [9, 1, 6, 5], [5, 1, 6, 5]]
-        self.X = [[1, 2, 5, 9], [5, 8, 4, 6], [8, 4, 5, 9], [5, 4, 8, 5]]
+        self.candidates = [
+            [8, 1, 6, 8],
+            [9, 1, 6, 5],
+            [5, 1, 6, 5],
+        ]
+        self.X = [
+            [1, 2, 5, 9],
+            [5, 8, 4, 6],
+            [8, 4, 5, 9],
+            [5, 4, 8, 5],
+        ]
         self.y = [0.0, 0.0, 1.0, 1.0]
         self.classes = [0, 1]
         self.ensemble = SklearnClassifier(
@@ -51,7 +65,10 @@ class TestQueryByCommittee(unittest.TestCase):
             "test",
             1,
             GaussianProcessClassifier(),
-            SklearnClassifier(GaussianProcessClassifier, classes=self.classes),
+            SklearnClassifier(
+                GaussianProcessClassifier,
+                classes=self.classes,
+            ),
             ParzenWindowClassifier(classes=self.classes),
         ]
         for ensemble in ensemble_list:
@@ -159,13 +176,16 @@ class TestQueryByCommittee(unittest.TestCase):
     def test_query(self):
         ensemble_classifiers = [
             SklearnClassifier(
-                classes=self.classes, estimator=GaussianProcessClassifier()
+                classes=self.classes,
+                estimator=GaussianProcessClassifier(),
             ),
             SklearnClassifier(
-                classes=self.classes, estimator=GaussianProcessClassifier()
+                classes=self.classes,
+                estimator=GaussianProcessClassifier(),
             ),
             SklearnClassifier(
-                classes=self.classes, estimator=GaussianProcessClassifier()
+                classes=self.classes,
+                estimator=GaussianProcessClassifier(),
             ),
         ]
         gpc = ParzenWindowClassifier(classes=self.classes)
@@ -174,7 +194,10 @@ class TestQueryByCommittee(unittest.TestCase):
             classes=self.classes,
         )
         ensemble_voting = SklearnClassifier(
-            VotingClassifier(estimators=ensemble_classifiers, voting="soft")
+            VotingClassifier(
+                estimators=ensemble_classifiers,
+                voting="soft",
+            )
         )
         ensemble_list = [
             self.ensemble,
@@ -198,15 +221,28 @@ class TestQueryByCommittee(unittest.TestCase):
 
 class TestAverageKlDivergence(unittest.TestCase):
     def setUp(self):
-        self.probas = np.array([[[0.3, 0.7], [0.4, 0.6]], [[0.2, 0.8], [0.5, 0.5]]])
+        self.probas = np.array(
+            [
+                [[0.3, 0.7], [0.4, 0.6]],
+                [[0.2, 0.8], [0.5, 0.5]],
+            ]
+        )
         self.scores = np.array([0.00670178182226764, 0.005059389928987596])
 
     def test_param_probas(self):
         self.assertRaises(ValueError, average_kl_divergence, "string")
         self.assertRaises(ValueError, average_kl_divergence, 1)
         self.assertRaises(ValueError, average_kl_divergence, np.ones((1,)))
-        self.assertRaises(ValueError, average_kl_divergence, np.ones((1, 1)))
-        self.assertRaises(ValueError, average_kl_divergence, np.ones((1, 1, 1, 1)))
+        self.assertRaises(
+            ValueError,
+            average_kl_divergence,
+            np.ones((1, 1)),
+        )
+        self.assertRaises(
+            ValueError,
+            average_kl_divergence,
+            np.ones((1, 1, 1, 1)),
+        )
 
     def test_average_kl_divergence(self):
         average_kl_divergence(np.full((10, 10, 10), 0.5))
@@ -223,11 +259,29 @@ class TestVoteEntropy(unittest.TestCase):
 
     def test_param_votes(self):
         self.assertRaises(
-            ValueError, vote_entropy, votes="string", classes=self.classes
+            ValueError,
+            vote_entropy,
+            votes="string",
+            classes=self.classes,
         )
-        self.assertRaises(ValueError, vote_entropy, votes=1, classes=self.classes)
-        self.assertRaises(ValueError, vote_entropy, votes=[1], classes=self.classes)
-        self.assertRaises(ValueError, vote_entropy, votes=[[[1]]], classes=self.classes)
+        self.assertRaises(
+            ValueError,
+            vote_entropy,
+            votes=1,
+            classes=self.classes,
+        )
+        self.assertRaises(
+            ValueError,
+            vote_entropy,
+            votes=[1],
+            classes=self.classes,
+        )
+        self.assertRaises(
+            ValueError,
+            vote_entropy,
+            votes=[[[1]]],
+            classes=self.classes,
+        )
         self.assertRaises(
             ValueError,
             vote_entropy,
@@ -242,10 +296,30 @@ class TestVoteEntropy(unittest.TestCase):
         )
 
     def test_param_classes(self):
-        self.assertRaises(ValueError, vote_entropy, votes=self.votes, classes="string")
-        self.assertRaises(ValueError, vote_entropy, votes=self.votes, classes="class")
-        self.assertRaises(TypeError, vote_entropy, votes=self.votes, classes=1)
-        self.assertRaises(TypeError, vote_entropy, votes=self.votes, classes=[[1]])
+        self.assertRaises(
+            ValueError,
+            vote_entropy,
+            votes=self.votes,
+            classes="string",
+        )
+        self.assertRaises(
+            ValueError,
+            vote_entropy,
+            votes=self.votes,
+            classes="class",
+        )
+        self.assertRaises(
+            TypeError,
+            vote_entropy,
+            votes=self.votes,
+            classes=1,
+        )
+        self.assertRaises(
+            TypeError,
+            vote_entropy,
+            votes=self.votes,
+            classes=[[1]],
+        )
         self.assertRaises(
             ValueError,
             vote_entropy,

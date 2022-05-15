@@ -328,7 +328,14 @@ class VariableUncertaintyBudgetManager(EstimatedBudgetZliobaite):
         self._validate_theta()
         check_scalar(self.w, "w", int, min_val=0, min_inclusive=False)
         # Chack s
-        check_scalar(self.s, "s", float, min_val=0, min_inclusive=False, max_val=1)
+        check_scalar(
+            self.s,
+            "s",
+            float,
+            min_val=0,
+            min_inclusive=False,
+            max_val=1,
+        )
 
         return utilities
 
@@ -494,9 +501,22 @@ class RandomVariableUncertaintyBudgetManager(EstimatedBudgetZliobaite):
         # Check theta
         self._validate_theta()
         # Chack s
-        check_scalar(self.s, "s", float, min_val=0, min_inclusive=False, max_val=1)
+        check_scalar(
+            self.s,
+            "s",
+            float,
+            min_val=0,
+            min_inclusive=False,
+            max_val=1,
+        )
         # Check delta
-        check_scalar(self.delta, "delta", float, min_val=0, min_inclusive=False)
+        check_scalar(
+            self.delta,
+            "delta",
+            float,
+            min_val=0,
+            min_inclusive=False,
+        )
         self._validate_random_state()
 
         return utilities
@@ -552,7 +572,15 @@ class SplitBudgetManager(EstimatedBudgetZliobaite):
         Specifies the percent value of instances queried randomly.
     """
 
-    def __init__(self, budget=None, w=100, theta=1.0, s=0.01, v=0.1, random_state=0):
+    def __init__(
+        self,
+        budget=None,
+        w=100,
+        theta=1.0,
+        s=0.01,
+        v=0.1,
+        random_state=0,
+    ):
         super().__init__(budget, w)
         self.v = v
         self.theta = theta
@@ -667,9 +695,23 @@ class SplitBudgetManager(EstimatedBudgetZliobaite):
         # Check theta
         self._validate_theta()
         # Check s
-        check_scalar(self.s, "s", float, min_val=0, min_inclusive=False, max_val=1)
+        check_scalar(
+            self.s,
+            "s",
+            float,
+            min_val=0,
+            min_inclusive=False,
+            max_val=1,
+        )
         # Check v
-        check_scalar(self.v, "v", float, min_val=0, min_inclusive=False, max_val=1)
+        check_scalar(
+            self.v,
+            "v",
+            float,
+            min_val=0,
+            min_inclusive=False,
+            max_val=1,
+        )
         # Check random_state
         self._validate_random_state()
 

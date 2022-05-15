@@ -61,7 +61,8 @@ class TestClassifier(unittest.TestCase):
             GaussianNB(), missing_label=self.missing_label
         )
         mlp = classifier.SklearnClassifier(
-            MLPClassifier(), missing_label=self.missing_label
+            MLPClassifier(),
+            missing_label=self.missing_label,
         )
         self.estimators = [
             ("MixtureModelClassifier", cmm),
@@ -100,7 +101,11 @@ class TestClassifier(unittest.TestCase):
 
         # Test classifier without fitting.
         with self.subTest(msg="Not Fitted Test", clf_name=clf):
-            self.assertRaises(NotFittedError, clf_mdl_cls.predict, X=self.X)
+            self.assertRaises(
+                NotFittedError,
+                clf_mdl_cls.predict,
+                X=self.X,
+            )
             self.assertRaises(NotFittedError, clf_mdl.predict, X=self.X)
 
         # Test classifier on empty data set.
@@ -114,17 +119,27 @@ class TestClassifier(unittest.TestCase):
                 np.testing.assert_array_equal(P, np.ones((len(self.X), 1)) / 3)
 
         with self.subTest(msg="Labels Shape Test", clf_name=clf):
-            self.assertRaises(ValueError, clf_mdl.fit, X=self.X, y=self.y_shape)
+            self.assertRaises(
+                ValueError,
+                clf_mdl.fit,
+                X=self.X,
+                y=self.y_shape,
+            )
 
         # Test classifier on data with only missing labels.
         with self.subTest(msg="Missing Label Test", clf_name=clf):
             self.assertRaises(
-                ValueError, clf_mdl_cls.fit, X=self.X, y=self.y_missing_label
+                ValueError,
+                clf_mdl_cls.fit,
+                X=self.X,
+                y=self.y_missing_label,
             )
             clf_mdl.fit(X=self.X, y=self.y_missing_label)
             score = clf_mdl.score(self.X, self.y_true)
             self.assertTrue(score > 0)
-            P_exp = np.ones((len(self.X), len(self.classes))) / len(self.classes)
+            P_exp = np.ones((len(self.X), len(self.classes))) / len(
+                self.classes
+            )
             P = clf_mdl.predict_proba(self.X)
             np.testing.assert_array_equal(P_exp, P)
             if hasattr(clf_mdl, "predict_freq"):
@@ -190,7 +205,9 @@ class TestClassifier(unittest.TestCase):
                 test_class_name = "Test" + clf_class.__name__
                 self.assertTrue(
                     hasattr(mod, test_class_name),
-                    msg="{} has no test called {}.".format(clf, test_class_name),
+                    msg="{} has no test called {}.".format(
+                        clf, test_class_name
+                    ),
                 )
                 test_obj = getattr(mod, test_class_name)
 
@@ -201,7 +218,10 @@ class TestClassifier(unittest.TestCase):
                         f"'{test_func_name}()' missing for parameter "
                         f"'{param}' of __init__() from {clf}."
                     )
-                    self.assertTrue(hasattr(test_obj, test_func_name), msg)
+                    self.assertTrue(
+                        hasattr(test_obj, test_func_name),
+                        msg,
+                    )
 
                 methods = [
                     "fit",
@@ -215,7 +235,10 @@ class TestClassifier(unittest.TestCase):
                         continue
                     test_func_name = f"test_{m}"
                     msg = f"'{test_func_name}()' in test of {clf}."
-                    self.assertTrue(hasattr(test_obj, test_func_name), msg)
+                    self.assertTrue(
+                        hasattr(test_obj, test_func_name),
+                        msg,
+                    )
 
                 # Check standard parameters of __init__ method.
                 self._test_init_param_random_state(clf_class)
@@ -242,7 +265,9 @@ class TestClassifier(unittest.TestCase):
 
     def _test_init_param_class_prior(self, clf_class):
         clf_mdl = call_func(
-            clf_class, estimator=self.estimator, estimators=self.estimators
+            clf_class,
+            estimator=self.estimator,
+            estimators=self.estimators,
         )
         self.assertEqual(clf_mdl.class_prior, 0)
         clf_mdl = call_func(
@@ -279,7 +304,9 @@ class TestClassifier(unittest.TestCase):
 
     def _test_init_param_classes(self, clf_class):
         clf_mdl = call_func(
-            clf_class, estimator=self.estimator, estimators=self.estimators
+            clf_class,
+            estimator=self.estimator,
+            estimators=self.estimators,
         )
         self.assertEqual(clf_mdl.classes, None)
         clf_mdl = call_func(
@@ -316,7 +343,9 @@ class TestClassifier(unittest.TestCase):
 
     def _test_init_param_cost_matrix(self, clf_class):
         clf_mdl = call_func(
-            clf_class, estimator=self.estimator, estimators=self.estimators
+            clf_class,
+            estimator=self.estimator,
+            estimators=self.estimators,
         )
         self.assertEqual(clf_mdl.cost_matrix, None)
         clf_mdl = call_func(
@@ -341,7 +370,11 @@ class TestClassifier(unittest.TestCase):
             clf_class,
             estimator=self.estimator,
             estimators=self.estimators,
-            cost_matrix=[["2", "5", "3"], ["a", "5", "3"], ["a", "5", "3"]],
+            cost_matrix=[
+                ["2", "5", "3"],
+                ["a", "5", "3"],
+                ["a", "5", "3"],
+            ],
             classes=self.classes,
             missing_label=self.missing_label,
         )
@@ -349,7 +382,9 @@ class TestClassifier(unittest.TestCase):
 
     def _test_init_param_missing_label(self, clf_class):
         clf_mdl = call_func(
-            clf_class, estimator=self.estimator, estimators=self.estimators
+            clf_class,
+            estimator=self.estimator,
+            estimators=self.estimators,
         )
         self.assertTrue(np.isnan(clf_mdl.missing_label))
         clf_mdl = call_func(
@@ -363,7 +398,9 @@ class TestClassifier(unittest.TestCase):
 
     def _test_init_param_random_state(self, clf_class):
         clf_mdl = call_func(
-            clf_class, estimator=self.estimator, estimators=self.estimators
+            clf_class,
+            estimator=self.estimator,
+            estimators=self.estimators,
         )
         self.assertTrue(clf_mdl.random_state is None)
         clf_mdl = call_func(
@@ -407,9 +444,19 @@ class TestClassifier(unittest.TestCase):
         )
         X = [[0], [1]]
         y = [0, 1]
-        self.assertRaises(ValueError, clf_mdl.fit, X=X, y=y, sample_weight=[0, 1, 1])
         self.assertRaises(
-            ValueError, clf_mdl.fit, X=X, y=y, sample_weight=[[1, 1], [1, 1]]
+            ValueError,
+            clf_mdl.fit,
+            X=X,
+            y=y,
+            sample_weight=[0, 1, 1],
+        )
+        self.assertRaises(
+            ValueError,
+            clf_mdl.fit,
+            X=X,
+            y=y,
+            sample_weight=[[1, 1], [1, 1]],
         )
 
     def _test_predict_param_X(self, clf_class):
@@ -434,7 +481,11 @@ class TestClassifier(unittest.TestCase):
         clf_mdl.fit(X=self.X, y=self.y)
         self.assertRaises(ValueError, clf_mdl.predict_proba, X=[0, 0])
         self.assertRaises(ValueError, clf_mdl.predict_proba, X=[[0], [0]])
-        self.assertRaises(ValueError, clf_mdl.predict_proba, X=[["x", "y"]])
+        self.assertRaises(
+            ValueError,
+            clf_mdl.predict_proba,
+            X=[["x", "y"]],
+        )
 
     def _test_predict_freq_param_X(self, clf_class):
         clf_mdl = call_func(
@@ -456,9 +507,21 @@ class TestClassifier(unittest.TestCase):
             missing_label=self.missing_label,
         )
         clf_mdl.fit(X=self.X, y=self.y)
-        self.assertRaises(ValueError, clf_mdl.predict_annotator_perf, X=[0, 0])
-        self.assertRaises(ValueError, clf_mdl.predict_annotator_perf, X=[[0], [0]])
-        self.assertRaises(ValueError, clf_mdl.predict_annotator_perf, X=[["x", "y"]])
+        self.assertRaises(
+            ValueError,
+            clf_mdl.predict_annotator_perf,
+            X=[0, 0],
+        )
+        self.assertRaises(
+            ValueError,
+            clf_mdl.predict_annotator_perf,
+            X=[[0], [0]],
+        )
+        self.assertRaises(
+            ValueError,
+            clf_mdl.predict_annotator_perf,
+            X=[["x", "y"]],
+        )
 
 
 class Dummy:

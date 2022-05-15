@@ -1,7 +1,10 @@
 import numpy as np
 from scipy.stats import t, rankdata
 from sklearn.base import BaseEstimator, clone
-from sklearn.utils.validation import check_array, check_is_fitted
+from sklearn.utils.validation import (
+    check_array,
+    check_is_fitted,
+)
 
 from ...base import (
     MultiAnnotatorPoolQueryStrategy,
@@ -114,7 +117,8 @@ class IntervalEstimationAnnotModel(BaseEstimator, AnnotatorModelMixin):
         # Check shape of labels.
         if y.ndim != 2:
             raise ValueError(
-                "`y` but must be a 2d array with shape " "`(n_samples, n_annotators)`."
+                "`y` but must be a 2d array with shape "
+                "`(n_samples, n_annotators)`."
             )
 
         # Compute majority vote labels.
@@ -131,7 +135,10 @@ class IntervalEstimationAnnotModel(BaseEstimator, AnnotatorModelMixin):
         is_lbld = is_labeled(y, missing_label=self.missing_label)
         self.A_perf_ = np.zeros((self.n_annotators_, 3))
         for a_idx in range(self.n_annotators_):
-            is_correct = np.equal(y_mv[is_lbld[:, a_idx]], y[is_lbld[:, a_idx], a_idx])
+            is_correct = np.equal(
+                y_mv[is_lbld[:, a_idx]],
+                y[is_lbld[:, a_idx], a_idx],
+            )
             is_correct = np.concatenate((is_correct, [0, 1]))
             mean = np.mean(is_correct)
             std = np.std(is_correct)
@@ -213,7 +220,10 @@ class IntervalEstimationThreshold(MultiAnnotatorPoolQueryStrategy):
         random_state=None,
         missing_label=MISSING_LABEL,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
         self.epsilon = epsilon
         self.alpha = alpha
 
@@ -304,13 +314,28 @@ class IntervalEstimationThreshold(MultiAnnotatorPoolQueryStrategy):
         """
 
         # base check
-        (X, y, candidates, annotators, _, return_utilities,) = super()._validate_data(
-            X, y, candidates, annotators, 1, return_utilities, reset=True
+        (
+            X,
+            y,
+            candidates,
+            annotators,
+            _,
+            return_utilities,
+        ) = super()._validate_data(
+            X,
+            y,
+            candidates,
+            annotators,
+            1,
+            return_utilities,
+            reset=True,
         )
 
-        X_cand, mapping, A_cand = self._transform_cand_annot(
-            candidates, annotators, X, y
-        )
+        (
+            X_cand,
+            mapping,
+            A_cand,
+        ) = self._transform_cand_annot(candidates, annotators, X, y)
 
         # Validate classifier type.
         check_type(clf, "clf", SkactivemlClassifier)
@@ -337,7 +362,11 @@ class IntervalEstimationThreshold(MultiAnnotatorPoolQueryStrategy):
 
         n_annotators = y.shape[1]
         # Check whether unlabeled data exists
-        A_cand = np.repeat(np.all(A_cand, axis=1).reshape(-1, 1), n_annotators, axis=1)
+        A_cand = np.repeat(
+            np.all(A_cand, axis=1).reshape(-1, 1),
+            n_annotators,
+            axis=1,
+        )
 
         # Fit classifier and compute uncertainties on candidate samples.
         if fit_clf:
@@ -373,7 +402,8 @@ class IntervalEstimationThreshold(MultiAnnotatorPoolQueryStrategy):
         # Determine actual batch size.
         if isinstance(batch_size, str) and batch_size != "adaptive":
             raise ValueError(
-                f"If `batch_size` is of type `string`, " f"it must equal `'adaptive'`."
+                f"If `batch_size` is of type `string`, "
+                f"it must equal `'adaptive'`."
             )
         elif batch_size == "adaptive":
             required_perf = self.epsilon * np.max(A_perf)

@@ -12,9 +12,16 @@ from scipy.optimize import minimize
 from scipy.special import softmax
 from scipy.stats import dirichlet
 from scipy.stats import multivariate_normal as multi_normal
-from sklearn.utils.validation import check_array, check_is_fitted, column_or_1d
+from sklearn.utils.validation import (
+    check_array,
+    check_is_fitted,
+    column_or_1d,
+)
 
-from ...base import SkactivemlClassifier, AnnotatorModelMixin
+from ...base import (
+    SkactivemlClassifier,
+    AnnotatorModelMixin,
+)
 from ...utils import (
     MISSING_LABEL,
     compute_vote_vectors,
@@ -117,19 +124,19 @@ class AnnotatorLogisticRegression(SkactivemlClassifier, AnnotatorModelMixin):
     """
 
     def __init__(
-            self,
-            tol=1.0e-2,
-            max_iter=100,
-            fit_intercept=True,
-            annot_prior_full=1,
-            annot_prior_diag=0,
-            weights_prior=1,
-            solver="Newton-CG",
-            solver_dict=None,
-            classes=None,
-            cost_matrix=None,
-            missing_label=MISSING_LABEL,
-            random_state=None,
+        self,
+        tol=1.0e-2,
+        max_iter=100,
+        fit_intercept=True,
+        annot_prior_full=1,
+        annot_prior_diag=0,
+        weights_prior=1,
+        solver="Newton-CG",
+        solver_dict=None,
+        classes=None,
+        cost_matrix=None,
+        missing_label=MISSING_LABEL,
+        random_state=None,
     ):
         super().__init__(
             classes=classes,
@@ -168,7 +175,10 @@ class AnnotatorLogisticRegression(SkactivemlClassifier, AnnotatorModelMixin):
         """
         # Check input data.
         X, y, sample_weight = self._validate_data(
-            X=X, y=y, sample_weight=sample_weight, y_ensure_1d=False
+            X=X,
+            y=y,
+            sample_weight=sample_weight,
+            y_ensure_1d=False,
         )
         self._check_n_features(X, reset=True)
 
@@ -319,8 +329,8 @@ class AnnotatorLogisticRegression(SkactivemlClassifier, AnnotatorModelMixin):
 
             # Stop EM, if it converges (to a local maximum).
             if (
-                    current_expectation == new_expectation
-                    or (new_expectation - current_expectation) < self.tol
+                current_expectation == new_expectation
+                or (new_expectation - current_expectation) < self.tol
             ):
                 break
 
@@ -349,7 +359,9 @@ class AnnotatorLogisticRegression(SkactivemlClassifier, AnnotatorModelMixin):
                 prior_W = 0
                 for c_idx in range(n_classes):
                     prior_W += multi_normal.logpdf(
-                        x=W[:, c_idx], cov=Gamma_tmp, allow_singular=True
+                        x=W[:, c_idx],
+                        cov=Gamma_tmp,
+                        allow_singular=True,
                     )
                 log = np.sum(Mu * np.log(P_W * V + np.finfo(float).eps))
                 log += prior_W
@@ -390,7 +402,12 @@ class AnnotatorLogisticRegression(SkactivemlClassifier, AnnotatorModelMixin):
                     Computed Hessian matrix of weights.
                 """
                 W = w.reshape(n_features, n_classes)
-                H = np.empty((n_classes * n_features, n_classes * n_features))
+                H = np.empty(
+                    (
+                        n_classes * n_features,
+                        n_classes * n_features,
+                    )
+                )
                 P_W = softmax(X @ W, axis=1)
                 for k in range(n_classes):
                     for j in range(n_classes):
@@ -398,8 +415,8 @@ class AnnotatorLogisticRegression(SkactivemlClassifier, AnnotatorModelMixin):
                         D = np.diag(diagonal)
                         H_kj = X.T @ D @ X + Gamma
                         H[
-                        k * n_features: (k + 1) * n_features,
-                        j * n_features: (j + 1) * n_features,
+                            k * n_features : (k + 1) * n_features,
+                            j * n_features : (j + 1) * n_features,
                         ] = H_kj
                 return H / n_samples
 
@@ -620,7 +637,11 @@ class AnnotatorLogisticRegression(SkactivemlClassifier, AnnotatorModelMixin):
         Gamma = Gamma if all_zeroes else np.linalg.inv(Gamma)
         prior_W = np.sum(
             [
-                multi_normal.logpdf(x=W[:, k], cov=Gamma, allow_singular=True)
+                multi_normal.logpdf(
+                    x=W[:, k],
+                    cov=Gamma,
+                    allow_singular=True,
+                )
                 for k in range(W.shape[1])
             ]
         )

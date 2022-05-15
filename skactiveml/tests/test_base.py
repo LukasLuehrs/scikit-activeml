@@ -25,17 +25,28 @@ class QueryStrategyTest(unittest.TestCase):
         self.qs = QueryStrategy()
 
     def test_fit(self):
-        self.assertRaises(NotImplementedError, self.qs.query, candidates=None)
+        self.assertRaises(
+            NotImplementedError,
+            self.qs.query,
+            candidates=None,
+        )
 
 
 class SingleAnnotPoolBasedQueryStrategyTest(unittest.TestCase):
-    @patch.multiple(SingleAnnotatorPoolQueryStrategy, __abstractmethods__=set())
+    @patch.multiple(
+        SingleAnnotatorPoolQueryStrategy,
+        __abstractmethods__=set(),
+    )
     def setUp(self):
         self.qs = SingleAnnotatorPoolQueryStrategy()
 
     def test_fit(self):
         self.assertRaises(
-            NotImplementedError, self.qs.query, X=None, y=None, candidates=None
+            NotImplementedError,
+            self.qs.query,
+            X=None,
+            y=None,
+            candidates=None,
         )
 
     def test__transform_candidates(self):
@@ -69,7 +80,10 @@ class SingleAnnotPoolBasedQueryStrategyTest(unittest.TestCase):
 
 
 class MultiAnnotatorPoolQueryStrategyTest(unittest.TestCase):
-    @patch.multiple(MultiAnnotatorPoolQueryStrategy, __abstractmethods__=set())
+    @patch.multiple(
+        MultiAnnotatorPoolQueryStrategy,
+        __abstractmethods__=set(),
+    )
     def setUp(self):
         self.qs = MultiAnnotatorPoolQueryStrategy()
         self.qs.missing_label_ = MISSING_LABEL
@@ -132,7 +146,9 @@ class MultiAnnotatorPoolQueryStrategyTest(unittest.TestCase):
             y=np.array([[1, MISSING_LABEL], [2, 3]]),
         )
         X_cand, mapping, A_cand = re_val
-        np.testing.assert_array_equal(A_cand, np.array([[False, True], [True, True]]))
+        np.testing.assert_array_equal(
+            A_cand, np.array([[False, True], [True, True]])
+        )
 
         re_val = self.qs._validate_data(
             candidates=None,
@@ -143,7 +159,14 @@ class MultiAnnotatorPoolQueryStrategyTest(unittest.TestCase):
             return_utilities=False,
         )
 
-        X, y, candidates, annotators, batch_size, return_utilities = re_val
+        (
+            X,
+            y,
+            candidates,
+            annotators,
+            batch_size,
+            return_utilities,
+        ) = re_val
         self.assertEqual(1, batch_size)
 
         re_val = self.qs._validate_data(
@@ -155,7 +178,14 @@ class MultiAnnotatorPoolQueryStrategyTest(unittest.TestCase):
             return_utilities=False,
         )
 
-        X, y, candidates, annotators, batch_size, return_utilities = re_val
+        (
+            X,
+            y,
+            candidates,
+            annotators,
+            batch_size,
+            return_utilities,
+        ) = re_val
         self.assertEqual(2, batch_size)
 
         re_val = self.qs._validate_data(
@@ -167,7 +197,14 @@ class MultiAnnotatorPoolQueryStrategyTest(unittest.TestCase):
             return_utilities=False,
         )
 
-        X, y, candidates, annotators, batch_size, return_utilities = re_val
+        (
+            X,
+            y,
+            candidates,
+            annotators,
+            batch_size,
+            return_utilities,
+        ) = re_val
         self.assertEqual(2, batch_size)
 
         re_val = self.qs._validate_data(
@@ -179,7 +216,14 @@ class MultiAnnotatorPoolQueryStrategyTest(unittest.TestCase):
             return_utilities=False,
         )
 
-        X, y, candidates, annotators, batch_size, return_utilities = re_val
+        (
+            X,
+            y,
+            candidates,
+            annotators,
+            batch_size,
+            return_utilities,
+        ) = re_val
         self.assertEqual(0, batch_size)
 
 
@@ -189,10 +233,19 @@ class SkactivemlClassifierTest(unittest.TestCase):
         self.clf = SkactivemlClassifier(classes=[0, 1], missing_label=-1)
 
     def test_fit(self):
-        self.assertRaises(NotImplementedError, self.clf.fit, X=None, y=None)
+        self.assertRaises(
+            NotImplementedError,
+            self.clf.fit,
+            X=None,
+            y=None,
+        )
 
     def test_predict_proba(self):
-        self.assertRaises(NotImplementedError, self.clf.predict_proba, X=None)
+        self.assertRaises(
+            NotImplementedError,
+            self.clf.predict_proba,
+            X=None,
+        )
 
     def test__validate_data(self):
         X = np.ones((10, 2))
@@ -209,7 +262,11 @@ class ClassFrequencyEstimatorTest(unittest.TestCase):
         self.clf = ClassFrequencyEstimator()
 
     def test_predict_freq(self):
-        self.assertRaises(NotImplementedError, self.clf.predict_freq, X=None)
+        self.assertRaises(
+            NotImplementedError,
+            self.clf.predict_freq,
+            X=None,
+        )
 
 
 class AnnotatorModelMixinTest(unittest.TestCase):
@@ -218,7 +275,11 @@ class AnnotatorModelMixinTest(unittest.TestCase):
         self.clf = AnnotatorModelMixin()
 
     def test_predict_annotator_perf(self):
-        self.assertRaises(NotImplementedError, self.clf.predict_annotator_perf, X=None)
+        self.assertRaises(
+            NotImplementedError,
+            self.clf.predict_annotator_perf,
+            X=None,
+        )
 
 
 class TestBudgetManager(unittest.TestCase):
@@ -227,7 +288,11 @@ class TestBudgetManager(unittest.TestCase):
         self.bm = BudgetManager()
 
     def test_fit(self):
-        self.assertRaises(NotImplementedError, self.bm.query_by_utility, utilities=None)
+        self.assertRaises(
+            NotImplementedError,
+            self.bm.query_by_utility,
+            utilities=None,
+        )
 
     def test_update(self):
         self.assertRaises(
@@ -239,12 +304,19 @@ class TestBudgetManager(unittest.TestCase):
 
 
 class SingleAnnotatorStreamQueryStrategyTest(unittest.TestCase):
-    @patch.multiple(SingleAnnotatorStreamQueryStrategy, __abstractmethods__=set())
+    @patch.multiple(
+        SingleAnnotatorStreamQueryStrategy,
+        __abstractmethods__=set(),
+    )
     def setUp(self):
         self.qs = SingleAnnotatorStreamQueryStrategy(budget=None)
 
     def test_fit(self):
-        self.assertRaises(NotImplementedError, self.qs.query, candidates=None)
+        self.assertRaises(
+            NotImplementedError,
+            self.qs.query,
+            candidates=None,
+        )
 
     def test_update(self):
         self.assertRaises(
@@ -261,7 +333,12 @@ class ScaktivemlRegressorTest(unittest.TestCase):
         self.reg = SkactivemlRegressor(missing_label=-1)
 
     def test_fit(self):
-        self.assertRaises(NotImplementedError, self.reg.fit, X=None, y=None)
+        self.assertRaises(
+            NotImplementedError,
+            self.reg.fit,
+            X=None,
+            y=None,
+        )
 
     def test_predict(self):
         self.assertRaises(NotImplementedError, self.reg.predict, X=None)
@@ -270,7 +347,11 @@ class ScaktivemlRegressorTest(unittest.TestCase):
         X = np.arange(5 * 2).reshape(5, 2)
         y = 1 / 2 * np.arange(5)
         self.assertRaises(
-            ValueError, self.reg._validate_data, X=X, y=y, sample_weight=np.arange(1, 5)
+            ValueError,
+            self.reg._validate_data,
+            X=X,
+            y=y,
+            sample_weight=np.arange(1, 5),
         )
 
 
@@ -281,5 +362,7 @@ class TargetDistributionEstimatorTest(unittest.TestCase):
 
     def test_predict_target_distribution(self):
         self.assertRaises(
-            NotImplementedError, self.reg.predict_target_distribution, X=None
+            NotImplementedError,
+            self.reg.predict_target_distribution,
+            X=None,
         )

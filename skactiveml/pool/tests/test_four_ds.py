@@ -2,11 +2,16 @@ import unittest
 
 import numpy as np
 from sklearn.datasets import load_breast_cancer
-from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process import (
+    GaussianProcessClassifier,
+)
 from sklearn.mixture import BayesianGaussianMixture
 from sklearn.preprocessing import StandardScaler
 
-from skactiveml.classifier import MixtureModelClassifier, SklearnClassifier
+from skactiveml.classifier import (
+    MixtureModelClassifier,
+    SklearnClassifier,
+)
 from skactiveml.pool import FourDs
 
 
@@ -27,22 +32,41 @@ class TestFourDs(unittest.TestCase):
     def test_init_param_lmbda(self):
         al4ds = FourDs(lmbda=True, missing_label=-1)
         self.assertRaises(
-            TypeError, al4ds.query, X=self.X, y=self.y_unlblb, clf=self.clf
+            TypeError,
+            al4ds.query,
+            X=self.X,
+            y=self.y_unlblb,
+            clf=self.clf,
         )
         al4ds = FourDs(lmbda=1.1, missing_label=-1)
         self.assertRaises(
-            ValueError, al4ds.query, X=self.X, y=self.y_unlblb, clf=self.clf
+            ValueError,
+            al4ds.query,
+            X=self.X,
+            y=self.y_unlblb,
+            clf=self.clf,
         )
 
     def test_query_param_clf(self):
         al4ds = FourDs(missing_label=-1)
-        for clf in [None, SklearnClassifier(GaussianProcessClassifier())]:
+        for clf in [
+            None,
+            SklearnClassifier(GaussianProcessClassifier()),
+        ]:
             self.assertRaises(
-                TypeError, al4ds.query, X=self.X, y=self.y_unlblb, clf=clf
+                TypeError,
+                al4ds.query,
+                X=self.X,
+                y=self.y_unlblb,
+                clf=clf,
             )
         al4ds = FourDs(missing_label=0)
         self.assertRaises(
-            ValueError, al4ds.query, X=self.X, y=self.y_unlblb, clf=self.clf
+            ValueError,
+            al4ds.query,
+            X=self.X,
+            y=self.y_unlblb,
+            clf=self.clf,
         )
 
     def test_query_param_fit_clf(self):
@@ -72,7 +96,12 @@ class TestFourDs(unittest.TestCase):
     def test_query(self):
         al4ds = FourDs(missing_label=-1, random_state=self.random_state)
         clf = self.clf.fit(self.X, self.y_unlblb)
-        query_indices = al4ds.query(X=self.X, y=self.y_unlblb, clf=clf, fit_clf=False)
+        query_indices = al4ds.query(
+            X=self.X,
+            y=self.y_unlblb,
+            clf=clf,
+            fit_clf=False,
+        )
         self.assertEqual(1, len(query_indices))
         query_indices, utilities = al4ds.query(
             X=self.X,
@@ -105,4 +134,7 @@ class TestFourDs(unittest.TestCase):
         )
         self.assertEqual(len(self.y), len(query_indices))
         self.assertEqual((len(self.y), len(self.y)), utilities.shape)
-        self.assertEqual(np.sum(np.arange(0, len(self.y))), np.sum(np.isnan(utilities)))
+        self.assertEqual(
+            np.sum(np.arange(0, len(self.y))),
+            np.sum(np.isnan(utilities)),
+        )

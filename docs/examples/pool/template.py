@@ -3,7 +3,10 @@ from matplotlib import pyplot as plt, animation
 from sklearn.datasets import make_blobs
 
 from skactiveml.utils import MISSING_LABEL, labeled_indices
-from skactiveml.visualization import plot_utilities, plot_decision_boundary
+from skactiveml.visualization import (
+    plot_utilities,
+    plot_decision_boundary,
+)
 
 # _import
 # _bp_add_imports
@@ -14,7 +17,13 @@ random_state = np.random.RandomState(0)
 X, y_true = make_blobs(
     n_samples="#_n_samples",
     n_features=2,
-    centers=[[0, 1], [-3, 0.5], [-1, -1], [2, 1], [1, -0.5]],
+    centers=[
+        [0, 1],
+        [-3, 0.5],
+        [-1, -1],
+        [2, 1],
+        [1, -0.5],
+    ],
     cluster_std=0.7,
     random_state=random_state,
 )
@@ -29,7 +38,10 @@ qs = "#_init_qs"
 
 # Preparation for plotting.
 fig, ax = plt.subplots()
-feature_bound = [[min(X[:, 0]), min(X[:, 1])], [max(X[:, 0]), max(X[:, 1])]]
+feature_bound = [
+    [min(X[:, 0]), min(X[:, 1])],
+    [max(X[:, 0]), max(X[:, 1])],
+]
 artists = []
 
 # The active learning cycle:
@@ -65,8 +77,22 @@ for c in range(n_cycles):
         feature_bound=feature_bound,
         ax=ax,
     )
-    ax.scatter(X[:, 0], X[:, 1], c=y_true, cmap="coolwarm", marker=".", zorder=2)
-    ax.scatter(X_labeled[:, 0], X_labeled[:, 1], c="grey", alpha=0.8, marker=".", s=300)
+    ax.scatter(
+        X[:, 0],
+        X[:, 1],
+        c=y_true,
+        cmap="coolwarm",
+        marker=".",
+        zorder=2,
+    )
+    ax.scatter(
+        X_labeled[:, 0],
+        X_labeled[:, 1],
+        c="grey",
+        alpha=0.8,
+        marker=".",
+        s=300,
+    )
     ax = plot_decision_boundary(clf, feature_bound, ax=ax)
 
     coll_new = list(ax.collections)

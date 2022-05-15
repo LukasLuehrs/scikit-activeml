@@ -47,7 +47,11 @@ def _get_cmap(cmap):
 
 
 def _get_boundary_args(boundary_dict):
-    boundary_args = {"colors": "k", "linewidths": [2], "zorder": 1}
+    boundary_args = {
+        "colors": "k",
+        "linewidths": [2],
+        "zorder": 1,
+    }
     if boundary_dict is not None:
         check_type(boundary_dict, "boundary_dict", dict)
         boundary_args.update(boundary_dict)

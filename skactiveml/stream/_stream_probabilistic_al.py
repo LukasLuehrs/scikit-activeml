@@ -1,6 +1,9 @@
 import numpy as np
 from sklearn import clone
-from sklearn.utils import check_array, check_consistent_length
+from sklearn.utils import (
+    check_array,
+    check_consistent_length,
+)
 
 from .budgetmanager import BalancedIncrementalQuantileFilter
 from ..base import (
@@ -160,7 +163,12 @@ class StreamProbabilisticAL(SingleAnnotatorStreamQueryStrategy):
         else:
             return queried_indices
 
-    def update(self, candidates, queried_indices, budget_manager_param_dict=None):
+    def update(
+        self,
+        candidates,
+        queried_indices,
+        budget_manager_param_dict=None,
+    ):
         """Updates the budget manager
 
         Parameters
@@ -193,7 +201,9 @@ class StreamProbabilisticAL(SingleAnnotatorStreamQueryStrategy):
                 BalancedIncrementalQuantileFilter,
             )
         budget_manager_param_dict = (
-            {} if budget_manager_param_dict is None else budget_manager_param_dict
+            {}
+            if budget_manager_param_dict is None
+            else budget_manager_param_dict
         )
         call_func(
             self.budget_manager_.update,
@@ -266,7 +276,7 @@ class StreamProbabilisticAL(SingleAnnotatorStreamQueryStrategy):
         return_utilities : bool,
             Checked boolean value of `return_utilities`.
         """
-        candidates, return_utilities = super()._validate_data(
+        (candidates, return_utilities,) = super()._validate_data(
             candidates, return_utilities, reset=reset, **check_candidates_params
         )
         # check if a budgetmanager is set
@@ -284,11 +294,29 @@ class StreamProbabilisticAL(SingleAnnotatorStreamQueryStrategy):
                 BalancedIncrementalQuantileFilter,
             )
 
-        X, y, sample_weight = self._validate_X_y_sample_weight(X, y, sample_weight)
+        (
+            X,
+            y,
+            sample_weight,
+        ) = self._validate_X_y_sample_weight(X, y, sample_weight)
         clf = self._validate_clf(clf, X, y, sample_weight, fit_clf)
-        utility_weight = self._validate_utility_weight(utility_weight, candidates)
-        check_scalar(self.prior, "prior", float, min_val=0, min_inclusive=False)
-        check_scalar(self.m_max, "m_max", int, min_val=0, min_inclusive=False)
+        utility_weight = self._validate_utility_weight(
+            utility_weight, candidates
+        )
+        check_scalar(
+            self.prior,
+            "prior",
+            float,
+            min_val=0,
+            min_inclusive=False,
+        )
+        check_scalar(
+            self.m_max,
+            "m_max",
+            int,
+            min_val=0,
+            min_inclusive=False,
+        )
         self._validate_random_state()
 
         return (

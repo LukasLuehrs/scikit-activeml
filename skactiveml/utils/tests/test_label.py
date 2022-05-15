@@ -23,25 +23,108 @@ class TestLabel(unittest.TestCase):
         self.y7 = ["paris", "france", "tokyo", -1]
 
     def test_is_unlabeled(self):
-        self.assertRaises(TypeError, is_unlabeled, y=self.y1, missing_label="2")
-        self.assertRaises(ValueError, is_unlabeled, [[]], missing_label="2")
-        self.assertRaises(TypeError, is_unlabeled, y=self.y2, missing_label=np.nan)
-        self.assertRaises(TypeError, is_unlabeled, y=self.y2, missing_label="2")
-        self.assertRaises(TypeError, is_unlabeled, y=self.y2, missing_label=None)
-        self.assertRaises(TypeError, is_unlabeled, y=self.y3, missing_label="2")
-        self.assertRaises(TypeError, is_unlabeled, y=self.y3, missing_label=np.nan)
-        self.assertRaises(TypeError, is_unlabeled, y=self.y4, missing_label=2)
-        self.assertRaises(TypeError, is_unlabeled, y=self.y4, missing_label="2")
-        self.assertRaises(TypeError, is_unlabeled, y=self.y5, missing_label="2")
-        self.assertRaises(TypeError, is_unlabeled, y=self.y6, missing_label=2)
-        self.assertRaises(TypeError, is_unlabeled, y=self.y6, missing_label=np.nan)
-        self.assertRaises(TypeError, is_unlabeled, y=self.y7, missing_label=np.nan)
-        self.assertRaises(TypeError, is_unlabeled, y=self.y7, missing_label=None)
-        self.assertRaises(TypeError, is_unlabeled, y=self.y7, missing_label="2")
-        self.assertRaises(TypeError, is_unlabeled, y=self.y7, missing_label=-1)
-        np.testing.assert_array_equal(np.array([], dtype=bool), is_unlabeled([]))
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y1,
+            missing_label="2",
+        )
+        self.assertRaises(
+            ValueError,
+            is_unlabeled,
+            [[]],
+            missing_label="2",
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y2,
+            missing_label=np.nan,
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y2,
+            missing_label="2",
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y2,
+            missing_label=None,
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y3,
+            missing_label="2",
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y3,
+            missing_label=np.nan,
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y4,
+            missing_label=2,
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y4,
+            missing_label="2",
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y5,
+            missing_label="2",
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y6,
+            missing_label=2,
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y6,
+            missing_label=np.nan,
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y7,
+            missing_label=np.nan,
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y7,
+            missing_label=None,
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y7,
+            missing_label="2",
+        )
+        self.assertRaises(
+            TypeError,
+            is_unlabeled,
+            y=self.y7,
+            missing_label=-1,
+        )
         np.testing.assert_array_equal(
-            np.array([1, 0, 0, 0, 1], dtype=bool), is_unlabeled(self.y1)
+            np.array([], dtype=bool), is_unlabeled([])
+        )
+        np.testing.assert_array_equal(
+            np.array([1, 0, 0, 0, 1], dtype=bool),
+            is_unlabeled(self.y1),
         )
         np.testing.assert_array_equal(
             np.array([1, 0, 0, 0, 1], dtype=bool),
@@ -74,7 +157,8 @@ class TestLabel(unittest.TestCase):
 
     def test_is_labeled(self):
         np.testing.assert_array_equal(
-            ~np.array([1, 0, 0, 0, 1], dtype=bool), is_labeled(self.y1)
+            ~np.array([1, 0, 0, 0, 1], dtype=bool),
+            is_labeled(self.y1),
         )
         np.testing.assert_array_equal(
             ~np.array([1, 0, 0, 0, 1], dtype=bool),
@@ -124,8 +208,16 @@ class TestLabel(unittest.TestCase):
         np.testing.assert_array_equal(lbld_indices, true_lbld_indices)
 
     def test_check_missing_label(self):
-        self.assertRaises(TypeError, check_missing_label, missing_label=[2])
-        self.assertRaises(TypeError, check_missing_label, missing_label=self)
+        self.assertRaises(
+            TypeError,
+            check_missing_label,
+            missing_label=[2],
+        )
+        self.assertRaises(
+            TypeError,
+            check_missing_label,
+            missing_label=self,
+        )
         self.assertRaises(
             TypeError,
             check_missing_label,
@@ -133,10 +225,16 @@ class TestLabel(unittest.TestCase):
             target_type=str,
         )
         self.assertRaises(
-            TypeError, check_missing_label, missing_label=2, target_type=str
+            TypeError,
+            check_missing_label,
+            missing_label=2,
+            target_type=str,
         )
         self.assertRaises(
-            TypeError, check_missing_label, missing_label="2", target_type=int
+            TypeError,
+            check_missing_label,
+            missing_label="2",
+            target_type=int,
         )
 
     def test_check_equal_missing_label(self):

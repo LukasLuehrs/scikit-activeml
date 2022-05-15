@@ -18,9 +18,19 @@ class RandomSampling(SingleAnnotatorPoolQueryStrategy):
     """
 
     def __init__(self, missing_label=MISSING_LABEL, random_state=None):
-        super().__init__(missing_label=missing_label, random_state=random_state)
+        super().__init__(
+            missing_label=missing_label,
+            random_state=random_state,
+        )
 
-    def query(self, X, y, candidates=None, batch_size=1, return_utilities=False):
+    def query(
+        self,
+        X,
+        y,
+        candidates=None,
+        batch_size=1,
+        return_utilities=False,
+    ):
         """Determines for which candidate samples labels are to be queried.
 
         Parameters
@@ -68,8 +78,13 @@ class RandomSampling(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
 
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         X_cand, mapping = self._transform_candidates(candidates, X, y)

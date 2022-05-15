@@ -22,7 +22,10 @@ def call_func(f_callable, only_mandatory=False, **kwargs):
     param_keys = params.keys()
     if only_mandatory:
         param_keys = list(
-            filter(lambda k: params[k].default == inspect._empty, param_keys)
+            filter(
+                lambda k: params[k].default == inspect._empty,
+                param_keys,
+            )
         )
 
     vars = dict(filter(lambda e: e[0] in param_keys, kwargs.items()))

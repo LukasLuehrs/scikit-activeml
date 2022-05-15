@@ -43,7 +43,8 @@ class TestParzenWindowClassifier(unittest.TestCase):
 
     def test_fit(self):
         pwc = ParzenWindowClassifier(
-            classes=["tokyo", "paris", "new york"], missing_label="nan"
+            classes=["tokyo", "paris", "new york"],
+            missing_label="nan",
         )
         pwc.fit(X=self.X, y=self.y_nan)
         self.assertIsNone(pwc.cost_matrix)
@@ -110,7 +111,9 @@ class TestParzenWindowClassifier(unittest.TestCase):
         np.testing.assert_array_equal(F_call, F_rbf)
 
     def test_predict_proba(self):
-        pwc = ParzenWindowClassifier(classes=["tokyo", "paris"], missing_label="nan")
+        pwc = ParzenWindowClassifier(
+            classes=["tokyo", "paris"], missing_label="nan"
+        )
         self.assertRaises(NotFittedError, pwc.predict_proba, X=self.X)
         pwc.fit(X=self.X, y=self.y_nan)
         P = pwc.predict_proba(X=self.X)
@@ -141,14 +144,18 @@ class TestParzenWindowClassifier(unittest.TestCase):
 
     def test_predict(self):
         pwc = ParzenWindowClassifier(
-            classes=["tokyo", "paris"], missing_label="nan", random_state=0
+            classes=["tokyo", "paris"],
+            missing_label="nan",
+            random_state=0,
         )
         self.assertRaises(NotFittedError, pwc.predict, X=self.X)
         pwc.fit(X=self.X, y=self.y_nan)
         y = pwc.predict(self.X)
         np.testing.assert_array_equal(["tokyo", "paris", "tokyo"], y)
         pwc = ParzenWindowClassifier(
-            classes=["tokyo", "paris"], missing_label="nan", random_state=1
+            classes=["tokyo", "paris"],
+            missing_label="nan",
+            random_state=1,
         )
         pwc.fit(X=self.X, y=self.y_nan)
         y = pwc.predict(self.X)

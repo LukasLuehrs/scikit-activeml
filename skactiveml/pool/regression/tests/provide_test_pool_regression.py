@@ -1,7 +1,9 @@
 from itertools import product
 
 import numpy as np
-from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process import (
+    GaussianProcessRegressor,
+)
 
 from skactiveml.classifier import ParzenWindowClassifier
 from skactiveml.regressor import (
@@ -30,7 +32,10 @@ def provide_test_regression_query_strategy_init_random_state(
     X_s, y_s = get_list_of_regression_test_data()
 
     init_dict["missing_label"] = MISSING_LABEL
-    for name, value in [("candidates", None), ("return_utilities", True)]:
+    for name, value in [
+        ("candidates", None),
+        ("return_utilities", True),
+    ]:
         query_dict[name] = value
 
     # testing
@@ -38,7 +43,11 @@ def provide_test_regression_query_strategy_init_random_state(
         [0, np.random.RandomState(5)], zip(X_s, y_s)
     ):
         init_dict["random_state"] = poss_random_state
-        for name, value in [("X", X), ("y", y), ("batch_size", 1)]:
+        for name, value in [
+            ("X", X),
+            ("y", y),
+            ("batch_size", 1),
+        ]:
             query_dict[name] = value
 
         qs = call_func(qs_class, **init_dict)
@@ -47,7 +56,10 @@ def provide_test_regression_query_strategy_init_random_state(
         for i in range(len(results) - 1):
             np.testing.assert_array_equal(results[i], results[i + 1])
 
-    for illegal_random_state in ["illegal_random_state", dict]:
+    for illegal_random_state in [
+        "illegal_random_state",
+        dict,
+    ]:
         init_dict["random_state"] = illegal_random_state
         for name, value in [("X", X_s[0]), ("y", y_s[0])]:
             query_dict[name] = value
@@ -77,20 +89,37 @@ def provide_test_regression_query_strategy_init_missing_label(
 
     # testing
     for poss_missing_label in [MISSING_LABEL, -1]:
-        X, y = get_regression_test_data(number=0, missing_label=poss_missing_label)
+        X, y = get_regression_test_data(
+            number=0, missing_label=poss_missing_label
+        )
         init_dict["missing_label"] = poss_missing_label
-        batch_size = int(np.sum(is_unlabeled(y, missing_label=poss_missing_label)))
-        for name, value in [("X", X), ("y", y), ("batch_size", batch_size)]:
+        batch_size = int(
+            np.sum(is_unlabeled(y, missing_label=poss_missing_label))
+        )
+        for name, value in [
+            ("X", X),
+            ("y", y),
+            ("batch_size", batch_size),
+        ]:
             query_dict[name] = value
         qs = call_func(qs_class, **init_dict)
 
         indices = call_func(qs.query, **query_dict)
-        np.testing.assert_array_equal(indices.sort(), unlabeled_indices(y).sort())
+        np.testing.assert_array_equal(
+            indices.sort(), unlabeled_indices(y).sort()
+        )
 
     for illegal_missing_label in [dict, []]:
         init_dict["missing_label"] = illegal_missing_label
-        X, y = (np.arange(5 * 2).reshape(5, 2), np.arange(5))
-        for name, value in [("X", X), ("y", y), ("batch_size", 1)]:
+        X, y = (
+            np.arange(5 * 2).reshape(5, 2),
+            np.arange(5),
+        )
+        for name, value in [
+            ("X", X),
+            ("y", y),
+            ("batch_size", 1),
+        ]:
             query_dict[name] = value
         qs = call_func(qs_class, **init_dict)
 
@@ -98,7 +127,11 @@ def provide_test_regression_query_strategy_init_missing_label(
 
 
 def provide_test_regression_query_strategy_init_integration_dict(
-    test_instance, qs_class, init_dict=None, query_dict=None, integration_dict_name=None
+    test_instance,
+    qs_class,
+    init_dict=None,
+    query_dict=None,
+    integration_dict_name=None,
 ):
     # initialisation
     if init_dict is None:
@@ -149,7 +182,12 @@ def provide_test_regression_query_strategy_query_X(
     indices = call_func(qs.query, **query_dict)
 
     # wrong shape dimension, wrong shape form, None and str not allowed
-    for X_illegal in [np.arange(5), np.arange(3).reshape(3, 1), None, "illegal"]:
+    for X_illegal in [
+        np.arange(5),
+        np.arange(3).reshape(3, 1),
+        None,
+        "illegal",
+    ]:
         query_dict["X"] = X_illegal
         test_instance.assertRaises(
             (TypeError, ValueError), call_func, qs.query, **query_dict
@@ -177,8 +215,17 @@ def provide_test_regression_query_strategy_query_y(
         indices = call_func(qs.query, **query_dict)
 
     # wrong shape dimension, wrong shape form, None and str not allowed
-    for y_illegal in [np.arange(5 * 2).reshape(5, 2), np.arange(3), None, "illegal"]:
-        for name, value in [("X", X), ("y", y_illegal), ("batch_size", 1)]:
+    for y_illegal in [
+        np.arange(5 * 2).reshape(5, 2),
+        np.arange(3),
+        None,
+        "illegal",
+    ]:
+        for name, value in [
+            ("X", X),
+            ("y", y_illegal),
+            ("batch_size", 1),
+        ]:
             query_dict[name] = value
 
         test_instance.assertRaises(
@@ -187,7 +234,11 @@ def provide_test_regression_query_strategy_query_y(
 
 
 def provide_test_regression_query_strategy_query_reg(
-    test_instance, qs_class, init_dict=None, query_dict=None, is_probabilistic=False
+    test_instance,
+    qs_class,
+    init_dict=None,
+    query_dict=None,
+    is_probabilistic=False,
 ):
     # initialisation
     if init_dict is None:
@@ -274,12 +325,16 @@ def provide_test_regression_query_strategy_query_sample_weight(
         class SpyRegressor(NICKernelRegressor):
             def fit(self, *args, **kwargs):
                 if (
-                    "sample_weight" in kwargs and kwargs["sample_weight"] is not None
+                    "sample_weight" in kwargs
+                    and kwargs["sample_weight"] is not None
                 ) or (len(args) >= 3 and args[2] is not None):
                     call_status_dict["used_sample_weight"] = True
                 return super().fit(*args, **kwargs)
 
-        query_dict = {"reg": SpyRegressor(), "fit_reg": True}
+        query_dict = {
+            "reg": SpyRegressor(),
+            "fit_reg": True,
+        }
 
     X, y = get_regression_test_data()
     update_query_dict_for_one_batch(query_dict, X, y)
@@ -295,9 +350,15 @@ def provide_test_regression_query_strategy_query_sample_weight(
             test_instance.assertTrue(call_status_dict["used_sample_weight"])
 
     # illegal arguments
-    for illegal_sample_weight in ["illegal", dict, np.arange(len(y) - 1)]:
+    for illegal_sample_weight in [
+        "illegal",
+        dict,
+        np.arange(len(y) - 1),
+    ]:
         query_dict["sample_weight"] = illegal_sample_weight
-        test_instance.assertRaises((TypeError, ValueError), call_func, **query_dict)
+        test_instance.assertRaises(
+            (TypeError, ValueError), call_func, **query_dict
+        )
 
 
 def provide_test_regression_query_strategy_query_candidates(
@@ -324,7 +385,11 @@ def provide_test_regression_query_strategy_query_candidates(
     # correct arguments
 
     utilities_s = []
-    for poss_candidates in [None, lbld_indices, X[lbld_indices]]:
+    for poss_candidates in [
+        None,
+        lbld_indices,
+        X[lbld_indices],
+    ]:
         query_dict["candidates"] = poss_candidates
         # add expect MappingError occurs
         utilities_s.append(call_func(qs.query, **query_dict)[1])
@@ -337,7 +402,11 @@ def provide_test_regression_query_strategy_query_candidates(
 
     # illegal arguments
 
-    for illegal_candidates in [np.arange(4) + 7, "illegal", dict]:
+    for illegal_candidates in [
+        np.arange(4) + 7,
+        "illegal",
+        dict,
+    ]:
         query_dict["candidates"] = illegal_candidates
         test_instance.assertRaises(
             (ValueError, TypeError), call_func, qs.query, **query_dict
@@ -395,19 +464,26 @@ def provide_test_regression_query_strategy_query_return_utilities(
     for poss_return_utilities in [True, False]:
         query_dict["return_utilities"] = poss_return_utilities
         re_val = call_func(qs.query, **query_dict)
-        test_instance.assertEqual(isinstance(re_val, tuple), poss_return_utilities)
+        test_instance.assertEqual(
+            isinstance(re_val, tuple), poss_return_utilities
+        )
 
     for illegal_return_utilities in ["illegal", dict, 5]:
         query_dict["return_utilities"] = illegal_return_utilities
         test_instance.assertRaises(TypeError, call_func, qs.query, **query_dict)
 
 
-def get_list_of_regression_test_data(missing_label=MISSING_LABEL):
+def get_list_of_regression_test_data(
+    missing_label=MISSING_LABEL,
+):
     X_s = [
         np.arange(7).reshape(7, 1),
         0.3 * np.arange(5 * 3).reshape(5, 3),
     ]
-    y_s = [np.arange(7, dtype=float) * 4 + 1, 4.5 * np.arange(5, dtype=float) ** 2 - 7]
+    y_s = [
+        np.arange(7, dtype=float) * 4 + 1,
+        4.5 * np.arange(5, dtype=float) ** 2 - 7,
+    ]
     y_s[0][[0, 1, 4]] = missing_label
     y_s[1][[2, 3, 4]] = missing_label
     return X_s, y_s
@@ -423,7 +499,10 @@ def get_default_query_dict():
 
 
 def get_default_init_dict(missing_label=MISSING_LABEL):
-    return {"missing_label": missing_label, "random_state": 0}
+    return {
+        "missing_label": missing_label,
+        "random_state": 0,
+    }
 
 
 def update_query_dict_for_one_batch(query_dict, X, y):

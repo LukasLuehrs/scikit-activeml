@@ -117,12 +117,21 @@ def conditional_expect(
         "quadrature",
         None,
     )
-    check_scalar(n_integration_samples, "n_monte_carlo", int, min_val=1)
+    check_scalar(
+        n_integration_samples,
+        "n_monte_carlo",
+        int,
+        min_val=1,
+    )
     check_type(quad_dict, "scipy_args", dict, None)
     check_type(include_idx, "include_idx", bool)
     check_type(include_x, "include_x", bool)
     check_type(vector_func, "vector_func", bool, "both")
-    check_callable(func, "func", n_free_parameters=1 + include_idx + include_x)
+    check_callable(
+        func,
+        "func",
+        n_free_parameters=1 + include_idx + include_x,
+    )
 
     if method is None:
         method = "gauss_hermite"
@@ -150,7 +159,9 @@ def conditional_expect(
 
     def evaluate_func(inner_potential_y):
         if vector_func:
-            inner_output = func(*arg_filter(np.arange(len(X)), X, inner_potential_y))
+            inner_output = func(
+                *arg_filter(np.arange(len(X)), X, inner_potential_y)
+            )
         else:
             inner_output = np.zeros_like(inner_potential_y)
             for idx_x, inner_x in enumerate(X):
@@ -167,37 +178,56 @@ def conditional_expect(
             potential_y = reg.predict(X).reshape(-1, 1)
         else:  # method equals "monte_carlo"
             potential_y = reg.sample_y(
-                X=X, n_rv_samples=n_integration_samples, random_state=random_state
+                X=X,
+                n_rv_samples=n_integration_samples,
+                random_state=random_state,
             )
         expectation = np.average(evaluate_func(potential_y), axis=1)
     elif method == "quantile":
-        if quantile_method in ["trapezoid", "simpson", "average", "romberg"]:
+        if quantile_method in [
+            "trapezoid",
+            "simpson",
+            "average",
+            "romberg",
+        ]:
             eval_points = np.arange(1, n_integration_samples + 1) / (
                 n_integration_samples + 1
             )
-            cond_dist = reshape_dist(reg.predict_target_distribution(X), shape=(-1, 1))
+            cond_dist = reshape_dist(
+                reg.predict_target_distribution(X),
+                shape=(-1, 1),
+            )
             potential_y = cond_dist.ppf(eval_points.reshape(1, -1))
             output = evaluate_func(potential_y)
 
             if quantile_method == "trapezoid":
                 expectation = integrate.trapezoid(
-                    output, dx=1 / n_integration_samples, axis=1
+                    output,
+                    dx=1 / n_integration_samples,
+                    axis=1,
                 )
             elif quantile_method == "simpson":
                 expectation = integrate.simpson(
-                    output, dx=1 / n_integration_samples, axis=1
+                    output,
+                    dx=1 / n_integration_samples,
+                    axis=1,
                 )
             elif quantile_method == "average":
                 expectation = np.average(output, axis=-1)
             else:  # quantile_method equals "romberg"
                 expectation = integrate.romb(
-                    output, dx=1 / n_integration_samples, axis=1
+                    output,
+                    dx=1 / n_integration_samples,
+                    axis=1,
                 )
         else:  # quantile_method equals "quadrature"
 
-            def fixed_quad_function_wrapper(inner_eval_points):
+            def fixed_quad_function_wrapper(
+                inner_eval_points,
+            ):
                 inner_cond_dist = reshape_dist(
-                    reg.predict_target_distribution(X), shape=(-1, 1)
+                    reg.predict_target_distribution(X),
+                    shape=(-1, 1),
                 )
                 inner_potential_y = inner_cond_dist.ppf(
                     inner_eval_points.reshape(1, -1)
@@ -206,7 +236,10 @@ def conditional_expect(
                 return evaluate_func(inner_potential_y)
 
             expectation, _ = integrate.fixed_quad(
-                fixed_quad_function_wrapper, 0, 1, n=n_integration_samples
+                fixed_quad_function_wrapper,
+                0,
+                1,
+                n=n_integration_samples,
             )
     elif method == "gauss_hermite":
         unscaled_potential_y, weights = roots_hermitenorm(n_integration_samples)
@@ -217,7 +250,9 @@ def conditional_expect(
         )
         output = evaluate_func(potential_y)
         expectation = (
-            1 / (2 * np.pi) ** (1 / 2) * np.sum(weights[np.newaxis, :] * output, axis=1)
+            1
+            / (2 * np.pi) ** (1 / 2)
+            * np.sum(weights[np.newaxis, :] * output, axis=1)
         )
     else:  # method equals "dynamic_quad"
         for idx, x in enumerate(X):
@@ -228,7 +263,11 @@ def conditional_expect(
                     return func(*arg_filter(idx, x, y))
                 else:
                     return func(
-                        *arg_filter(np.arange(len(X)), X, np.full((len(X), 1), y))
+                        *arg_filter(
+                            np.arange(len(X)),
+                            X,
+                            np.full((len(X), 1), y),
+                        )
                     )[idx]
 
             expectation[idx] = cond_dist.expect(
@@ -255,7 +294,11 @@ def reshape_dist(dist, shape):
     dist : scipy.stats._distn_infrastructure.rv_frozen
         The reshaped distribution.
     """
-    check_type(dist, "dist", scipy.stats._distn_infrastructure.rv_frozen)
+    check_type(
+        dist,
+        "dist",
+        scipy.stats._distn_infrastructure.rv_frozen,
+    )
     check_type(shape, "shape", tuple)
     for idx, item in enumerate(shape):
         check_type(item, f"shape[{idx}]", int)

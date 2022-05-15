@@ -2,8 +2,14 @@ import unittest
 
 import numpy as np
 from sklearn.datasets import make_blobs
-from sklearn.mixture import BayesianGaussianMixture, GaussianMixture
-from sklearn.utils.validation import NotFittedError, check_is_fitted
+from sklearn.mixture import (
+    BayesianGaussianMixture,
+    GaussianMixture,
+)
+from sklearn.utils.validation import (
+    NotFittedError,
+    check_is_fitted,
+)
 
 from skactiveml.classifier import MixtureModelClassifier
 
@@ -66,7 +72,9 @@ class TestMixtureModelClassifier(unittest.TestCase):
         self.assertFalse(hasattr(cmm, "classes_"))
         cmm.fit(X=self.X, y=self.y)
         self.assertTrue(hasattr(cmm, "mixture_model_"))
-        np.testing.assert_array_equal(cmm.classes_, ["new york", "paris", "tokyo"])
+        np.testing.assert_array_equal(
+            cmm.classes_, ["new york", "paris", "tokyo"]
+        )
         np.testing.assert_array_equal(1 - np.eye(3), cmm.cost_matrix_)
         np.testing.assert_array_equal([[0, 1, 1]], cmm.F_components_)
         cmm.fit(X=self.X, y=self.y, sample_weight=self.w)
@@ -91,7 +99,9 @@ class TestMixtureModelClassifier(unittest.TestCase):
         y_nan = np.full_like(y, np.nan, dtype=float)
         mixture = BayesianGaussianMixture(n_components=5)
         cmm = MixtureModelClassifier(
-            mixture_model=mixture, classes=[0, 1], weight_mode="similarities"
+            mixture_model=mixture,
+            classes=[0, 1],
+            weight_mode="similarities",
         )
         self.assertRaises(NotFittedError, cmm.predict_freq, X=self.X)
         cmm.fit(X=X, y=y_nan)

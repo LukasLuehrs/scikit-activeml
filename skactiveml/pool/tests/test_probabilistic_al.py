@@ -1,7 +1,9 @@
 import unittest
 
 import numpy as np
-from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process import (
+    GaussianProcessClassifier,
+)
 
 from skactiveml.classifier import ParzenWindowClassifier
 from skactiveml.pool import ProbabilisticAL
@@ -17,9 +19,15 @@ class TestProbabilisticAL(unittest.TestCase):
         self.classes = [0, 1, 2]
         self.C = np.eye(3)
         self.clf = ParzenWindowClassifier(
-            classes=self.classes, missing_label=MISSING_LABEL
+            classes=self.classes,
+            missing_label=MISSING_LABEL,
         )
-        self.kwargs = dict(X=self.X, y=self.y, candidates=self.candidates, clf=self.clf)
+        self.kwargs = dict(
+            X=self.X,
+            y=self.y,
+            candidates=self.candidates,
+            clf=self.clf,
+        )
 
     # Test init parameters
     def test_init_param_prior(self):
@@ -59,7 +67,9 @@ class TestProbabilisticAL(unittest.TestCase):
 
     def test_query_param_sample_weight(self):
         pal = ProbabilisticAL()
-        self.assertRaises(ValueError, pal.query, **self.kwargs, sample_weight="string")
+        self.assertRaises(
+            ValueError, pal.query, **self.kwargs, sample_weight="string"
+        )
         self.assertRaises(
             ValueError, pal.query, **self.kwargs, sample_weight=self.candidates
         )
@@ -102,15 +112,21 @@ class TestProbabilisticAL(unittest.TestCase):
 
     def test_query_param_fit_clf(self):
         selector = ProbabilisticAL()
-        self.assertRaises(TypeError, selector.query, **self.kwargs, fit_clf="string")
+        self.assertRaises(
+            TypeError, selector.query, **self.kwargs, fit_clf="string"
+        )
         self.assertRaises(
             TypeError, selector.query, **self.kwargs, fit_clf=self.candidates
         )
-        self.assertRaises(TypeError, selector.query, **self.kwargs, fit_clf=None)
+        self.assertRaises(
+            TypeError, selector.query, **self.kwargs, fit_clf=None
+        )
 
     def test_query_param_utility_weight(self):
         pal = ProbabilisticAL()
-        self.assertRaises(ValueError, pal.query, **self.kwargs, utility_weight="string")
+        self.assertRaises(
+            ValueError, pal.query, **self.kwargs, utility_weight="string"
+        )
         self.assertRaises(
             ValueError, pal.query, **self.kwargs, utility_weight=self.candidates
         )
@@ -153,9 +169,20 @@ class TestProbabilisticAL(unittest.TestCase):
 
     def test_query(self):
         mcpal = ProbabilisticAL()
-        self.assertRaises(ValueError, mcpal.query, X=[], y=[], clf=self.clf)
         self.assertRaises(
-            ValueError, mcpal.query, X=[], y=[], clf=self.clf, candidates=[]
+            ValueError,
+            mcpal.query,
+            X=[],
+            y=[],
+            clf=self.clf,
+        )
+        self.assertRaises(
+            ValueError,
+            mcpal.query,
+            X=[],
+            y=[],
+            clf=self.clf,
+            candidates=[],
         )
         self.assertRaises(
             ValueError,
@@ -198,12 +225,19 @@ class TestProbabilisticAL(unittest.TestCase):
         np.testing.assert_array_equal(best_indices, np.array([3]))
 
         _, utilities = mcpal.query(
-            X=[[1]], y=[0], clf=clf, candidates=X_cand, return_utilities=True
+            X=[[1]],
+            y=[0],
+            clf=clf,
+            candidates=X_cand,
+            return_utilities=True,
         )
         min_utilities = np.argmin(utilities)
         np.testing.assert_array_equal(min_utilities, np.array([1]))
 
         best_indices = mcpal.query(
-            X=[[0], [2]], y=[0, 1], clf=clf, candidates=[[0], [1], [2]]
+            X=[[0], [2]],
+            y=[0, 1],
+            clf=clf,
+            candidates=[[0], [1], [2]],
         )
         np.testing.assert_array_equal(best_indices, [1])

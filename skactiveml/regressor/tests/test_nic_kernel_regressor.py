@@ -2,7 +2,9 @@ import unittest
 
 import numpy as np
 
-from skactiveml.regressor._nic_kernel_regressor import NICKernelRegressor
+from skactiveml.regressor._nic_kernel_regressor import (
+    NICKernelRegressor,
+)
 from skactiveml.utils import MISSING_LABEL
 
 
@@ -24,7 +26,12 @@ class TestNICKernelEstimator(unittest.TestCase):
         }
 
     def test_parameters(self):
-        for param in ["kappa_0", "nu_0", "mu_0", "sigma_sq_0"]:
+        for param in [
+            "kappa_0",
+            "nu_0",
+            "mu_0",
+            "sigma_sq_0",
+        ]:
             start_params = self.start_parameter.copy()
             start_params[param] = "wrong_value"
 
@@ -39,7 +46,9 @@ class TestNICKernelEstimator(unittest.TestCase):
         reg_usual_missing_label = NICKernelRegressor(**self.start_parameter)
         X = np.array([[0, 1], [0, 1], [1, 0], [0, 0]])
         y_other_missing_label = np.array([0.1, 0.2, -1, -1])
-        y_usual_missing_label = np.array([0.1, 0.2, MISSING_LABEL, MISSING_LABEL])
+        y_usual_missing_label = np.array(
+            [0.1, 0.2, MISSING_LABEL, MISSING_LABEL]
+        )
         reg_other_missing_label.fit(X, y_other_missing_label)
         reg_usual_missing_label.fit(X, y_usual_missing_label)
         y_return_other = reg_other_missing_label.predict([[0, 0]])[0]

@@ -7,7 +7,11 @@ import numpy as np
 from scipy.stats import rankdata
 from sklearn.utils import check_array
 
-from ._validation import check_random_state, check_scalar, check_type
+from ._validation import (
+    check_random_state,
+    check_scalar,
+    check_type,
+)
 
 
 def rand_argmin(a, random_state=None, **argmin_kwargs):
@@ -79,7 +83,12 @@ def rand_argmax(a, random_state=None, **argmax_kwargs):
     return index_array
 
 
-def simple_batch(utilities, random_state=None, batch_size=1, return_utilities=False):
+def simple_batch(
+    utilities,
+    random_state=None,
+    batch_size=1,
+    return_utilities=False,
+):
     """Generates a batch by selecting the highest values in the 'utilities'.
     If utilities is an ND-array, the returned utilities will be an
     (N+1)D-array, with the shape batch_size x utilities.shape, filled the given
@@ -114,7 +123,12 @@ def simple_batch(utilities, random_state=None, batch_size=1, return_utilities=Fa
         force_all_finite="allow-nan",
         allow_nd=True,
     )
-    check_scalar(batch_size, target_type=int, name="batch_size", min_val=1)
+    check_scalar(
+        batch_size,
+        target_type=int,
+        name="batch_size",
+        min_val=1,
+    )
     max_batch_size = np.sum(~np.isnan(utilities), dtype=int)
     if max_batch_size < batch_size:
         warnings.warn(
@@ -178,7 +192,10 @@ def combine_ranking(*iter_ranking, rank_method=None, rank_per_batch=False):
     iter_ranking = list(iter_ranking)
     for idx, ranking in enumerate(iter_ranking):
         iter_ranking[idx] = check_array(
-            ranking, allow_nd=True, ensure_2d=False, force_all_finite=False
+            ranking,
+            allow_nd=True,
+            ensure_2d=False,
+            force_all_finite=False,
         ).astype(float)
         if idx != 0 and iter_ranking[idx - 1].ndim != ranking.ndim:
             raise ValueError(
@@ -196,7 +213,10 @@ def combine_ranking(*iter_ranking, rank_method=None, rank_per_batch=False):
         next_ranking = iter_ranking[idx]
         cr_shape = combined_ranking.shape
         if rank_per_batch:
-            rank_shape = (cr_shape[0], max(reduce(operator.mul, cr_shape[1:], 1), 1))
+            rank_shape = (
+                cr_shape[0],
+                max(reduce(operator.mul, cr_shape[1:], 1), 1),
+            )
             rank_dict = {"method": rank_method, "axis": 1}
         else:
             rank_shape = reduce(operator.mul, cr_shape, 1)
@@ -211,6 +231,8 @@ def combine_ranking(*iter_ranking, rank_method=None, rank_per_batch=False):
         combined_ranking[nan_values] = np.nan
         combined_ranking = combined_ranking.reshape(cr_shape)
 
-        combined_ranking = combined_ranking + 1 / (1 + np.exp(-next_ranking))  # sigmoid
+        combined_ranking = combined_ranking + 1 / (
+            1 + np.exp(-next_ranking)
+        )  # sigmoid
 
     return combined_ranking

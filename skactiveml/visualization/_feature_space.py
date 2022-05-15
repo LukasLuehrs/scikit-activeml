@@ -89,7 +89,9 @@ def plot_utilities(qs, X, y, candidates=None, **kwargs):
         The axis on which the utilities were plotted.
     """
     check_type(qs, "qs", SingleAnnotatorPoolQueryStrategy)
-    return _general_plot_utilities(qs=qs, X=X, y=y, candidates=candidates, **kwargs)
+    return _general_plot_utilities(
+        qs=qs, X=X, y=y, candidates=candidates, **kwargs
+    )
 
 
 def plot_annotator_utilities(qs, X, y, candidates=None, **kwargs):
@@ -152,7 +154,9 @@ def plot_annotator_utilities(qs, X, y, candidates=None, **kwargs):
         The axes on which the utilities were plotted.
     """
     check_type(qs, "qs", MultiAnnotatorPoolQueryStrategy)
-    return _general_plot_utilities(qs=qs, X=X, y=y, candidates=candidates, **kwargs)
+    return _general_plot_utilities(
+        qs=qs, X=X, y=y, candidates=candidates, **kwargs
+    )
 
 
 def plot_decision_boundary(
@@ -243,7 +247,9 @@ def plot_decision_boundary(
         for idx, y in enumerate(predicted_classes):
             predictions[idx, y] = 1
     else:
-        raise AttributeError("'clf' must implement 'predict' or " "'predict_proba'")
+        raise AttributeError(
+            "'clf' must implement 'predict' or " "'predict_proba'"
+        )
 
     posterior_list = []
 
@@ -258,11 +264,21 @@ def plot_decision_boundary(
         posteriors_best_alternative = np.zeros_like(posteriors)
         for y2 in np.setdiff1d(classes, [y]):
             posteriors_best_alternative = np.max(
-                [posteriors_best_alternative, posterior_list[y2]], axis=0
+                [
+                    posteriors_best_alternative,
+                    posterior_list[y2],
+                ],
+                axis=0,
             )
 
         posteriors = posteriors / (posteriors + posteriors_best_alternative)
-        ax.contour(X_mesh, Y_mesh, posteriors, [0.5], **boundary_args)
+        ax.contour(
+            X_mesh,
+            Y_mesh,
+            posteriors,
+            [0.5],
+            **boundary_args,
+        )
         if confidence is not None:
             ax.contour(
                 X_mesh,
@@ -313,7 +329,11 @@ def plot_contour_for_samples(
     matplotlib.axes.Axes: The axis on which the utility was plotted.
     """
     check_array(X, ensure_2d=True)
-    check_array(values, ensure_2d=False, force_all_finite="allow-nan")
+    check_array(
+        values,
+        ensure_2d=False,
+        force_all_finite="allow-nan",
+    )
 
     feature_bound = check_bound(bound=feature_bound, X=X)
 
@@ -402,7 +422,9 @@ def _general_plot_utilities(qs, X, y, candidates=None, **kwargs):
          The axes on which the utilities were plotted.
     """
     replace_nan = kwargs.pop("replace_nan", 0.0)
-    ignore_undefined_query_params = kwargs.pop("ignore_undefined_query_params", False)
+    ignore_undefined_query_params = kwargs.pop(
+        "ignore_undefined_query_params", False
+    )
     feature_bound = kwargs.pop("feature_bound", None)
     ax = kwargs.pop("ax", None)
     axes = kwargs.pop("axes", None)
@@ -431,7 +453,8 @@ def _general_plot_utilities(qs, X, y, candidates=None, **kwargs):
         n_annotators = None
         if plot_annotators is not None:
             raise TypeError(
-                "`plot_annotator` can be only used in the multi-annotator " "setting."
+                "`plot_annotator` can be only used in the multi-annotator "
+                "setting."
             )
         else:
             plot_annotators = np.arange(1)
@@ -478,10 +501,19 @@ def _general_plot_utilities(qs, X, y, candidates=None, **kwargs):
 
             if ignore_undefined_query_params:
                 _, utilities = call_func(
-                    qs.query, X=X, y=y, candidates=mesh_instances, **kwargs
+                    qs.query,
+                    X=X,
+                    y=y,
+                    candidates=mesh_instances,
+                    **kwargs,
                 )
             else:
-                _, utilities = qs.query(X=X, y=y, candidates=mesh_instances, **kwargs)
+                _, utilities = qs.query(
+                    X=X,
+                    y=y,
+                    candidates=mesh_instances,
+                    **kwargs,
+                )
 
             for a_idx, ax_ in zip(plot_annotators, axes):
                 if n_annotators is not None:
@@ -489,7 +521,12 @@ def _general_plot_utilities(qs, X, y, candidates=None, **kwargs):
                 else:
                     utilities_a_idx = utilities[0, :]
                 utilities_a_idx = utilities_a_idx.reshape(X_mesh.shape)
-                ax_.contourf(X_mesh, Y_mesh, utilities_a_idx, **contour_args)
+                ax_.contourf(
+                    X_mesh,
+                    Y_mesh,
+                    utilities_a_idx,
+                    **contour_args,
+                )
 
             if n_annotators is None:
                 return axes[0]
@@ -519,7 +556,13 @@ def _general_plot_utilities(qs, X, y, candidates=None, **kwargs):
         X_utils = candidates
 
     if ignore_undefined_query_params:
-        _, utilities = call_func(qs.query, X=X, y=y, candidates=candidates, **kwargs)
+        _, utilities = call_func(
+            qs.query,
+            X=X,
+            y=y,
+            candidates=candidates,
+            **kwargs,
+        )
     else:
         _, utilities = qs.query(X=X, y=y, candidates=candidates, **kwargs)
 

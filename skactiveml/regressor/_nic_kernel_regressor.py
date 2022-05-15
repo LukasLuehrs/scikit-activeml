@@ -5,7 +5,11 @@ from sklearn.utils import check_array
 from sklearn.utils.validation import check_is_fitted
 
 from skactiveml.base import ProbabilisticRegressor
-from skactiveml.utils import is_labeled, MISSING_LABEL, check_scalar
+from skactiveml.utils import (
+    is_labeled,
+    MISSING_LABEL,
+    check_scalar,
+)
 
 
 class NICKernelRegressor(ProbabilisticRegressor):
@@ -89,7 +93,12 @@ class NICKernelRegressor(ProbabilisticRegressor):
         self.X_ = X[is_lbld]
         self.y_ = y[is_lbld]
 
-        self.prior_params_ = (self.kappa_0, self.nu_0, self.mu_0, self.sigma_sq_0)
+        self.prior_params_ = (
+            self.kappa_0,
+            self.nu_0,
+            self.mu_0,
+            self.sigma_sq_0,
+        )
         if sample_weight is not None:
             weights_ = sample_weight[is_lbld]
             self.y_ = (weights_ * self.y_) / np.average(weights_)
@@ -101,7 +110,8 @@ class NICKernelRegressor(ProbabilisticRegressor):
         N = np.sum(K, axis=1)
         mu_ml = K @ self.y_ / N
         scatter = np.sum(
-            K * (self.y_[np.newaxis, :] - mu_ml[:, np.newaxis]) ** 2, axis=1
+            K * (self.y_[np.newaxis, :] - mu_ml[:, np.newaxis]) ** 2,
+            axis=1,
         )
         var_ml = 1 / N * scatter
 
@@ -138,7 +148,12 @@ class NICKernelRegressor(ProbabilisticRegressor):
         update_params = self._estimate_update_params(X)
         post_params = _combine_params(prior_params, update_params)
 
-        kappa_post, nu_post, mu_post, sigma_sq_post = post_params
+        (
+            kappa_post,
+            nu_post,
+            mu_post,
+            sigma_sq_post,
+        ) = post_params
 
         df = nu_post
         loc = mu_post

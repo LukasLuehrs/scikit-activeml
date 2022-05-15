@@ -5,8 +5,15 @@ from skactiveml.base import (
     SkactivemlRegressor,
     SingleAnnotatorPoolQueryStrategy,
 )
-from skactiveml.utils import check_type, simple_batch, check_scalar, MISSING_LABEL
-from skactiveml.pool.regression.utils._model_fitting import bootstrap_estimators
+from skactiveml.utils import (
+    check_type,
+    simple_batch,
+    check_scalar,
+    MISSING_LABEL,
+)
+from skactiveml.pool.regression.utils._model_fitting import (
+    bootstrap_estimators,
+)
 from skactiveml.utils._validation import check_callable
 
 
@@ -49,11 +56,16 @@ class ExpectedModelChange(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
         self.k_bootstraps = k_bootstraps
         self.n_train = n_train
         self.ord = ord
-        self.feature_map = feature_map if feature_map is not None else lambda x: x
+        self.feature_map = (
+            feature_map if feature_map is not None else lambda x: x
+        )
 
     def query(
         self,
@@ -77,8 +89,8 @@ class ExpectedModelChange(SingleAnnotatorPoolQueryStrategy):
             Labels of the training data set (possibly including unlabeled ones
             indicated by self.MISSING_LABEL.
         reg: SkactivemlRegressor
-            Regressor to predict the data. Assumes a linear regressor with respect
-            to the parameters.
+            Regressor to predict the data. Assumes a linear regressor with
+            respect to the parameters.
         fit_reg : bool, optional (default=True)
             Defines whether the regressor should be fitted on `X`, `y`, and
             `sample_weight`.
@@ -121,8 +133,13 @@ class ExpectedModelChange(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
 
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         check_type(reg, "reg", SkactivemlRegressor)
@@ -135,7 +152,12 @@ class ExpectedModelChange(SingleAnnotatorPoolQueryStrategy):
             max_val=1,
             min_inclusive=False,
         )
-        check_scalar(self.k_bootstraps, "self.k_bootstraps", int, min_val=1)
+        check_scalar(
+            self.k_bootstraps,
+            "self.k_bootstraps",
+            int,
+            min_val=1,
+        )
         check_callable(self.feature_map, "self.feature_map")
 
         if fit_reg:
@@ -153,7 +175,9 @@ class ExpectedModelChange(SingleAnnotatorPoolQueryStrategy):
             random_state=self.random_state_,
         )
 
-        results_learner = np.array([learner.predict(X_cand) for learner in learners])
+        results_learner = np.array(
+            [learner.predict(X_cand) for learner in learners]
+        )
         pred = reg.predict(X_cand).reshape(1, -1)
         scalars = np.average(np.abs(results_learner - pred), axis=0)
         X_cand_mapped_features = self.feature_map(X_cand)

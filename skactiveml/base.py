@@ -8,9 +8,15 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 
 import numpy as np
-from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
+from sklearn.base import (
+    BaseEstimator,
+    ClassifierMixin,
+    RegressorMixin,
+)
 from sklearn.metrics import accuracy_score
-from sklearn.utils.multiclass import check_classification_targets
+from sklearn.utils.multiclass import (
+    check_classification_targets,
+)
 from sklearn.utils.validation import (
     check_array,
     check_consistent_length,
@@ -174,12 +180,23 @@ class PoolQueryStrategy(QueryStrategy):
         check_scalar(return_utilities, "return_utilities", bool)
 
         # Check batch size.
-        check_scalar(batch_size, target_type=int, name="batch_size", min_val=1)
+        check_scalar(
+            batch_size,
+            target_type=int,
+            name="batch_size",
+            min_val=1,
+        )
 
         # Check random state.
         self.random_state_ = check_random_state(self.random_state, seed_mult)
 
-        return X, y, candidates, batch_size, return_utilities
+        return (
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+        )
 
 
 class SingleAnnotatorPoolQueryStrategy(PoolQueryStrategy):
@@ -303,8 +320,20 @@ class SingleAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             Checked boolean value of `return_utilities`.
         """
 
-        (X, y, candidates, batch_size, return_utilities,) = super()._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset, check_X_dict
+        (
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+        ) = super()._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset,
+            check_X_dict,
         )
         y = column_or_1d(y, warn=True)
 
@@ -322,7 +351,13 @@ class SingleAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             )
             batch_size = n_candidates
 
-        return X, y, candidates, batch_size, return_utilities
+        return (
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+        )
 
     def _transform_candidates(
         self,
@@ -375,7 +410,9 @@ class SingleAnnotatorPoolQueryStrategy(PoolQueryStrategy):
         elif candidates.ndim == 1:
             if allow_only_unlabeled:
                 if is_labeled(y[candidates], self.missing_label_).any():
-                    raise ValueError("Candidates must not contain labeled " "samples.")
+                    raise ValueError(
+                        "Candidates must not contain labeled " "samples."
+                    )
             return X[candidates], candidates
         else:
             if enforce_mapping:
@@ -563,8 +600,20 @@ class MultiAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             Checked boolean value of `return_utilities`.
         """
 
-        (X, y, candidates, batch_size, return_utilities,) = super()._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset, check_X_dict
+        (
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+        ) = super()._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset,
+            check_X_dict,
         )
 
         check_array(y, ensure_2d=True, force_all_finite="allow-nan")
@@ -614,10 +663,22 @@ class MultiAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             )
             batch_size = n_candidate_pairs
 
-        return X, y, candidates, annotators, batch_size, return_utilities
+        return (
+            X,
+            y,
+            candidates,
+            annotators,
+            batch_size,
+            return_utilities,
+        )
 
     def _transform_cand_annot(
-        self, candidates, annotators, X, y, enforce_mapping=False
+        self,
+        candidates,
+        annotators,
+        X,
+        y,
+        enforce_mapping=False,
     ):
         """
         Transforms the `candidates` parameter into a sample array and the
@@ -675,7 +736,9 @@ class MultiAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             Available annotator sample pair with respect to `candidates`.
         """
         unlbd_pairs = is_unlabeled(y, self.missing_label_)
-        unlbd_sample_indices = np.argwhere(np.any(unlbd_pairs, axis=1)).flatten()
+        unlbd_sample_indices = np.argwhere(
+            np.any(unlbd_pairs, axis=1)
+        ).flatten()
         n_annotators = y.shape[1]
 
         if candidates is not None and candidates.ndim == 2:
@@ -834,7 +897,13 @@ class SingleAnnotatorStreamQueryStrategy(QueryStrategy):
         self.budget = budget
 
     @abstractmethod
-    def query(self, candidates, *args, return_utilities=False, **kwargs):
+    def query(
+        self,
+        candidates,
+        *args,
+        return_utilities=False,
+        **kwargs,
+    ):
         """Ask the query strategy which instances in candidates to acquire.
 
         The query startegy determines the most useful instances in candidates,
@@ -1114,7 +1183,10 @@ class SkactivemlClassifier(BaseEstimator, ClassifierMixin, ABC):
         y_ensure_1d=True,
     ):
         if check_X_dict is None:
-            check_X_dict = {"ensure_min_samples": 0, "ensure_min_features": 0}
+            check_X_dict = {
+                "ensure_min_samples": 0,
+                "ensure_min_features": 0,
+            }
         if check_y_dict is None:
             check_y_dict = {
                 "ensure_min_samples": 0,
@@ -1125,14 +1197,19 @@ class SkactivemlClassifier(BaseEstimator, ClassifierMixin, ABC):
             }
 
         # Check common classifier parameters.
-        check_classifier_params(self.classes, self.missing_label, self.cost_matrix)
+        check_classifier_params(
+            self.classes,
+            self.missing_label,
+            self.cost_matrix,
+        )
 
         # Store and check random state.
         self.random_state_ = check_random_state(self.random_state)
 
         # Create label encoder.
         self._le = ExtLabelEncoder(
-            classes=self.classes, missing_label=self.missing_label
+            classes=self.classes,
+            missing_label=self.missing_label,
         )
 
         # Check input parameters.
@@ -1174,7 +1251,9 @@ class SkactivemlClassifier(BaseEstimator, ClassifierMixin, ABC):
             if self.cost_matrix is None
             else self.cost_matrix
         )
-        self.cost_matrix_ = check_cost_matrix(self.cost_matrix_, len(self.classes_))
+        self.cost_matrix_ = check_cost_matrix(
+            self.cost_matrix_, len(self.classes_)
+        )
         if self.classes is not None:
             class_indices = np.argsort(self.classes)
             self.cost_matrix_ = self.cost_matrix_[class_indices]
@@ -1304,7 +1383,9 @@ class ClassFrequencyEstimator(SkactivemlClassifier):
         )
 
         # Check class prior.
-        self.class_prior_ = check_class_prior(self.class_prior, len(self.classes_))
+        self.class_prior_ = check_class_prior(
+            self.class_prior, len(self.classes_)
+        )
 
         return X, y, sample_weight
 
@@ -1373,7 +1454,10 @@ class SkactivemlRegressor(BaseEstimator, RegressorMixin, ABC):
     ):
 
         if check_X_dict is None:
-            check_X_dict = {"ensure_min_samples": 0, "ensure_min_features": 0}
+            check_X_dict = {
+                "ensure_min_samples": 0,
+                "ensure_min_features": 0,
+            }
         if check_y_dict is None:
             check_y_dict = {
                 "ensure_min_samples": 0,
@@ -1480,7 +1564,10 @@ class ProbabilisticRegressor(SkactivemlRegressor):
             Drawn random variate samples.
         """
         rv = self.predict_target_distribution(X)
-        rv_samples = rv.rvs(size=(n_rv_samples, len(X)), random_state=random_state)
+        rv_samples = rv.rvs(
+            size=(n_rv_samples, len(X)),
+            random_state=random_state,
+        )
         return rv_samples.T
 
 

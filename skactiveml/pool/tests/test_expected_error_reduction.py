@@ -1,13 +1,23 @@
 import unittest
 
 import numpy as np
-from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process import (
+    GaussianProcessClassifier,
+)
 from sklearn.naive_bayes import GaussianNB
 
 from skactiveml.base import SkactivemlClassifier
-from skactiveml.classifier import ParzenWindowClassifier, SklearnClassifier
-from skactiveml.pool import MonteCarloEER, ValueOfInformationEER
-from skactiveml.pool._expected_error_reduction import ExpectedErrorReduction
+from skactiveml.classifier import (
+    ParzenWindowClassifier,
+    SklearnClassifier,
+)
+from skactiveml.pool import (
+    MonteCarloEER,
+    ValueOfInformationEER,
+)
+from skactiveml.pool._expected_error_reduction import (
+    ExpectedErrorReduction,
+)
 from skactiveml.utils import MISSING_LABEL, is_labeled
 
 
@@ -22,10 +32,15 @@ class TemplateTestExpectedErrorReduction:
         self.classes = [0, 1, 2]
         self.cost_matrix = np.eye(3)
         self.clf = ParzenWindowClassifier(classes=self.classes)
-        self.clf_partial = SklearnClassifier(GaussianNB(), classes=self.classes).fit(
-            self.X, self.y
+        self.clf_partial = SklearnClassifier(
+            GaussianNB(), classes=self.classes
+        ).fit(self.X, self.y)
+        self.kwargs = dict(
+            X=self.X,
+            y=self.y,
+            candidates=self.candidates,
+            clf=self.clf,
         )
-        self.kwargs = dict(X=self.X, y=self.y, candidates=self.candidates, clf=self.clf)
 
         class DummyClf(SkactivemlClassifier):
             def __init__(self, classes=None):
@@ -38,12 +53,19 @@ class TemplateTestExpectedErrorReduction:
                 return self
 
             def predict_proba(self, X):
-                return np.full(shape=(len(X), len(self.classes_)), fill_value=0.5)
+                return np.full(
+                    shape=(len(X), len(self.classes_)),
+                    fill_value=0.5,
+                )
 
         self.DummyClf = DummyClf
 
     def test_init_param_cost_matrix(self):
-        for cost_matrix in [np.ones((2, 3)), "string", np.ones((2, 2))]:
+        for cost_matrix in [
+            np.ones((2, 3)),
+            "string",
+            np.ones((2, 2)),
+        ]:
             qs = self.Strategy(cost_matrix=cost_matrix)
             self.assertRaises(ValueError, qs.query, **self.kwargs)
         self.assertTrue(hasattr(qs, "cost_matrix"))
@@ -73,7 +95,11 @@ class TemplateTestExpectedErrorReduction:
 
     def test_query_param_sample_weight(self):
         qs = self.Strategy()
-        for sw in [self.X_cand, np.empty((len(self.X) - 1)), "string"]:
+        for sw in [
+            self.X_cand,
+            np.empty((len(self.X) - 1)),
+            "string",
+        ]:
             with self.subTest(msg=f"sample_weight={sw}"):
                 self.assertRaises(
                     (IndexError, TypeError, ValueError),
@@ -159,7 +185,13 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X, y, sample_weight, cand, None, X_eval, sample_weight_eval
+            X,
+            y,
+            sample_weight,
+            cand,
+            None,
+            X_eval,
+            sample_weight_eval,
         )
 
         np.testing.assert_equal(len(X_full), len(y_full))
@@ -202,7 +234,13 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X, y, sample_weight, cand, None, X_eval, sample_weight_eval
+            X,
+            y,
+            sample_weight,
+            cand,
+            None,
+            X_eval,
+            sample_weight_eval,
         )
 
         np.testing.assert_equal(len(X_full), len(y_full))
@@ -253,7 +291,9 @@ class TestExpectedErrorReduction(unittest.TestCase):
         np.testing.assert_array_equal(sample_weight_eval, w_eval[idx_eval])
 
         np.testing.assert_array_equal(cand, X_full[idx_cand])
-        np.testing.assert_array_equal(np.full((len(cand)), np.nan), y_full[idx_cand])
+        np.testing.assert_array_equal(
+            np.full((len(cand)), np.nan), y_full[idx_cand]
+        )
         np.testing.assert_array_equal(sample_weight_cand, w_full[idx_cand])
 
         (
@@ -265,9 +305,17 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X, y, None, cand, sample_weight_cand, X_eval, sample_weight_eval
+            X,
+            y,
+            None,
+            cand,
+            sample_weight_cand,
+            X_eval,
+            sample_weight_eval,
         )
-        np.testing.assert_array_equal(np.ones(len(idx_train)), w_full[idx_train])
+        np.testing.assert_array_equal(
+            np.ones(len(idx_train)), w_full[idx_train]
+        )
 
         (
             X_full,
@@ -278,7 +326,13 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X, y, sample_weight, cand, None, X_eval, sample_weight_eval
+            X,
+            y,
+            sample_weight,
+            cand,
+            None,
+            X_eval,
+            sample_weight_eval,
         )
         np.testing.assert_array_equal(np.ones(len(idx_cand)), w_full[idx_cand])
 
@@ -291,7 +345,13 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X, y, sample_weight, cand, sample_weight_cand, None, sample_weight
+            X,
+            y,
+            sample_weight,
+            cand,
+            sample_weight_cand,
+            None,
+            sample_weight,
         )
         np.testing.assert_array_equal(sample_weight, w_full[idx_eval])
 
@@ -341,13 +401,18 @@ class TestExpectedErrorReduction(unittest.TestCase):
         )
 
     def test__risk_estimation(self):
-        def risk_estimation_slow(prob_true, prob_pred, cost_matrix, sample_weight):
+        def risk_estimation_slow(
+            prob_true, prob_pred, cost_matrix, sample_weight
+        ):
             n_samples = len(prob_true)
             n_classes = len(cost_matrix)
             result = 0
             if prob_true.ndim == 1 and prob_pred.ndim == 1:
                 for i in range(n_samples):
-                    result += sample_weight[i] * cost_matrix[prob_true[i], prob_pred[i]]
+                    result += (
+                        sample_weight[i]
+                        * cost_matrix[prob_true[i], prob_pred[i]]
+                    )
             elif prob_true.ndim == 1 and prob_pred.ndim == 2:
                 for i in range(n_samples):
                     for j in range(n_classes):
@@ -431,7 +496,10 @@ class TestMonteCarloEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
 
     def test_query_param_sample_weight_candidates(self):
         qs = self.Strategy()
-        for swc in ["string", np.empty((len(self.X_cand) - 1))]:
+        for swc in [
+            "string",
+            np.empty((len(self.X_cand) - 1)),
+        ]:
             with self.subTest(msg=f"sample_weight_candidates={swc}"):
                 self.assertRaises(
                     (ValueError, TypeError),
@@ -504,23 +572,37 @@ class TestMonteCarloEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
                 "misclassification_loss",
                 candidates,
                 None,
-                np.full(shape=(1, len(candidates)), fill_value=-0.5 * len(X)),
+                np.full(
+                    shape=(1, len(candidates)),
+                    fill_value=-0.5 * len(X),
+                ),
             ],
             [
                 "misclassification_loss",
                 X,
                 None,
-                np.full(shape=(1, len(X)), fill_value=-0.5 * len(X)),
+                np.full(
+                    shape=(1, len(X)),
+                    fill_value=-0.5 * len(X),
+                ),
             ],
             [
                 "misclassification_loss",
                 candidates,
                 X,
-                np.full(shape=(1, len(candidates)), fill_value=-0.5 * len(X)),
+                np.full(
+                    shape=(1, len(candidates)),
+                    fill_value=-0.5 * len(X),
+                ),
             ],
         ]
 
-        for method, cand, X_eval, expected_utils in params_list:
+        for (
+            method,
+            cand,
+            X_eval,
+            expected_utils,
+        ) in params_list:
             with self.subTest(msg=method, cand=cand, eval=X_eval):
                 qs = MonteCarloEER(method=method, cost_matrix=cost_matrix)
                 qs.query(
@@ -551,7 +633,9 @@ class TestMonteCarloEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
         # TODO: ParzenWindowClassifier Test
 
 
-class TestValueOfInformationEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
+class TestValueOfInformationEER(
+    TemplateTestExpectedErrorReduction, unittest.TestCase
+):
     def get_query_strategy(self):
         return ValueOfInformationEER
 
@@ -622,7 +706,15 @@ class TestValueOfInformationEER(TemplateTestExpectedErrorReduction, unittest.Tes
         # ).fit(X, y)
 
         params_list = [
-            ["kapoor-sub", True, True, True, True, False, [[0, 0]]],
+            [
+                "kapoor-sub",
+                True,
+                True,
+                True,
+                True,
+                False,
+                [[0, 0]],
+            ],
             [
                 "kapoor",
                 True,
@@ -630,7 +722,10 @@ class TestValueOfInformationEER(TemplateTestExpectedErrorReduction, unittest.Tes
                 True,
                 False,
                 False,
-                np.full(shape=(1, len(cand)), fill_value=-0.5 * len(X)),
+                np.full(
+                    shape=(1, len(cand)),
+                    fill_value=-0.5 * len(X),
+                ),
             ],
             [
                 "Margeniantu",

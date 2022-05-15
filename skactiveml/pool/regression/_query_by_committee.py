@@ -4,9 +4,19 @@ import numpy as np
 from sklearn import clone
 from sklearn.utils.validation import _is_arraylike
 
-from skactiveml.base import SingleAnnotatorPoolQueryStrategy, SkactivemlRegressor
-from skactiveml.utils import simple_batch, check_type, check_scalar, MISSING_LABEL
-from skactiveml.pool.regression.utils._model_fitting import bootstrap_estimators
+from skactiveml.base import (
+    SingleAnnotatorPoolQueryStrategy,
+    SkactivemlRegressor,
+)
+from skactiveml.utils import (
+    simple_batch,
+    check_type,
+    check_scalar,
+    MISSING_LABEL,
+)
+from skactiveml.pool.regression.utils._model_fitting import (
+    bootstrap_estimators,
+)
 
 
 class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
@@ -42,7 +52,10 @@ class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
         self.k_bootstraps = k_bootstraps
         self.n_train = n_train
 
@@ -113,8 +126,13 @@ class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
 
         # combine
 
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         check_type(fit_ensemble, "fit_ensemble", bool)
@@ -128,7 +146,11 @@ class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
         elif _is_arraylike(ensemble):
             est_arr = deepcopy(ensemble)
             for idx, est in enumerate(est_arr):
-                check_type(est, f"ensemble[{idx}]", SkactivemlRegressor)
+                check_type(
+                    est,
+                    f"ensemble[{idx}]",
+                    SkactivemlRegressor,
+                )
                 if fit_ensemble:
                     est_arr[idx] = est.fit(X, y, sample_weight)
         elif isinstance(ensemble, SkactivemlRegressor):

@@ -6,8 +6,13 @@ from sklearn.linear_model import Perceptron
 from sklearn.naive_bayes import GaussianNB
 from sklearn.utils.validation import NotFittedError
 
-from skactiveml.classifier import ParzenWindowClassifier, SklearnClassifier
-from skactiveml.classifier.multiannotator import AnnotatorEnsembleClassifier
+from skactiveml.classifier import (
+    ParzenWindowClassifier,
+    SklearnClassifier,
+)
+from skactiveml.classifier.multiannotator import (
+    AnnotatorEnsembleClassifier,
+)
 from skactiveml.utils import MISSING_LABEL
 
 
@@ -63,7 +68,9 @@ class TestAnnotatorEnsembleClassifier(unittest.TestCase):
         )
         self.assertRaises(ValueError, clf.fit, X=self.X, y=self.y)
         perc = SklearnClassifier(Perceptron())
-        clf = AnnotatorEnsembleClassifier(estimators=[("perc", perc)], voting="soft")
+        clf = AnnotatorEnsembleClassifier(
+            estimators=[("perc", perc)], voting="soft"
+        )
         self.assertRaises(ValueError, clf.fit, X=self.X, y=self.y)
 
     def test_init_param_voting(self):
@@ -79,14 +86,18 @@ class TestAnnotatorEnsembleClassifier(unittest.TestCase):
         pwc = ParzenWindowClassifier(classes=[1, 2])
         gnb = SklearnClassifier(GaussianNB(), classes=[1, 2])
         clf = AnnotatorEnsembleClassifier(
-            estimators=[("ParzenWindowClassifier", pwc)], classes=[1, 2]
+            estimators=[("ParzenWindowClassifier", pwc)],
+            classes=[1, 2],
         )
         np.testing.assert_array_equal(clf.classes, gnb.classes)
         np.testing.assert_array_equal(clf.classes, pwc.classes)
         pwc = ParzenWindowClassifier(classes=np.arange(3))
         gnb = SklearnClassifier(GaussianNB(), classes=np.arange(3))
         clf = AnnotatorEnsembleClassifier(
-            estimators=[("ParzenWindowClassifier", pwc), ("GNB", gnb)],
+            estimators=[
+                ("ParzenWindowClassifier", pwc),
+                ("GNB", gnb),
+            ],
             voting="soft",
             classes=np.arange(3),
         )
@@ -96,7 +107,10 @@ class TestAnnotatorEnsembleClassifier(unittest.TestCase):
         pwc = ParzenWindowClassifier()
         gnb = SklearnClassifier(GaussianNB())
         clf = AnnotatorEnsembleClassifier(
-            estimators=[("ParzenWindowClassifier", pwc), ("GNB", gnb)],
+            estimators=[
+                ("ParzenWindowClassifier", pwc),
+                ("GNB", gnb),
+            ],
             voting="soft",
         )
         self.assertRaises(NotFittedError, clf.predict_proba, X=self.X)
@@ -112,7 +126,10 @@ class TestAnnotatorEnsembleClassifier(unittest.TestCase):
         pwc = ParzenWindowClassifier(random_state=0)
         gnb = SklearnClassifier(GaussianNB(), random_state=0)
         clf = AnnotatorEnsembleClassifier(
-            estimators=[("ParzenWindowClassifier", pwc), ("GNB", gnb)],
+            estimators=[
+                ("ParzenWindowClassifier", pwc),
+                ("GNB", gnb),
+            ],
             voting="soft",
             random_state=0,
         )
@@ -126,7 +143,11 @@ class TestAnnotatorEnsembleClassifier(unittest.TestCase):
         y_pred_hard = clf.predict(X=self.X)
         self.assertEqual(len(y_pred_hard), len(self.X))
         self.assertTrue(clf.score(self.X, self.y_true), 0.8)
-        clf.fit(X=self.X, y=self.y, sample_weight=np.ones_like(self.y))
+        clf.fit(
+            X=self.X,
+            y=self.y,
+            sample_weight=np.ones_like(self.y),
+        )
         y_pred_hard = clf.predict(X=self.X)
         self.assertEqual(len(y_pred_hard), len(self.X))
         self.assertTrue(clf.score(self.X, self.y_true), 0.8)

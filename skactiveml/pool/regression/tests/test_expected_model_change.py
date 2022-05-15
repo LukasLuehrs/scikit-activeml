@@ -23,12 +23,24 @@ class TestExpectedModelChange(unittest.TestCase):
     def setUp(self):
         self.random_state = 1
         self.candidates = np.array([[8, 1], [9, 1], [5, 1]])
-        self.X = np.array([[1, 2], [5, 8], [8, 4], [5, 4], [3.5, 2], [4.2, 4]])
+        self.X = np.array(
+            [
+                [1, 2],
+                [5, 8],
+                [8, 4],
+                [5, 4],
+                [3.5, 2],
+                [4.2, 4],
+            ]
+        )
         self.y = np.array([np.nan, np.nan, 2, -2, 3.4, 2.7])
         self.reg = SklearnRegressor(LinearRegression())
         self.qs = ExpectedModelChange()
         self.query_kwargs = dict(
-            X=self.X, y=self.y, candidates=self.candidates, reg=self.reg
+            X=self.X,
+            y=self.y,
+            candidates=self.candidates,
+            reg=self.reg,
         )
 
     def test_init_param_random_state(self):
@@ -57,7 +69,12 @@ class TestExpectedModelChange(unittest.TestCase):
             self.assertRaises(TypeError, qs.query, **self.query_kwargs)
 
         qs = ExpectedModelChange(feature_map=lambda x: np.zeros((len(x), 1)))
-        utilities = qs.query(self.X, self.y, reg=self.reg, return_utilities=True)[1]
+        utilities = qs.query(
+            self.X,
+            self.y,
+            reg=self.reg,
+            return_utilities=True,
+        )[1]
         np.testing.assert_array_equal(np.zeros(2), utilities[0, :2])
 
     def test_init_param_ord(self):
@@ -65,16 +82,24 @@ class TestExpectedModelChange(unittest.TestCase):
         self.assertRaises(ValueError, qs.query, **self.query_kwargs)
 
     def test_query_param_X(self):
-        provide_test_regression_query_strategy_query_X(self, ExpectedModelChange)
+        provide_test_regression_query_strategy_query_X(
+            self, ExpectedModelChange
+        )
 
     def test_query_param_y(self):
-        provide_test_regression_query_strategy_query_y(self, ExpectedModelChange)
+        provide_test_regression_query_strategy_query_y(
+            self, ExpectedModelChange
+        )
 
     def test_query_param_reg(self):
-        provide_test_regression_query_strategy_query_reg(self, ExpectedModelChange)
+        provide_test_regression_query_strategy_query_reg(
+            self, ExpectedModelChange
+        )
 
     def test_query_param_fit_reg(self):
-        provide_test_regression_query_strategy_query_fit_reg(self, ExpectedModelChange)
+        provide_test_regression_query_strategy_query_fit_reg(
+            self, ExpectedModelChange
+        )
 
     def test_query_param_sample_weight(self):
         provide_test_regression_query_strategy_query_sample_weight(

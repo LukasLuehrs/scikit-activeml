@@ -1,7 +1,10 @@
 """
 The :mod:`skactiveml.utils` module includes various utilities.
 """
-from ._aggregation import compute_vote_vectors, majority_vote
+from ._aggregation import (
+    compute_vote_vectors,
+    majority_vote,
+)
 from ._functions import call_func
 from ._label import (
     is_unlabeled,
@@ -14,7 +17,11 @@ from ._label import (
 )
 from ._label_encoder import ExtLabelEncoder
 from ._multi_annot import ext_confusion_matrix
-from ._selection import rand_argmax, rand_argmin, simple_batch
+from ._selection import (
+    rand_argmax,
+    rand_argmin,
+    simple_batch,
+)
 from ._validation import (
     check_classes,
     check_scalar,

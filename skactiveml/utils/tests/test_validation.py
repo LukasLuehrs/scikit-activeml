@@ -3,7 +3,9 @@ import warnings
 
 import numpy as np
 
-from skactiveml.stream.budgetmanager import SplitBudgetManager
+from skactiveml.stream.budgetmanager import (
+    SplitBudgetManager,
+)
 from skactiveml.utils import (
     check_cost_matrix,
     check_classes,
@@ -15,16 +17,30 @@ from skactiveml.utils import (
     check_classifier_params,
     check_indices,
 )
-from skactiveml.utils import check_random_state, check_class_prior
+from skactiveml.utils import (
+    check_random_state,
+    check_class_prior,
+)
 from skactiveml.utils._validation import check_callable
 
 
 class TestValidation(unittest.TestCase):
     def test_check_scalar(self):
         x = 5
-        self.assertRaises(TypeError, check_scalar, x=x, target_type=float, name="x")
         self.assertRaises(
-            ValueError, check_scalar, x=x, target_type=int, max_val=4, name="x"
+            TypeError,
+            check_scalar,
+            x=x,
+            target_type=float,
+            name="x",
+        )
+        self.assertRaises(
+            ValueError,
+            check_scalar,
+            x=x,
+            target_type=int,
+            max_val=4,
+            name="x",
         )
         self.assertRaises(
             ValueError,
@@ -36,7 +52,12 @@ class TestValidation(unittest.TestCase):
             name="x",
         )
         self.assertRaises(
-            ValueError, check_scalar, x=x, target_type=int, min_val=6, name="x"
+            ValueError,
+            check_scalar,
+            x=x,
+            target_type=int,
+            min_val=6,
+            name="x",
         )
         self.assertRaises(
             ValueError,
@@ -170,7 +191,13 @@ class TestValidation(unittest.TestCase):
         X_cand = [[5, 6]]
         X, y, sample_weight = check_X_y(X, y)
         np.testing.assert_array_equal(sample_weight, np.array([1.0, 1.0]))
-        X, y, X_cand, sample_weight, sample_weight_cand = check_X_y(X, y, X_cand)
+        (
+            X,
+            y,
+            X_cand,
+            sample_weight,
+            sample_weight_cand,
+        ) = check_X_y(X, y, X_cand)
         np.testing.assert_array_equal(sample_weight_cand, np.array([1.0]))
         sample_weight = [0.4, 0.6]
         X, y, X_cand, sample_weight, _ = check_X_y(X, y, X_cand, sample_weight)
@@ -229,7 +256,16 @@ class TestValidation(unittest.TestCase):
     def test_check_type(self):
         self.assertRaises(TypeError, check_type, 10, "a", str)
         self.assertRaises(TypeError, check_type, 10, "a", str, bool)
-        self.assertRaises(TypeError, check_type, 10, "a", str, bool, map, list)
+        self.assertRaises(
+            TypeError,
+            check_type,
+            10,
+            "a",
+            str,
+            bool,
+            map,
+            list,
+        )
         check_type(10, "a", int)
         check_type("number", "a", "number")
         self.assertRaises(TypeError, check_type, 10, "a", str, 12)
@@ -237,11 +273,19 @@ class TestValidation(unittest.TestCase):
     def test_check_callable(self):
 
         self.assertRaises(
-            ValueError, check_callable, lambda x: x, "name", n_free_parameters=2
+            ValueError,
+            check_callable,
+            lambda x: x,
+            "name",
+            n_free_parameters=2,
         )
 
         self.assertRaises(
-            ValueError, check_callable, lambda x, y: x, "name", n_free_parameters=1
+            ValueError,
+            check_callable,
+            lambda x, y: x,
+            "name",
+            n_free_parameters=1,
         )
 
         self.assertRaises(TypeError, check_callable, "illegal", "name")
@@ -258,7 +302,11 @@ class TestValidation(unittest.TestCase):
         self.assertRaises(ValueError, check_indices, ind_out_of_range, A)
         ind_not_unique = np.array([0, 0])
         self.assertRaises(
-            ValueError, check_indices, ind_not_unique, A, unique="check_unique"
+            ValueError,
+            check_indices,
+            ind_not_unique,
+            A,
+            unique="check_unique",
         )
         indices_now_unique = check_indices(ind_not_unique, A, unique=True)
         self.assertEqual(len(indices_now_unique), 1)
@@ -268,12 +316,22 @@ class TestValidation(unittest.TestCase):
         ind = np.array([[0, 1], [2, 0]])
         self.assertRaises(ValueError, check_indices, A, ind, dim=(0, 1, 2))
         self.assertRaises(ValueError, check_indices, A, ind, dim=(0,))
-        self.assertRaises(TypeError, check_indices, A, ind, dim=(0, (0, 1)))
+        self.assertRaises(
+            TypeError,
+            check_indices,
+            A,
+            ind,
+            dim=(0, (0, 1)),
+        )
         ind_out_of_range = np.array([[0, 3]])
         self.assertRaises(ValueError, check_indices, ind_out_of_range, A)
         ind_not_unique = np.array([[0, 0], [0, 0]])
         self.assertRaises(
-            ValueError, check_indices, ind_not_unique, A, unique="check_unique"
+            ValueError,
+            check_indices,
+            ind_not_unique,
+            A,
+            unique="check_unique",
         )
         indices_now_unique = check_indices(ind_not_unique, A, unique=True)
         self.assertEqual(2, len(indices_now_unique))
@@ -301,11 +359,20 @@ class TestValidation(unittest.TestCase):
         self.assertRaises(ValueError, check_bound, X=wrong_X)
         self.assertRaises(ValueError, check_bound, bound=wrong_bound)
         self.assertRaises(ValueError, check_bound)
-        self.assertRaises(ValueError, check_bound, X=X, bound_must_be_given=True)
+        self.assertRaises(
+            ValueError,
+            check_bound,
+            X=X,
+            bound_must_be_given=True,
+        )
 
     def test_check_budget_manager(self):
-        self.assertIsNotNone(check_budget_manager(0.1, None, SplitBudgetManager))
+        self.assertIsNotNone(
+            check_budget_manager(0.1, None, SplitBudgetManager)
+        )
         with self.assertWarns(Warning):
             check_budget_manager(
-                0.1, SplitBudgetManager(budget=0.2), SplitBudgetManager
+                0.1,
+                SplitBudgetManager(budget=0.2),
+                SplitBudgetManager,
             )

@@ -4,7 +4,9 @@ import numpy as np
 from sklearn.datasets import make_blobs
 from sklearn.preprocessing import StandardScaler
 
-from skactiveml.classifier.multiannotator import AnnotatorLogisticRegression
+from skactiveml.classifier.multiannotator import (
+    AnnotatorLogisticRegression,
+)
 from skactiveml.pool.multiannotator import (
     IntervalEstimationThreshold,
     IntervalEstimationAnnotModel,
@@ -73,21 +75,37 @@ class TestIntervalEstimationAnnotModel(unittest.TestCase):
             y=self.y,
             sample_weight=np.ones(len(self.y)),
         )
-        self.assertRaises(TypeError, ie_model.fit, y=self.y, sample_weight="test")
+        self.assertRaises(
+            TypeError,
+            ie_model.fit,
+            y=self.y,
+            sample_weight="test",
+        )
 
     def test_predict_annot_perf_param_X(self):
         ie_model = IntervalEstimationAnnotModel().fit(self.X, self.y)
-        self.assertRaises(ValueError, ie_model.predict_annotator_perf, X=None)
-        self.assertRaises(ValueError, ie_model.predict_annotator_perf, X=np.ones(2))
+        self.assertRaises(
+            ValueError,
+            ie_model.predict_annotator_perf,
+            X=None,
+        )
+        self.assertRaises(
+            ValueError,
+            ie_model.predict_annotator_perf,
+            X=np.ones(2),
+        )
 
     def test_fit(self):
         ie_model = IntervalEstimationAnnotModel().fit(
             self.X, self.y, sample_weight=self.sample_weight
         )
-        np.testing.assert_array_equal(ie_model.A_perf_.shape, (self.y.shape[1], 3))
+        np.testing.assert_array_equal(
+            ie_model.A_perf_.shape, (self.y.shape[1], 3)
+        )
         self.assertEqual(ie_model.A_perf_[2, 1], 5 / 6)
         a_idx, mode_idx = np.unravel_index(
-            np.argmax(ie_model.A_perf_), ie_model.A_perf_.shape
+            np.argmax(ie_model.A_perf_),
+            ie_model.A_perf_.shape,
         )
         self.assertTrue(a_idx, 1)
         self.assertTrue(mode_idx, 2)
@@ -95,7 +113,11 @@ class TestIntervalEstimationAnnotModel(unittest.TestCase):
     def test_predict_proba(self):
         for i, m in enumerate(["lower", "mean", "upper"]):
             ie_model = IntervalEstimationAnnotModel(mode=m)
-            ie_model.fit(self.X, self.y, sample_weight=self.sample_weight)
+            ie_model.fit(
+                self.X,
+                self.y,
+                sample_weight=self.sample_weight,
+            )
             P_annot = ie_model.predict_annotator_perf(X=np.ones((10, 2)))
             np.testing.assert_array_equal(P_annot[0], ie_model.A_perf_[:, i])
             self.assertEqual(len(P_annot), 10)
@@ -418,8 +440,18 @@ class TestIntervalEstimationThreshold(unittest.TestCase):
 
     def test_query(self):
         ie_thresh = IntervalEstimationThreshold(epsilon=1.0)
-        batch_sizes = [self.A_cand.shape[1], 60, "adaptive", 7]
-        actual_batch_sizes = [self.A_cand.shape[1], 40, 1, 7]
+        batch_sizes = [
+            self.A_cand.shape[1],
+            60,
+            "adaptive",
+            7,
+        ]
+        actual_batch_sizes = [
+            self.A_cand.shape[1],
+            40,
+            1,
+            7,
+        ]
         n_samples = [1, 10, 1, 2]
         for b_in, b_act, n in zip(batch_sizes, actual_batch_sizes, n_samples):
             query_indices, utilities = ie_thresh.query(
@@ -433,7 +465,8 @@ class TestIntervalEstimationThreshold(unittest.TestCase):
             )
             np.testing.assert_array_equal(query_indices.shape, [b_act, 2])
             np.testing.assert_array_equal(
-                utilities.shape, [b_act, len(self.X), self.y.shape[1]]
+                utilities.shape,
+                [b_act, len(self.X), self.y.shape[1]],
             )
             for b in range(len(utilities)):
                 self.assertEqual(b, np.sum(np.isnan(utilities[b])))

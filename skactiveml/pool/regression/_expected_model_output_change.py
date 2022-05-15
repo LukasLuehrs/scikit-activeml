@@ -5,9 +5,17 @@ from skactiveml.base import (
     ProbabilisticRegressor,
     SingleAnnotatorPoolQueryStrategy,
 )
-from skactiveml.utils import check_type, simple_batch, MISSING_LABEL
-from skactiveml.pool.regression.utils._integration import conditional_expect
-from skactiveml.pool.regression.utils._model_fitting import update_reg
+from skactiveml.utils import (
+    check_type,
+    simple_batch,
+    MISSING_LABEL,
+)
+from skactiveml.pool.regression.utils._integration import (
+    conditional_expect,
+)
+from skactiveml.pool.regression.utils._model_fitting import (
+    update_reg,
+)
 from skactiveml.utils._validation import check_callable
 
 
@@ -45,8 +53,13 @@ class ExpectedModelOutputChange(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
-        self.loss = loss if loss is not None else lambda x, y: np.average((x - y) ** 2)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
+        self.loss = (
+            loss if loss is not None else lambda x, y: np.average((x - y) ** 2)
+        )
         if integration_dict is not None:
             self.integration_dict = integration_dict
         else:
@@ -116,12 +129,21 @@ class ExpectedModelOutputChange(SingleAnnotatorPoolQueryStrategy):
             If candidates is of shape (n_candidates, n_features), the indexing
             refers to samples in candidates.
         """
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         check_type(reg, "reg", ProbabilisticRegressor)
-        check_type(self.integration_dict, "self.integration_dict", dict)
+        check_type(
+            self.integration_dict,
+            "self.integration_dict",
+            dict,
+        )
         check_type(fit_reg, "fit_reg", bool)
 
         loss = self.loss

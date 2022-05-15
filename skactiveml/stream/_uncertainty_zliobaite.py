@@ -1,6 +1,9 @@
 import numpy as np
 from sklearn.base import clone
-from sklearn.utils import check_array, check_consistent_length
+from sklearn.utils import (
+    check_array,
+    check_consistent_length,
+)
 
 from .budgetmanager import (
     FixedUncertaintyBudgetManager,
@@ -142,7 +145,12 @@ class UncertaintyZliobaite(SingleAnnotatorStreamQueryStrategy):
         else:
             return queried_indices
 
-    def update(self, candidates, queried_indices, budget_manager_param_dict=None):
+    def update(
+        self,
+        candidates,
+        queried_indices,
+        budget_manager_param_dict=None,
+    ):
         """Updates the budget manager and the count for seen and queried
         instances
 
@@ -179,7 +187,9 @@ class UncertaintyZliobaite(SingleAnnotatorStreamQueryStrategy):
             )
 
         budget_manager_param_dict = (
-            {} if budget_manager_param_dict is None else budget_manager_param_dict
+            {}
+            if budget_manager_param_dict is None
+            else budget_manager_param_dict
         )
 
         call_func(
@@ -247,11 +257,11 @@ class UncertaintyZliobaite(SingleAnnotatorStreamQueryStrategy):
         return_utilities : bool,
             Checked boolean value of `return_utilities`.
         """
-        candidates, return_utilities = super()._validate_data(
+        (candidates, return_utilities,) = super()._validate_data(
             candidates, return_utilities, reset=reset, **check_candidates_params
         )
         self._validate_random_state()
-        X, y, sample_weight = self._validate_X_y_sample_weight(
+        (X, y, sample_weight,) = self._validate_X_y_sample_weight(
             X=X, y=y, sample_weight=sample_weight
         )
         clf = self._validate_clf(clf, X, y, sample_weight, fit_clf)
@@ -270,7 +280,15 @@ class UncertaintyZliobaite(SingleAnnotatorStreamQueryStrategy):
                 self._get_default_budget_manager(),
             )
 
-        return candidates, clf, X, y, sample_weight, fit_clf, return_utilities
+        return (
+            candidates,
+            clf,
+            X,
+            y,
+            sample_weight,
+            fit_clf,
+            return_utilities,
+        )
 
     def _validate_clf(self, clf, X, y, sample_weight, fit_clf):
         """Validate if clf is a valid SkactivemlClassifier. If clf is

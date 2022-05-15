@@ -3,7 +3,12 @@ from scipy.stats import rankdata
 from sklearn.cluster import KMeans
 
 from skactiveml.base import SingleAnnotatorPoolQueryStrategy
-from skactiveml.utils import is_labeled, check_type, simple_batch, MISSING_LABEL
+from skactiveml.utils import (
+    is_labeled,
+    check_type,
+    simple_batch,
+    MISSING_LABEL,
+)
 from skactiveml.utils._selection import combine_ranking
 
 
@@ -37,7 +42,10 @@ class RepresentativenessDiversity(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(random_state=random_state, missing_label=missing_label)
+        super().__init__(
+            random_state=random_state,
+            missing_label=missing_label,
+        )
         self.inner_qs = inner_qs
         self.X_ = None
         self.k_means_ = None
@@ -104,11 +112,21 @@ class RepresentativenessDiversity(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
 
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
-        check_type(self.inner_qs, "self.qs", SingleAnnotatorPoolQueryStrategy, None)
+        check_type(
+            self.inner_qs,
+            "self.qs",
+            SingleAnnotatorPoolQueryStrategy,
+            None,
+        )
         check_type(inner_qs_dict, "qs_dict", dict, None)
         if inner_qs_dict is None:
             inner_qs_dict = {}
@@ -129,18 +147,27 @@ class RepresentativenessDiversity(SingleAnnotatorPoolQueryStrategy):
             if self.X_ is None or not np.array_equal(X, self.X_):
                 self.X_ = X.copy()
                 self.k_means_ = KMeans(
-                    n_clusters=min(len(X), len(X_labeled) + first_batch_size),
+                    n_clusters=min(
+                        len(X),
+                        len(X_labeled) + first_batch_size,
+                    ),
                     random_state=self.random_state_,
                 )
                 self.k_means_.fit(X=X, sample_weight=sample_weight)
 
-            l_sample_count, _ = _cluster_sample_count(self.k_means_, X_labeled, X)
+            l_sample_count, _ = _cluster_sample_count(
+                self.k_means_, X_labeled, X
+            )
             cand_l_sample_count = l_sample_count[self.k_means_.predict(X_cand)]
             cand_closeness = _closeness_to_cluster(self.k_means_, X_cand)
-            utilities_cand = combine_ranking(-cand_l_sample_count, cand_closeness)
+            utilities_cand = combine_ranking(
+                -cand_l_sample_count, cand_closeness
+            )
 
             first_indices, first_utilities = simple_batch(
-                utilities_cand, batch_size=first_batch_size, return_utilities=True
+                utilities_cand,
+                batch_size=first_batch_size,
+                return_utilities=True,
             )
 
             total_query_indices[:first_batch_size] = first_indices
@@ -156,17 +183,22 @@ class RepresentativenessDiversity(SingleAnnotatorPoolQueryStrategy):
 
         if second_batch_size > 0:
             self.k_means_ = KMeans(
-                n_clusters=min(len(X), len(X_labeled) + second_batch_size),
+                n_clusters=min(
+                    len(X),
+                    len(X_labeled) + second_batch_size,
+                ),
                 random_state=self.random_state_,
             )
             self.k_means_.fit(X=X, sample_weight=sample_weight)
 
-            l_sample_count, t_sample_count = _cluster_sample_count(
-                self.k_means_, X_labeled, X
-            )
+            (
+                l_sample_count,
+                t_sample_count,
+            ) = _cluster_sample_count(self.k_means_, X_labeled, X)
             cand_clusters = self.k_means_.predict(X_cand)
             cluster_ranking = rankdata(
-                combine_ranking(-l_sample_count, t_sample_count), method="dense"
+                combine_ranking(-l_sample_count, t_sample_count),
+                method="dense",
             )
             sorted_clusters = np.argsort(cluster_ranking)
 
@@ -193,27 +225,39 @@ class RepresentativenessDiversity(SingleAnnotatorPoolQueryStrategy):
                         **inner_qs_dict,
                     )[1].flatten()
                     utilities = (
-                        utilities if mapping is None else utilities[cluster_candidates]
+                        utilities
+                        if mapping is None
+                        else utilities[cluster_candidates]
                     )
 
                 else:
                     utilities = _closeness_to_cluster(
-                        self.k_means_, X_cand[is_cluster_cand]
+                        self.k_means_,
+                        X_cand[is_cluster_cand],
                     )
 
                 qs_utilities[is_cluster_cand] = utilities
 
             cand_cluster_ranking = cluster_ranking[cand_clusters]
-            utilities_cand = cand_cluster_ranking + 1 / (1 + np.exp(-qs_utilities))
+            utilities_cand = cand_cluster_ranking + 1 / (
+                1 + np.exp(-qs_utilities)
+            )
 
             # batch regarding the remaining candidates after the first batch
-            second_indices_off, second_utilities_off = simple_batch(
-                utilities_cand, batch_size=second_batch_size, return_utilities=True
+            (second_indices_off, second_utilities_off,) = simple_batch(
+                utilities_cand,
+                batch_size=second_batch_size,
+                return_utilities=True,
             )
-            # indices for X_cand of the remaining candidates after the first batch
-            other_indices = np.delete(np.arange(len(X_cand_origin)), first_indices)
+            # indices for X_cand of the candidates after the first batch
+            other_indices = np.delete(
+                np.arange(len(X_cand_origin)), first_indices
+            )
             second_indices = other_indices[second_indices_off]
-            second_utilities = np.full((second_batch_size, len(X_cand_origin)), np.nan)
+            second_utilities = np.full(
+                (second_batch_size, len(X_cand_origin)),
+                np.nan,
+            )
             second_utilities[:, other_indices] = second_utilities_off
 
             total_query_indices[first_batch_size:] = second_indices
@@ -235,13 +279,18 @@ class RepresentativenessDiversity(SingleAnnotatorPoolQueryStrategy):
 
 def _cluster_sample_count(k_means, X_labeled, X):
     labeled_samples_per_cluster = np.bincount(
-        k_means.predict(X_labeled) if len(X_labeled) != 0 else np.zeros(0, dtype=int),
+        k_means.predict(X_labeled)
+        if len(X_labeled) != 0
+        else np.zeros(0, dtype=int),
         minlength=k_means.n_clusters,
     )
     total_samples_per_cluster = np.bincount(
         k_means.predict(X), minlength=k_means.n_clusters
     )
-    return labeled_samples_per_cluster, total_samples_per_cluster
+    return (
+        labeled_samples_per_cluster,
+        total_samples_per_cluster,
+    )
 
 
 def _closeness_to_cluster(k_means, X_cand):

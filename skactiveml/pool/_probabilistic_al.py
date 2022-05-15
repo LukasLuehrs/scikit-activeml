@@ -42,9 +42,16 @@ class ProbabilisticAL(SingleAnnotatorPoolQueryStrategy):
     """
 
     def __init__(
-        self, prior=1, m_max=1, missing_label=MISSING_LABEL, random_state=None
+        self,
+        prior=1,
+        m_max=1,
+        missing_label=MISSING_LABEL,
+        random_state=None,
     ):
-        super().__init__(missing_label=missing_label, random_state=random_state)
+        super().__init__(
+            missing_label=missing_label,
+            random_state=random_state,
+        )
         self.prior = prior
         self.m_max = m_max
 
@@ -111,8 +118,13 @@ class ProbabilisticAL(SingleAnnotatorPoolQueryStrategy):
             of the batch.
         """
         # Validate input parameters.
-        X, y, candidates, batch_size, return_utilities = self._validate_data(
-            X, y, candidates, batch_size, return_utilities, reset=True
+        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+            reset=True,
         )
 
         X_cand, mapping = self._transform_candidates(candidates, X, y)
@@ -147,7 +159,9 @@ class ProbabilisticAL(SingleAnnotatorPoolQueryStrategy):
         k_vec = clf.predict_freq(X_cand)
 
         # Calculate utilities and return the output.
-        utilities_cand = cost_reduction(k_vec, prior=self.prior, m_max=self.m_max)
+        utilities_cand = cost_reduction(
+            k_vec, prior=self.prior, m_max=self.m_max
+        )
 
         if mapping is None:
             utilities = utilities_cand
@@ -187,7 +201,13 @@ def cost_reduction(k_vec_list, C=None, m_max=2, prior=1.0e-3):
         Expected cost reduction for given parameters.
     """
     # Check if 'prior' is valid
-    check_scalar(prior, "prior", (float, int), min_inclusive=False, min_val=0)
+    check_scalar(
+        prior,
+        "prior",
+        (float, int),
+        min_inclusive=False,
+        min_val=0,
+    )
 
     # Check if 'm_max' is valid
     check_scalar(m_max, "m_max", int, min_val=1)
@@ -199,7 +219,9 @@ def cost_reduction(k_vec_list, C=None, m_max=2, prior=1.0e-3):
     C = 1 - np.eye(n_classes) if C is None else np.asarray(C)
 
     # generate labelling vectors for all possible m values
-    l_vec_list = np.vstack([_gen_l_vec_list(m, n_classes) for m in range(m_max + 1)])
+    l_vec_list = np.vstack(
+        [_gen_l_vec_list(m, n_classes) for m in range(m_max + 1)]
+    )
     m_list = np.sum(l_vec_list, axis=1)
     n_l_vecs = len(l_vec_list)
 

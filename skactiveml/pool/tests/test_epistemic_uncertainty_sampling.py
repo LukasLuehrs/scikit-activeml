@@ -4,7 +4,10 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 
-from skactiveml.classifier import SklearnClassifier, ParzenWindowClassifier
+from skactiveml.classifier import (
+    SklearnClassifier,
+    ParzenWindowClassifier,
+)
 from skactiveml.pool import EpistemicUncertaintySampling
 from skactiveml.pool._epistemic_uncertainty_sampling import (
     _interpolate,
@@ -26,26 +29,40 @@ class TestEpistemicUncertaintySampling(unittest.TestCase):
         self.X = np.array([[1, 2], [5, 8], [8, 4], [5, 4]])
         self.y = np.array([0, 0, 1, 1])
         self.y_MISSING_LABEL = np.array(
-            [MISSING_LABEL, MISSING_LABEL, MISSING_LABEL, MISSING_LABEL]
+            [
+                MISSING_LABEL,
+                MISSING_LABEL,
+                MISSING_LABEL,
+                MISSING_LABEL,
+            ]
         )
         self.classes = np.array([0, 1])
         self.clf = ParzenWindowClassifier(
-            classes=self.classes, random_state=self.random_state
+            classes=self.classes,
+            random_state=self.random_state,
         )
         self.kwargs = dict(candidates=self.candidates, X=self.X, y=self.y)
         self.kwargs_MISSING_LABEL = dict(
-            candidates=self.candidates, X=self.X, y=self.y_MISSING_LABEL
+            candidates=self.candidates,
+            X=self.X,
+            y=self.y_MISSING_LABEL,
         )
 
     def test_init_param_precompute(self):
         selector = EpistemicUncertaintySampling(precompute=None)
-        self.assertRaises(TypeError, selector.query, **self.kwargs, clf=self.clf)
+        self.assertRaises(
+            TypeError, selector.query, **self.kwargs, clf=self.clf
+        )
 
         selector = EpistemicUncertaintySampling(precompute=[])
-        self.assertRaises(TypeError, selector.query, **self.kwargs, clf=self.clf)
+        self.assertRaises(
+            TypeError, selector.query, **self.kwargs, clf=self.clf
+        )
 
         selector = EpistemicUncertaintySampling(precompute=0)
-        self.assertRaises(TypeError, selector.query, **self.kwargs, clf=self.clf)
+        self.assertRaises(
+            TypeError, selector.query, **self.kwargs, clf=self.clf
+        )
 
     def test_query_param_clf(self):
         selector = EpistemicUncertaintySampling()
@@ -108,15 +125,22 @@ class TestEpistemicUncertaintySampling(unittest.TestCase):
 
     def test_query_param_fit_clf(self):
         selector = EpistemicUncertaintySampling()
-        self.assertRaises(TypeError, selector.query, **self.kwargs, fit_clf="string")
+        self.assertRaises(
+            TypeError, selector.query, **self.kwargs, fit_clf="string"
+        )
         self.assertRaises(
             TypeError, selector.query, **self.kwargs, fit_clf=self.candidates
         )
-        self.assertRaises(TypeError, selector.query, **self.kwargs, fit_clf=None)
+        self.assertRaises(
+            TypeError, selector.query, **self.kwargs, fit_clf=None
+        )
 
     # tests for epistemic ParzenWindowClassifier
     def test_interpolate(self):
-        interpolated = _interpolate(np.array([[0, 0], [1, 1]]), np.array([[0.5, 0.5]]))
+        interpolated = _interpolate(
+            np.array([[0, 0], [1, 1]]),
+            np.array([[0.5, 0.5]]),
+        )
         np.testing.assert_array_equal(interpolated, np.array([0.5]))
 
     def test_pwc_ml_1(self):
@@ -156,10 +180,14 @@ class TestEpistemicUncertaintySampling(unittest.TestCase):
         val_utilities = utilities
         precompute_array = np.full((1, 1), np.nan)
 
-        utilities, precompute_array = _epistemic_uncertainty_pwc(freq, precompute_array)
+        (
+            utilities,
+            precompute_array,
+        ) = _epistemic_uncertainty_pwc(freq, precompute_array)
         np.testing.assert_array_equal(val_utilities, utilities)
         np.testing.assert_array_equal(
-            val_utilities, precompute_array[:11, :11].flatten()
+            val_utilities,
+            precompute_array[:11, :11].flatten(),
         )
 
         class Dummy_PWC(ParzenWindowClassifier):
@@ -168,7 +196,9 @@ class TestEpistemicUncertaintySampling(unittest.TestCase):
 
         selector = EpistemicUncertaintySampling(precompute=True)
         _, utilities = selector.query(
-            **self.kwargs, clf=Dummy_PWC(classes=self.classes), return_utilities=True
+            **self.kwargs,
+            clf=Dummy_PWC(classes=self.classes),
+            return_utilities=True
         )
         np.testing.assert_array_equal(val_utilities, utilities[0])
 
@@ -264,9 +294,13 @@ class TestEpistemicUncertaintySampling(unittest.TestCase):
         selector = EpistemicUncertaintySampling()
 
         # return_utilities
-        L = list(selector.query(**self.kwargs, clf=self.clf, return_utilities=True))
+        L = list(
+            selector.query(**self.kwargs, clf=self.clf, return_utilities=True)
+        )
         self.assertTrue(len(L) == 2)
-        L = list(selector.query(**self.kwargs, clf=self.clf, return_utilities=False))
+        L = list(
+            selector.query(**self.kwargs, clf=self.clf, return_utilities=False)
+        )
         self.assertTrue(len(L) == 1)
 
         # batch_size
@@ -277,7 +311,8 @@ class TestEpistemicUncertaintySampling(unittest.TestCase):
 
         # query - ParzenWindowClassifier
         clf = ParzenWindowClassifier(
-            classes=self.classes, random_state=self.random_state
+            classes=self.classes,
+            random_state=self.random_state,
         )
         selector = EpistemicUncertaintySampling()
         selector.query(**self.kwargs, clf=clf)
@@ -307,7 +342,10 @@ class TestEpistemicUncertaintySampling(unittest.TestCase):
         self.assertEqual(best_indices.shape, (1,))
 
         best_indices_s, utilities_s = selector.query(
-            **self.kwargs, clf=clf, return_utilities=True, sample_weight=[0.5, 1, 1, 1]
+            **self.kwargs,
+            clf=clf,
+            return_utilities=True,
+            sample_weight=[0.5, 1, 1, 1]
         )
         comp = utilities_s == utilities
         self.assertTrue(not comp.all())

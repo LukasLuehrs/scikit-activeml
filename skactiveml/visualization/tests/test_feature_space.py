@@ -16,23 +16,31 @@ from skactiveml.pool import (
     RandomSampling,
     ValueOfInformationEER,
 )
-from skactiveml.pool.multiannotator import SingleAnnotatorWrapper
+from skactiveml.pool.multiannotator import (
+    SingleAnnotatorWrapper,
+)
 from skactiveml.visualization import (
     plot_decision_boundary,
     plot_utilities,
     plot_contour_for_samples,
     plot_annotator_utilities,
 )
-from skactiveml.visualization._feature_space import _general_plot_utilities
+from skactiveml.visualization._feature_space import (
+    _general_plot_utilities,
+)
 
 
 class TestFeatureSpace(unittest.TestCase):
     def setUp(self):
-        self.path_prefix = os.path.dirname(visualization.__file__) + "/tests/images/"
+        self.path_prefix = (
+            os.path.dirname(visualization.__file__) + "/tests/images/"
+        )
         self.X, self.y = make_classification(
             n_features=2, n_redundant=0, random_state=0
         )
-        train_indices = np.random.RandomState(0).randint(0, len(self.X), size=20)
+        train_indices = np.random.RandomState(0).randint(
+            0, len(self.X), size=20
+        )
         cand_indices = np.setdiff1d(np.arange(len(self.X)), train_indices)
         self.y_active = np.full_like(self.y, np.nan, dtype=float)
         self.y_active[cand_indices] = self.y[cand_indices]
@@ -218,7 +226,9 @@ class TestFeatureSpace(unittest.TestCase):
             qs=self.qs, X=self.X, y=self.y, **self.qs_dict, candidates=[99]
         )
 
-    def test__general_plot_utilities_param_replace_nan(self):
+    def test__general_plot_utilities_param_replace_nan(
+        self,
+    ):
         _general_plot_utilities(
             qs=self.qs,
             X=self.X,
@@ -229,7 +239,9 @@ class TestFeatureSpace(unittest.TestCase):
             feature_bound=self.bound
         )
 
-    def test__general_plot_utilities_param_plot_annotators(self):
+    def test__general_plot_utilities_param_plot_annotators(
+        self,
+    ):
         self.assertRaises(
             TypeError,
             _general_plot_utilities,
@@ -251,7 +263,9 @@ class TestFeatureSpace(unittest.TestCase):
             axes=axes
         )
 
-    def test__general_plot_utilities_param_ignore_undefined_query_params(self):
+    def test__general_plot_utilities_param_ignore_undefined_query_params(
+        self,
+    ):
         _general_plot_utilities(
             qs=ValueOfInformationEER(),
             X=self.X,
@@ -326,7 +340,9 @@ class TestFeatureSpace(unittest.TestCase):
             axes=2
         )
 
-    def test__general_plot_utilities_param_contour_dict(self):
+    def test__general_plot_utilities_param_contour_dict(
+        self,
+    ):
         self.assertRaises(
             TypeError,
             _general_plot_utilities,
@@ -362,11 +378,21 @@ class TestFeatureSpace(unittest.TestCase):
             (np.arange(10), ValueError),
         ]
         for values, err in test_cases:
-            self.assertRaises(err, plot_contour_for_samples, X=self.X, values=values)
+            self.assertRaises(
+                err,
+                plot_contour_for_samples,
+                X=self.X,
+                values=values,
+            )
 
-    def test_plot_contour_for_samples_param_replace_nan(self):
+    def test_plot_contour_for_samples_param_replace_nan(
+        self,
+    ):
         values = np.full_like(self.utilities, np.nan)
-        for nan, err in [(np.nan, ValueError), ("s", TypeError)]:
+        for nan, err in [
+            (np.nan, ValueError),
+            ("s", TypeError),
+        ]:
             self.assertRaises(
                 err,
                 plot_contour_for_samples,
@@ -375,7 +401,9 @@ class TestFeatureSpace(unittest.TestCase):
                 replace_nan=nan,
             )
 
-    def test_plot_contour_for_samples_param_feature_bound(self):
+    def test_plot_contour_for_samples_param_feature_bound(
+        self,
+    ):
         test_cases = [
             (np.nan, ValueError),
             ("s", ValueError),
@@ -421,7 +449,9 @@ class TestFeatureSpace(unittest.TestCase):
                 res=res,
             )
 
-    def test_plot_contour_for_samples_param_contour_dict(self):
+    def test_plot_contour_for_samples_param_contour_dict(
+        self,
+    ):
         test_cases = [
             (np.nan, TypeError),
             ("s", TypeError),
@@ -437,7 +467,9 @@ class TestFeatureSpace(unittest.TestCase):
                 contour_dict=cont,
             )
         plot_contour_for_samples(
-            X=self.X, values=self.utilities, contour_dict={"linestyles": "."}
+            X=self.X,
+            values=self.utilities,
+            contour_dict={"linestyles": "."},
         )
 
     # Graphical tests
@@ -453,7 +485,12 @@ class TestFeatureSpace(unittest.TestCase):
             ax=ax,
         )
 
-        ax.scatter(self.X_cand[:, 0], self.X_cand[:, 1], c="k", marker=".")
+        ax.scatter(
+            self.X_cand[:, 0],
+            self.X_cand[:, 1],
+            c="k",
+            marker=".",
+        )
         ax.scatter(
             self.X_train[:, 0],
             self.X_train[:, 1],
@@ -518,10 +555,20 @@ class TestFeatureSpace(unittest.TestCase):
         clf = ParzenWindowClassifier()
         clf.fit(X_train, y_train)
         qs = UncertaintySampling(random_state=0)
-        bound = [[min(X[:, 0]), min(X[:, 1])], [max(X[:, 0]), max(X[:, 1])]]
+        bound = [
+            [min(X[:, 0]), min(X[:, 1])],
+            [max(X[:, 0]), max(X[:, 1])],
+        ]
 
         fig, ax = plt.subplots()
-        plot_utilities(qs=qs, X=X_train, y=y_train, clf=clf, feature_bound=bound, ax=ax)
+        plot_utilities(
+            qs=qs,
+            X=X_train,
+            y=y_train,
+            clf=clf,
+            feature_bound=bound,
+            ax=ax,
+        )
         ax.scatter(X_cand[:, 0], X_cand[:, 1], c="k", marker=".")
         ax.scatter(
             X_train[:, 0],

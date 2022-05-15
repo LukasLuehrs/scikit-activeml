@@ -10,5 +10,11 @@ class TestFunctions(unittest.TestCase):
 
         result = call_func(dummy_function, a=2, b=5, c=5)
         self.assertEqual(result, 50)
-        result = call_func(dummy_function, only_mandatory=True, a=2, b=5, c=5)
+        result = call_func(
+            dummy_function,
+            only_mandatory=True,
+            a=2,
+            b=5,
+            c=5,
+        )
         self.assertEqual(result, 12)

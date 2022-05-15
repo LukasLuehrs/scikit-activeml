@@ -2,7 +2,11 @@ import unittest
 
 import numpy as np
 
-from skactiveml.utils import rand_argmin, rand_argmax, simple_batch
+from skactiveml.utils import (
+    rand_argmin,
+    rand_argmax,
+    simple_batch,
+)
 from skactiveml.utils._selection import combine_ranking
 
 
@@ -20,14 +24,20 @@ class TestSelection(unittest.TestCase):
         np.testing.assert_array_equal([0, 1], rand_argmin(self.b))
         np.testing.assert_array_equal([2], rand_argmin(self.c, random_state=42))
         np.testing.assert_array_equal(
-            [1, 0], rand_argmin(self.d, axis=1, random_state=42)
+            [1, 0],
+            rand_argmin(self.d, axis=1, random_state=42),
         )
-        np.testing.assert_array_equal([1, 0], rand_argmin(self.d, random_state=42))
+        np.testing.assert_array_equal(
+            [1, 0], rand_argmin(self.d, random_state=42)
+        )
         np.testing.assert_array_equal([3], rand_argmin(self.c, random_state=1))
         np.testing.assert_array_equal(
-            [1, 1], rand_argmin(self.d, axis=1, random_state=1)
+            [1, 1],
+            rand_argmin(self.d, axis=1, random_state=1),
         )
-        np.testing.assert_array_equal([1, 1], rand_argmin(self.d, random_state=1))
+        np.testing.assert_array_equal(
+            [1, 1], rand_argmin(self.d, random_state=1)
+        )
         np.testing.assert_array_equal([1], rand_argmin(self.e))
 
     def test_rand_argmax(self):
@@ -36,14 +46,20 @@ class TestSelection(unittest.TestCase):
         np.testing.assert_array_equal([1, 1], rand_argmax(self.b))
         np.testing.assert_array_equal([1], rand_argmax(self.c, random_state=42))
         np.testing.assert_array_equal(
-            [1, 0], rand_argmax(self.d, axis=1, random_state=42)
+            [1, 0],
+            rand_argmax(self.d, axis=1, random_state=42),
         )
-        np.testing.assert_array_equal([0, 1], rand_argmax(self.d, random_state=42))
+        np.testing.assert_array_equal(
+            [0, 1], rand_argmax(self.d, random_state=42)
+        )
         np.testing.assert_array_equal([0], rand_argmax(self.c, random_state=10))
         np.testing.assert_array_equal(
-            [1, 1], rand_argmax(self.d, axis=1, random_state=1)
+            [1, 1],
+            rand_argmax(self.d, axis=1, random_state=1),
         )
-        np.testing.assert_array_equal([0, 0], rand_argmax(self.d, random_state=10))
+        np.testing.assert_array_equal(
+            [0, 0], rand_argmax(self.d, random_state=10)
+        )
         np.testing.assert_array_equal([1], rand_argmax(self.e))
 
     def test_simple_batch(self):
@@ -67,7 +83,11 @@ class TestSelection(unittest.TestCase):
             batch_size="invalid",
         )
         self.assertRaises(
-            ValueError, simple_batch, utils, random_state=42, batch_size=0
+            ValueError,
+            simple_batch,
+            utils,
+            random_state=42,
+            batch_size=0,
         )
         indices, batches = simple_batch(
             utils,
@@ -79,7 +99,10 @@ class TestSelection(unittest.TestCase):
         np.testing.assert_array_equal(batches, expected_batches)
 
         indices, batches = simple_batch(
-            utils, random_state=42, batch_size=3, return_utilities=True
+            utils,
+            random_state=42,
+            batch_size=3,
+            return_utilities=True,
         )
         np.testing.assert_array_equal(indices[0:3], expected_indices[0:3])
         np.testing.assert_array_equal(batches[0:3], expected_batches[0:3])
@@ -104,7 +127,10 @@ class TestSelection(unittest.TestCase):
     def test_combine_ranking(self):
 
         self.assertRaises(
-            ValueError, combine_ranking, np.array([0, 1]), np.array([[0, 1], [1, 2]])
+            ValueError,
+            combine_ranking,
+            np.array([0, 1]),
+            np.array([[0, 1], [1, 2]]),
         )
 
         ranking_1 = np.array([0, 1, 1])

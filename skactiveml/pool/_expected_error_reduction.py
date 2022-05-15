@@ -1,7 +1,10 @@
 import numpy as np
 
 from .utils import IndexClassifierWrapper
-from ..base import SingleAnnotatorPoolQueryStrategy, SkactivemlClassifier
+from ..base import (
+    SingleAnnotatorPoolQueryStrategy,
+    SkactivemlClassifier,
+)
 from ..utils import (
     check_type,
     is_labeled,
@@ -70,7 +73,10 @@ class ExpectedErrorReduction(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(missing_label=missing_label, random_state=random_state)
+        super().__init__(
+            missing_label=missing_label,
+            random_state=random_state,
+        )
         self.cost_matrix = cost_matrix
         self.enforce_mapping = enforce_mapping
 
@@ -186,7 +192,10 @@ class ExpectedErrorReduction(SingleAnnotatorPoolQueryStrategy):
         )
 
         _, mapping = self._transform_candidates(
-            candidates, X, y, enforce_mapping=self.enforce_mapping
+            candidates,
+            X,
+            y,
+            enforce_mapping=self.enforce_mapping,
         )
 
         (
@@ -296,7 +305,13 @@ class ExpectedErrorReduction(SingleAnnotatorPoolQueryStrategy):
     ):
 
         # Validate input parameters.
-        (X, y, candidates, batch_size, return_utilities,) = super()._validate_data(
+        (
+            X,
+            y,
+            candidates,
+            batch_size,
+            return_utilities,
+        ) = super()._validate_data(
             X,
             y,
             candidates,
@@ -345,23 +360,35 @@ class ExpectedErrorReduction(SingleAnnotatorPoolQueryStrategy):
             id_clf.fit(idx_train, set_base_clf=True)
         return id_clf
 
-    def _estimate_current_error(self, id_clf, idx_train, idx_cand, idx_eval, w_eval):
+    def _estimate_current_error(
+        self, id_clf, idx_train, idx_cand, idx_eval, w_eval
+    ):
         """
         Result must be of float or of shape (len(idx_eval))
         """
         return 0.0
 
     def _estimate_error_for_candidate(
-        self, uclf, idx_cx, cy, idx_train, idx_cand, idx_eval, w_eval
+        self,
+        uclf,
+        idx_cx,
+        cy,
+        idx_train,
+        idx_cand,
+        idx_eval,
+        w_eval,
     ):
         raise NotImplementedError(
-            "Error estimation method must be implemented" "by the query strategy."
+            "Error estimation method must be implemented"
+            "by the query strategy."
         )
 
     def _validate_cost_matrix(self, n_classes):
 
         cost_matrix = (
-            1 - np.eye(n_classes) if self.cost_matrix is None else self.cost_matrix
+            1 - np.eye(n_classes)
+            if self.cost_matrix is None
+            else self.cost_matrix
         )
         self.cost_matrix_ = check_cost_matrix(cost_matrix, n_classes)
 
@@ -412,13 +439,19 @@ class ExpectedErrorReduction(SingleAnnotatorPoolQueryStrategy):
             idx_cand = candidates
         else:
             X_full = np.concatenate([X_full, candidates], axis=0)
-            y_full = np.concatenate([y_full, np.full(len(candidates), np.nan)], axis=0)
+            y_full = np.concatenate(
+                [y_full, np.full(len(candidates), np.nan)],
+                axis=0,
+            )
             if not (w_full is None and sample_weight_candidates is None):
                 if w_full is None:
                     w_full = np.ones(len(X))
                 if sample_weight_candidates is None:
                     sample_weight_candidates = np.ones(len(candidates))
-                w_full = np.concatenate([w_full, sample_weight_candidates], axis=0)
+                w_full = np.concatenate(
+                    [w_full, sample_weight_candidates],
+                    axis=0,
+                )
             idx_cand = np.arange(len(X), len(X_full))
 
         if X_eval is None:
@@ -436,7 +469,10 @@ class ExpectedErrorReduction(SingleAnnotatorPoolQueryStrategy):
                 w_eval[idx_eval] = sample_weight_eval
         else:
             X_full = np.concatenate([X_full, X_eval], axis=0)
-            y_full = np.concatenate([y_full, np.full(len(X_eval), np.nan)], axis=0)
+            y_full = np.concatenate(
+                [y_full, np.full(len(X_eval), np.nan)],
+                axis=0,
+            )
             idx_eval = np.arange(len(X_full) - len(X_eval), len(X_full))
             w_eval = np.ones(len(X_full))
             if sample_weight_eval is not None:
@@ -450,21 +486,41 @@ class ExpectedErrorReduction(SingleAnnotatorPoolQueryStrategy):
             if w_full is not None:
                 w_full = np.concatenate([w_full, sample_weight_eval], axis=0)
 
-        return X_full, y_full, w_full, w_eval, idx_train, idx_cand, idx_eval
+        return (
+            X_full,
+            y_full,
+            w_full,
+            w_eval,
+            idx_train,
+            idx_cand,
+            idx_eval,
+        )
 
-    def _risk_estimation(self, prob_true, prob_pred, cost_matrix, sample_weight):
+    def _risk_estimation(
+        self,
+        prob_true,
+        prob_pred,
+        cost_matrix,
+        sample_weight,
+    ):
         if prob_true.ndim == 1 and prob_pred.ndim == 1:
-            cost_est = cost_matrix[prob_true, :][range(len(prob_true)), prob_pred]
+            cost_est = cost_matrix[prob_true, :][
+                range(len(prob_true)), prob_pred
+            ]
             return np.sum(sample_weight * cost_est)
         elif prob_true.ndim == 1 and prob_pred.ndim == 2:
             cost_est = cost_matrix[prob_true, :]
             return np.sum(
-                sample_weight[:, np.newaxis] * prob_pred * cost_est[np.newaxis, :]
+                sample_weight[:, np.newaxis]
+                * prob_pred
+                * cost_est[np.newaxis, :]
             )
         elif prob_true.ndim == 2 and prob_pred.ndim == 1:
             cost_est = cost_matrix[:, prob_pred].T
             return np.sum(
-                sample_weight[:, np.newaxis] * prob_true * cost_est[np.newaxis, :]
+                sample_weight[:, np.newaxis]
+                * prob_true
+                * cost_est[np.newaxis, :]
             )
         else:
             prob_mat = prob_true[:, :, np.newaxis] @ prob_pred[:, np.newaxis, :]
@@ -532,28 +588,48 @@ class MonteCarloEER(ExpectedErrorReduction):
                 "{} is an invalid type for method. Type {} is "
                 "expected".format(type(self.method), str)
             )
-        if self.method not in ["misclassification_loss", "log_loss"]:
+        if self.method not in [
+            "misclassification_loss",
+            "log_loss",
+        ]:
             raise ValueError(
                 f"Supported methods are `misclassification_loss`, or"
                 f"`log_loss` the given one is: {self.method}"
             )
 
-    def _estimate_current_error(self, id_clf, idx_train, idx_cand, idx_eval, w_eval):
+    def _estimate_current_error(
+        self, id_clf, idx_train, idx_cand, idx_eval, w_eval
+    ):
         # TODO: implement
         return super()._estimate_current_error(
             id_clf, idx_train, idx_cand, idx_eval, w_eval
         )
 
     def _estimate_error_for_candidate(
-        self, id_clf, idx_cx, cy, idx_train, idx_cand, idx_eval, w_eval
+        self,
+        id_clf,
+        idx_cx,
+        cy,
+        idx_train,
+        idx_cand,
+        idx_eval,
+        w_eval,
     ):
-        id_clf.partial_fit(idx_cx, cy, use_base_clf=True, set_base_clf=False)
+        id_clf.partial_fit(
+            idx_cx,
+            cy,
+            use_base_clf=True,
+            set_base_clf=False,
+        )
         probs = id_clf.predict_proba(idx_eval)
 
         if self.method == "misclassification_loss":
             preds = np.argmin(np.dot(probs, self.cost_matrix_), axis=1)
             err = self._risk_estimation(
-                probs, preds, self.cost_matrix_, w_eval[idx_eval]
+                probs,
+                preds,
+                self.cost_matrix_,
+                w_eval[idx_eval],
             )
         elif self.method == "log_loss":
             err = self._logloss_estimation(probs, probs)
@@ -561,7 +637,14 @@ class MonteCarloEER(ExpectedErrorReduction):
         return err
 
     def _precompute_and_fit_clf(
-        self, id_clf, X_full, y_full, idx_train, idx_cand, idx_eval, fit_clf
+        self,
+        id_clf,
+        X_full,
+        y_full,
+        idx_train,
+        idx_cand,
+        idx_eval,
+        fit_clf,
     ):
         id_clf.precompute(idx_train, idx_cand)
         id_clf.precompute(idx_train, idx_eval)
@@ -653,9 +736,17 @@ class ValueOfInformationEER(ExpectedErrorReduction):
 
     def _validate_init_params(self):
         super()._validate_init_params()
-        check_type(self.consider_unlabeled, "consider_unlabeled", bool)
+        check_type(
+            self.consider_unlabeled,
+            "consider_unlabeled",
+            bool,
+        )
         check_type(self.consider_labeled, "consider_labeled", bool)
-        check_type(self.candidate_to_labeled, "candidate_to_labeled", bool)
+        check_type(
+            self.candidate_to_labeled,
+            "candidate_to_labeled",
+            bool,
+        )
         check_type(self.subtract_current, "subtract_current", bool)
         check_type(self.normalize, "normalize", bool)
 
@@ -745,9 +836,21 @@ class ValueOfInformationEER(ExpectedErrorReduction):
         )
 
     def _estimate_error_for_candidate(
-        self, id_clf, idx_cx, cy, idx_train, idx_cand, idx_eval, w_eval
+        self,
+        id_clf,
+        idx_cx,
+        cy,
+        idx_train,
+        idx_cand,
+        idx_eval,
+        w_eval,
     ):
-        id_clf.partial_fit(idx_cx, cy, use_base_clf=True, set_base_clf=False)
+        id_clf.partial_fit(
+            idx_cx,
+            cy,
+            use_base_clf=True,
+            set_base_clf=False,
+        )
 
         # Handle problem that if only one candidate is remaining, this should
         # be the one to be selected although the error cannot be estimated
@@ -762,7 +865,9 @@ class ValueOfInformationEER(ExpectedErrorReduction):
         if self.candidate_to_labeled:
             idx_labeled = np.concatenate([idx_labeled, idx_cx], axis=0)
             y_labeled = np.concatenate([y_labeled, cy], axis=0)
-            idx_unlabeled = np.setdiff1d(idx_unlabeled, idx_cx, assume_unique=True)
+            idx_unlabeled = np.setdiff1d(
+                idx_unlabeled, idx_cx, assume_unique=True
+            )
 
         y_labeled_c_id = le.transform(y_labeled)
 
@@ -772,14 +877,20 @@ class ValueOfInformationEER(ExpectedErrorReduction):
             norm += len(idx_labeled)
             probs = id_clf.predict_proba(idx_labeled)
             err += self._risk_estimation(
-                y_labeled_c_id, probs, self.cost_matrix_, w_eval[idx_labeled]
+                y_labeled_c_id,
+                probs,
+                self.cost_matrix_,
+                w_eval[idx_labeled],
             )
 
         if self.consider_unlabeled and len(idx_unlabeled) > 0:
             norm += len(idx_unlabeled)
             probs = id_clf.predict_proba(idx_unlabeled)
             err += self._risk_estimation(
-                probs, probs, self.cost_matrix_, w_eval[idx_unlabeled]
+                probs,
+                probs,
+                self.cost_matrix_,
+                w_eval[idx_unlabeled],
             )
 
         if self.normalize:
@@ -787,7 +898,9 @@ class ValueOfInformationEER(ExpectedErrorReduction):
         else:
             return err
 
-    def _estimate_current_error(self, id_clf, idx_train, idx_cand, idx_eval, w_eval):
+    def _estimate_current_error(
+        self, id_clf, idx_train, idx_cand, idx_eval, w_eval
+    ):
         # estimate current utility score if required
         # TODO: maybe use function for code below to reduce redundancies
         if self.subtract_current:
@@ -815,7 +928,10 @@ class ValueOfInformationEER(ExpectedErrorReduction):
                 norm += len(idx_unlabeled)
                 probs = id_clf.predict_proba(idx_unlabeled)
                 err += self._risk_estimation(
-                    probs, probs, self.cost_matrix_, w_eval[idx_unlabeled]
+                    probs,
+                    probs,
+                    self.cost_matrix_,
+                    w_eval[idx_unlabeled],
                 )
 
             if self.normalize:
@@ -826,11 +942,23 @@ class ValueOfInformationEER(ExpectedErrorReduction):
             return 0.0
 
     def _precompute_and_fit_clf(
-        self, id_clf, X_full, y_full, idx_train, idx_cand, idx_eval, fit_clf
+        self,
+        id_clf,
+        X_full,
+        y_full,
+        idx_train,
+        idx_cand,
+        idx_eval,
+        fit_clf,
     ):
 
         # TODO: replace the following line by more efficient code
-        id_clf.precompute(idx_train, idx_train, fit_params="all", pred_params="all")
+        id_clf.precompute(
+            idx_train,
+            idx_train,
+            fit_params="all",
+            pred_params="all",
+        )
 
         #
         # # for cond_prob

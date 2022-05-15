@@ -3,10 +3,15 @@ import unittest
 
 import numpy as np
 from scipy.stats import norm
-from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process import (
+    GaussianProcessRegressor,
+)
 from sklearn.linear_model import LinearRegression
 
-from skactiveml.pool.regression.utils import conditional_expect, reshape_dist
+from skactiveml.pool.regression.utils import (
+    conditional_expect,
+    reshape_dist,
+)
 from skactiveml.regressor import (
     SklearnProbabilisticRegressor,
     NICKernelRegressor,
@@ -35,7 +40,10 @@ class TestApproximation(unittest.TestCase):
         illegal_argument_dict = {
             "X": ["illegal", np.arange(3)],
             "func": ["illegal", dummy_func_2],
-            "reg": ["illegal", SklearnRegressor(LinearRegression())],
+            "reg": [
+                "illegal",
+                SklearnRegressor(LinearRegression()),
+            ],
             "method": ["illegal", 7, dict],
             "quantile_method": ["illegal", 7, dict],
             "n_integration_samples": ["illegal", 0, dict],
@@ -48,15 +56,31 @@ class TestApproximation(unittest.TestCase):
 
         for parameter in illegal_argument_dict:
             for illegal_argument in illegal_argument_dict[parameter]:
-                param_dict = dict(X=X, func=dummy_func_1, reg=reg, method="quantile")
+                param_dict = dict(
+                    X=X,
+                    func=dummy_func_1,
+                    reg=reg,
+                    method="quantile",
+                )
                 param_dict[parameter] = illegal_argument
                 self.assertRaises(
                     (TypeError, ValueError), conditional_expect, **param_dict
                 )
 
-        param_dict = dict(X=X, func=dummy_func_1, reg=reg, method="quantile")
-        dummy_funcs = [dummy_func_1, dummy_func_2, dummy_func_3]
-        for include_idx, include_x in itertools.product([False, True], [False, True]):
+        param_dict = dict(
+            X=X,
+            func=dummy_func_1,
+            reg=reg,
+            method="quantile",
+        )
+        dummy_funcs = [
+            dummy_func_1,
+            dummy_func_2,
+            dummy_func_3,
+        ]
+        for include_idx, include_x in itertools.product(
+            [False, True], [False, True]
+        ):
             n_free_parameters = include_x + include_idx
             correct_func = dummy_funcs[include_x + include_idx]
 
@@ -74,21 +98,47 @@ class TestApproximation(unittest.TestCase):
 
     def test_conditional_expectation(self):
 
-        reg = SklearnProbabilisticRegressor(estimator=GaussianProcessRegressor())
+        reg = SklearnProbabilisticRegressor(
+            estimator=GaussianProcessRegressor()
+        )
         X_train = np.array([[0, 2, 3], [1, 3, 4], [2, 4, 5], [3, 6, 7]])
         y_train = np.array([-1, 2, 1, 4])
         reg.fit(X_train, y_train)
 
         parameters_1 = [
             {"method": "assume_linear"},
-            {"method": "monte_carlo", "n_integration_samples": 2},
-            {"method": "monte_carlo", "n_integration_samples": 4},
-            {"method": None, "quantile_method": "trapezoid"},
-            {"method": "quantile", "quantile_method": "simpson"},
-            {"method": "quantile", "quantile_method": "romberg"},
-            {"method": "quantile", "quantile_method": "trapezoid"},
-            {"method": "quantile", "quantile_method": "average"},
-            {"method": "quantile", "quantile_method": "quadrature"},
+            {
+                "method": "monte_carlo",
+                "n_integration_samples": 2,
+            },
+            {
+                "method": "monte_carlo",
+                "n_integration_samples": 4,
+            },
+            {
+                "method": None,
+                "quantile_method": "trapezoid",
+            },
+            {
+                "method": "quantile",
+                "quantile_method": "simpson",
+            },
+            {
+                "method": "quantile",
+                "quantile_method": "romberg",
+            },
+            {
+                "method": "quantile",
+                "quantile_method": "trapezoid",
+            },
+            {
+                "method": "quantile",
+                "quantile_method": "average",
+            },
+            {
+                "method": "quantile",
+                "quantile_method": "quadrature",
+            },
             {"method": "dynamic_quad"},
             {"method": "gauss_hermite"},
         ]
@@ -101,7 +151,9 @@ class TestApproximation(unittest.TestCase):
 
         X = np.arange(2 * 3).reshape((2, 3))
 
-        for parameter_1, parameter_2 in itertools.product(parameters_1, parameters_2):
+        for parameter_1, parameter_2 in itertools.product(
+            parameters_1, parameters_2
+        ):
             parameter = {**parameter_1, **parameter_2}
 
             def dummy_func(idx, x, y):

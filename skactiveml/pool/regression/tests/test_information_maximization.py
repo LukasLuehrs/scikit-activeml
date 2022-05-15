@@ -1,7 +1,9 @@
 import unittest
 
 import numpy as np
-from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process import (
+    GaussianProcessRegressor,
+)
 
 from skactiveml.pool.regression import (
     MutualInformationGainMaximization,
@@ -21,7 +23,10 @@ from skactiveml.pool.regression.tests.provide_test_pool_regression import (
     provide_test_regression_query_strategy_query_return_utilities,
     provide_test_regression_query_strategy_init_integration_dict,
 )
-from skactiveml.regressor import NICKernelRegressor, SklearnRegressor
+from skactiveml.regressor import (
+    NICKernelRegressor,
+    SklearnRegressor,
+)
 
 
 class TestMutualInformationGainMaximization(unittest.TestCase):
@@ -52,7 +57,9 @@ class TestMutualInformationGainMaximization(unittest.TestCase):
 
     def test_query_param_reg(self):
         provide_test_regression_query_strategy_query_reg(
-            self, MutualInformationGainMaximization, is_probabilistic=True
+            self,
+            MutualInformationGainMaximization,
+            is_probabilistic=True,
         )
 
     def test_query_param_fit_reg(self):
@@ -95,14 +102,18 @@ class TestKLDivergenceMaximization(unittest.TestCase):
             self, KLDivergenceMaximization
         )
 
-    def test_init_param_integration_dict_potential_y_val(self):
+    def test_init_param_integration_dict_potential_y_val(
+        self,
+    ):
         provide_test_regression_query_strategy_init_integration_dict(
             self,
             KLDivergenceMaximization,
             integration_dict_name="integration_dict_potential_y_val",
         )
 
-    def test_init_param_integration_dict_cross_entropy(self):
+    def test_init_param_integration_dict_cross_entropy(
+        self,
+    ):
         provide_test_regression_query_strategy_init_integration_dict(
             self,
             KLDivergenceMaximization,
@@ -110,14 +121,20 @@ class TestKLDivergenceMaximization(unittest.TestCase):
         )
 
     def test_query_param_X(self):
-        provide_test_regression_query_strategy_query_X(self, KLDivergenceMaximization)
+        provide_test_regression_query_strategy_query_X(
+            self, KLDivergenceMaximization
+        )
 
     def test_query_param_y(self):
-        provide_test_regression_query_strategy_query_y(self, KLDivergenceMaximization)
+        provide_test_regression_query_strategy_query_y(
+            self, KLDivergenceMaximization
+        )
 
     def test_query_param_reg(self):
         provide_test_regression_query_strategy_query_reg(
-            self, KLDivergenceMaximization, is_probabilistic=True
+            self,
+            KLDivergenceMaximization,
+            is_probabilistic=True,
         )
 
     def test_query_param_fit_reg(self):
@@ -158,8 +175,14 @@ class TestKLDivergenceMaximization(unittest.TestCase):
 
         for name, val in [
             ("X_eval", "illegal"),
-            ("true_reg", SklearnRegressor(GaussianProcessRegressor()).fit(X_1, y_1)),
-            ("other_reg", SklearnRegressor(GaussianProcessRegressor()).fit(X_1, y_1)),
+            (
+                "true_reg",
+                SklearnRegressor(GaussianProcessRegressor()).fit(X_1, y_1),
+            ),
+            (
+                "other_reg",
+                SklearnRegressor(GaussianProcessRegressor()).fit(X_1, y_1),
+            ),
             ("random_state", "illegal"),
             ("integration_dict", "illegal"),
         ]:
