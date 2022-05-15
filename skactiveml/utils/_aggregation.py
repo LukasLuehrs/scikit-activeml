@@ -1,8 +1,5 @@
 import numpy as np
-from sklearn.utils import (
-    check_array,
-    check_consistent_length,
-)
+from sklearn.utils import check_array, check_consistent_length
 
 from ._label import is_labeled, is_unlabeled
 from ._label_encoder import ExtLabelEncoder
@@ -49,11 +46,7 @@ def compute_vote_vectors(y, w=None, classes=None, missing_label=np.nan):
         np.ones_like(y)
         if w is None
         else check_array(
-            w,
-            ensure_2d=False,
-            force_all_finite=False,
-            dtype=float,
-            copy=True,
+            w, ensure_2d=False, force_all_finite=False, dtype=float, copy=True
         )
     )
     w = w if w.ndim == 2 else w.reshape((-1, 1))
@@ -65,9 +58,7 @@ def compute_vote_vectors(y, w=None, classes=None, missing_label=np.nan):
     w[np.logical_or(np.isnan(w), is_unlabeled_y)] = 0
     y_off = y + np.arange(y.shape[0])[:, None] * n_classes
     v = np.bincount(
-        y_off.ravel(),
-        minlength=y.shape[0] * n_classes,
-        weights=w.ravel(),
+        y_off.ravel(), minlength=y.shape[0] * n_classes, weights=w.ravel()
     )
     v = v.reshape(-1, n_classes)
 
@@ -75,11 +66,7 @@ def compute_vote_vectors(y, w=None, classes=None, missing_label=np.nan):
 
 
 def majority_vote(
-    y,
-    w=None,
-    classes=None,
-    missing_label=np.nan,
-    random_state=None,
+    y, w=None, classes=None, missing_label=np.nan, random_state=None
 ):
     """Assigns a label to each sample based on weighted voting.
     Samples with no labels are assigned with `missing_label`.
@@ -106,23 +93,14 @@ def majority_vote(
 
     """
     # check input parameters
-    y = check_array(
-        y,
-        ensure_2d=False,
-        dtype=None,
-        force_all_finite=False,
-    )
+    y = check_array(y, ensure_2d=False, dtype=None, force_all_finite=False)
     y = y if y.ndim == 2 else y.reshape((-1, 1))
     n_samples = y.shape[0]
     w = (
         np.ones_like(y)
         if w is None
         else check_array(
-            w,
-            ensure_2d=False,
-            force_all_finite=False,
-            dtype=None,
-            copy=True,
+            w, ensure_2d=False, force_all_finite=False, dtype=None, copy=True
         )
     )
 

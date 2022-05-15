@@ -78,8 +78,7 @@ class CostEmbeddingAL(SingleAnnotatorPoolQueryStrategy):
         random_state=None,
     ):
         super().__init__(
-            missing_label=missing_label,
-            random_state=random_state,
+            missing_label=missing_label, random_state=random_state
         )
         self.classes = classes
         self.base_regressor = base_regressor
@@ -262,7 +261,7 @@ def _alce(
         )
 
     # Check the given data
-    (X, y, X_cand, sample_weight, sample_weight_cand,) = check_X_y(
+    X, y, X_cand, sample_weight, sample_weight_cand = check_X_y(
         X,
         y,
         X_cand,
@@ -458,7 +457,9 @@ def _smacof_single_p(
             disparities[similarities == 0] = 0
 
         # Compute stress
-        _stress = (W.ravel() * ((dis.ravel() - disparities.ravel()) ** 2)).sum()
+        _stress = (
+            W.ravel() * ((dis.ravel() - disparities.ravel()) ** 2)
+        ).sum()
         _stress /= 2
 
         # Update X using the Guttman transform
@@ -755,7 +756,7 @@ class MDSP(BaseEstimator):
                 " Got %s instead" % str(self.dissimilarity)
             )
 
-        (self.embedding_, self.stress_, self.n_iter_,) = smacof_p(
+        self.embedding_, self.stress_, self.n_iter_ = smacof_p(
             self.dissimilarity_matrix_,
             self.n_uq,
             metric=self.metric,

@@ -46,14 +46,10 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
     """
 
     def __init__(
-        self,
-        lmbda=None,
-        missing_label=MISSING_LABEL,
-        random_state=None,
+        self, lmbda=None, missing_label=MISSING_LABEL, random_state=None
     ):
         super().__init__(
-            missing_label=missing_label,
-            random_state=random_state,
+            missing_label=missing_label, random_state=random_state
         )
         self.lmbda = lmbda
 
@@ -147,11 +143,7 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
         if lmbda is None:
             lmbda = np.min(((batch_size - 1) * 0.05, 0.5))
         check_scalar(
-            lmbda,
-            target_type=float,
-            name="lmbda",
-            min_val=0,
-            max_val=1,
+            lmbda, target_type=float, name="lmbda", min_val=0, max_val=1
         )
 
         # Obtain candidates plus mapping.
@@ -192,8 +184,7 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
         R_mean = R_sum / (len(R_lbld) + 1)
         distribution_cand = clf.mixture_model_.weights_ - R_mean
         distribution_cand = np.maximum(
-            np.zeros_like(distribution_cand),
-            distribution_cand,
+            np.zeros_like(distribution_cand), distribution_cand
         )
         distribution_cand = 1 - np.sum(distribution_cand, axis=1)
 
@@ -238,18 +229,13 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
                 # Update distributions according to Eq. 11 in [1].
                 R_sum = (
                     R_cand
-                    + np.sum(
-                        R_cand[is_selected],
-                        axis=0,
-                        keepdims=True,
-                    )
+                    + np.sum(R_cand[is_selected], axis=0, keepdims=True)
                     + R_lbld_sum
                 )
                 R_mean = R_sum / (len(R_lbld) + len(query_indices_cand) + 1)
                 distribution_cand = clf.mixture_model_.weights_ - R_mean
                 distribution_cand = np.maximum(
-                    np.zeros_like(distribution_cand),
-                    distribution_cand,
+                    np.zeros_like(distribution_cand), distribution_cand
                 )
                 distribution_cand = 1 - np.sum(distribution_cand, axis=1)
 

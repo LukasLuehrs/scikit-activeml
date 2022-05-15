@@ -12,11 +12,7 @@ from sklearn.utils.validation import (
     check_random_state as check_random_state_sklearn,
 )
 
-from ._label import (
-    MISSING_LABEL,
-    check_missing_label,
-    is_unlabeled,
-)
+from ._label import MISSING_LABEL, check_missing_label, is_unlabeled
 
 
 def check_scalar(
@@ -110,10 +106,7 @@ def check_classifier_params(classes, missing_label, cost_matrix=None):
                 f"`missing_label={missing_label}.`"
             )
         if cost_matrix is not None:
-            check_cost_matrix(
-                cost_matrix=cost_matrix,
-                n_classes=len(classes),
-            )
+            check_cost_matrix(cost_matrix=cost_matrix, n_classes=len(classes))
     else:
         if cost_matrix is not None:
             raise ValueError(
@@ -164,12 +157,7 @@ def check_class_prior(class_prior, n_classes):
     """
     if class_prior is None:
         raise TypeError("'class_prior' must not be None.")
-    check_scalar(
-        n_classes,
-        name="n_classes",
-        target_type=int,
-        min_val=1,
-    )
+    check_scalar(n_classes, name="n_classes", target_type=int, min_val=1)
     if np.isscalar(class_prior):
         check_scalar(
             class_prior,
@@ -220,12 +208,7 @@ def check_cost_matrix(
     cost_matrix_new : np.ndarray, shape (n_classes, n_classes)
         Numpy array as cost matrix.
     """
-    check_scalar(
-        n_classes,
-        target_type=int,
-        name="n_classes",
-        min_val=1,
-    )
+    check_scalar(n_classes, target_type=int, name="n_classes", min_val=1)
     cost_matrix_new = check_array(
         np.array(cost_matrix, dtype=float), ensure_2d=True
     )
@@ -485,13 +468,7 @@ def check_X_y(
     if X_cand is None:
         return X, y, sample_weight
     else:
-        return (
-            X,
-            y,
-            X_cand,
-            sample_weight,
-            sample_weight_cand,
-        )
+        return X, y, X_cand, sample_weight, sample_weight_cand
 
 
 def check_random_state(random_state, seed_multiplier=None):
@@ -519,10 +496,7 @@ def check_random_state(random_state, seed_multiplier=None):
         return check_random_state_sklearn(random_state)
 
     check_scalar(
-        seed_multiplier,
-        name="seed_multiplier",
-        target_type=int,
-        min_val=1,
+        seed_multiplier, name="seed_multiplier", target_type=int, min_val=1
     )
     random_state = copy.deepcopy(random_state)
     random_state = check_random_state_sklearn(random_state)
@@ -556,12 +530,7 @@ def check_indices(indices, A, dim="adaptive", unique=True):
         The validated indices.
     """
     indices = check_array(indices, dtype=int, ensure_2d=False)
-    A = check_array(
-        A,
-        allow_nd=True,
-        force_all_finite=False,
-        ensure_2d=False,
-    )
+    A = check_array(A, allow_nd=True, force_all_finite=False, ensure_2d=False)
     if unique == "check_unique":
         if indices.ndim == 1:
             n_unique_indices = len(np.unique(indices))
@@ -657,25 +626,20 @@ def check_type(obj, name, *target_types):
         else:
             error_str += f"has type `{type(obj)}` and value `{obj}` "
 
-        error_str += "but must "
-
+        error_str = f"`{name}` has type `{type(obj)}` but must have "
         if len(target_types) == 1:
-            error_str += f"have type `{target_types[0]}` "
-        elif 1 <= len(target_types) <= 3:
-            error_str += "have type "
+            error_str += f"type `{target_types[0]}`"
+        elif len(target_types) <= 3:
+            error_str += "type "
             for i in range(len(target_types) - 1):
                 error_str += f"`{target_types[i]}`,"
-            error_str += f" or `{target_types[len(target_types) - 1]}` "
-        elif len(target_types) > 3:
-            error_str += (
-                f"have one of the following types: {set(target_types)} "
-            )
+            error_str += f" or `{target_types[len(target_types) - 1]}`"
+        else:
+            error_str += f"one of the following types: {set(target_types)}"
 
-        if len(target_vals) >= 1:
-            if len(target_types) > 0:
-                error_str = "or "
+        if len(list(target_vals)) >= 1:
             error_str += (
-                f"equal one of the following values: {set(target_vals)}"
+                f" or equal one of the following values: {set(target_vals)}"
             )
         raise TypeError(error_str + ".")
 
@@ -722,11 +686,7 @@ def check_callable(func, name, n_free_parameters=None):
 
 
 def check_bound(
-    bound=None,
-    X=None,
-    ndim=2,
-    epsilon=0,
-    bound_must_be_given=False,
+    bound=None, X=None, ndim=2, epsilon=0, bound_must_be_given=False
 ):
     """Validates bound and returns the bound of X if bound is None.
     `bound` or `X` must not be None.
@@ -773,11 +733,7 @@ def check_bound(
     if bound is None and X is not None:
         minima = np.nanmin(X, axis=0) - epsilon
         maxima = np.nanmax(X, axis=0) + epsilon
-        bound = np.append(
-            minima.reshape(1, -1),
-            maxima.reshape(1, -1),
-            axis=0,
-        )
+        bound = np.append(minima.reshape(1, -1), maxima.reshape(1, -1), axis=0)
         return bound
     elif bound is not None and X is not None:
         if np.any(np.logical_or(bound[0] > X, X > bound[1])):

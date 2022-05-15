@@ -180,23 +180,12 @@ class PoolQueryStrategy(QueryStrategy):
         check_scalar(return_utilities, "return_utilities", bool)
 
         # Check batch size.
-        check_scalar(
-            batch_size,
-            target_type=int,
-            name="batch_size",
-            min_val=1,
-        )
+        check_scalar(batch_size, target_type=int, name="batch_size", min_val=1)
 
         # Check random state.
         self.random_state_ = check_random_state(self.random_state, seed_mult)
 
-        return (
-            X,
-            y,
-            candidates,
-            batch_size,
-            return_utilities,
-        )
+        return X, y, candidates, batch_size, return_utilities
 
 
 class SingleAnnotatorPoolQueryStrategy(PoolQueryStrategy):
@@ -327,13 +316,7 @@ class SingleAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             batch_size,
             return_utilities,
         ) = super()._validate_data(
-            X,
-            y,
-            candidates,
-            batch_size,
-            return_utilities,
-            reset,
-            check_X_dict,
+            X, y, candidates, batch_size, return_utilities, reset, check_X_dict
         )
         y = column_or_1d(y, warn=True)
 
@@ -351,13 +334,7 @@ class SingleAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             )
             batch_size = n_candidates
 
-        return (
-            X,
-            y,
-            candidates,
-            batch_size,
-            return_utilities,
-        )
+        return X, y, candidates, batch_size, return_utilities
 
     def _transform_candidates(
         self,
@@ -607,13 +584,7 @@ class MultiAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             batch_size,
             return_utilities,
         ) = super()._validate_data(
-            X,
-            y,
-            candidates,
-            batch_size,
-            return_utilities,
-            reset,
-            check_X_dict,
+            X, y, candidates, batch_size, return_utilities, reset, check_X_dict
         )
 
         check_array(y, ensure_2d=True, force_all_finite="allow-nan")
@@ -663,22 +634,10 @@ class MultiAnnotatorPoolQueryStrategy(PoolQueryStrategy):
             )
             batch_size = n_candidate_pairs
 
-        return (
-            X,
-            y,
-            candidates,
-            annotators,
-            batch_size,
-            return_utilities,
-        )
+        return X, y, candidates, annotators, batch_size, return_utilities
 
     def _transform_cand_annot(
-        self,
-        candidates,
-        annotators,
-        X,
-        y,
-        enforce_mapping=False,
+        self, candidates, annotators, X, y, enforce_mapping=False
     ):
         """
         Transforms the `candidates` parameter into a sample array and the
@@ -897,13 +856,7 @@ class SingleAnnotatorStreamQueryStrategy(QueryStrategy):
         self.budget = budget
 
     @abstractmethod
-    def query(
-        self,
-        candidates,
-        *args,
-        return_utilities=False,
-        **kwargs,
-    ):
+    def query(self, candidates, *args, return_utilities=False, **kwargs):
         """Ask the query strategy which instances in candidates to acquire.
 
         The query startegy determines the most useful instances in candidates,
@@ -1183,10 +1136,7 @@ class SkactivemlClassifier(BaseEstimator, ClassifierMixin, ABC):
         y_ensure_1d=True,
     ):
         if check_X_dict is None:
-            check_X_dict = {
-                "ensure_min_samples": 0,
-                "ensure_min_features": 0,
-            }
+            check_X_dict = {"ensure_min_samples": 0, "ensure_min_features": 0}
         if check_y_dict is None:
             check_y_dict = {
                 "ensure_min_samples": 0,
@@ -1198,9 +1148,7 @@ class SkactivemlClassifier(BaseEstimator, ClassifierMixin, ABC):
 
         # Check common classifier parameters.
         check_classifier_params(
-            self.classes,
-            self.missing_label,
-            self.cost_matrix,
+            self.classes, self.missing_label, self.cost_matrix
         )
 
         # Store and check random state.
@@ -1208,8 +1156,7 @@ class SkactivemlClassifier(BaseEstimator, ClassifierMixin, ABC):
 
         # Create label encoder.
         self._le = ExtLabelEncoder(
-            classes=self.classes,
-            missing_label=self.missing_label,
+            classes=self.classes, missing_label=self.missing_label
         )
 
         # Check input parameters.

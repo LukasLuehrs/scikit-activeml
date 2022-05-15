@@ -9,15 +9,9 @@ from copy import deepcopy
 
 import numpy as np
 from sklearn import clone
-from sklearn.utils.validation import (
-    check_array,
-    _is_arraylike,
-)
+from sklearn.utils.validation import check_array, _is_arraylike
 
-from ..base import (
-    SingleAnnotatorPoolQueryStrategy,
-    SkactivemlClassifier,
-)
+from ..base import SingleAnnotatorPoolQueryStrategy, SkactivemlClassifier
 from ..utils import (
     simple_batch,
     check_type,
@@ -60,8 +54,7 @@ class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
         random_state=None,
     ):
         super().__init__(
-            missing_label=missing_label,
-            random_state=random_state,
+            missing_label=missing_label, random_state=random_state
         )
         self.method = method
 
@@ -135,13 +128,8 @@ class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
         # Validate input parameters.
-        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
-            X,
-            y,
-            candidates,
-            batch_size,
-            return_utilities,
-            reset=True,
+        X, y, candidates, batch_size, return_utilities = self._validate_data(
+            X, y, candidates, batch_size, return_utilities, reset=True
         )
 
         X_cand, mapping = self._transform_candidates(candidates, X, y)
@@ -150,10 +138,7 @@ class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
         check_type(fit_ensemble, "fit_ensemble", bool)
 
         # Check attributed `method`.
-        if self.method not in [
-            "KL_divergence",
-            "vote_entropy",
-        ]:
+        if self.method not in ["KL_divergence", "vote_entropy"]:
             raise ValueError(
                 f"The given method {self.method} is not valid. "
                 f"Supported methods are 'KL_divergence' and 'vote_entropy'"
@@ -161,7 +146,8 @@ class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
 
         # Check if the parameter `ensemble` is valid.
         if isinstance(ensemble, SkactivemlClassifier) and (
-            hasattr(ensemble, "n_estimators") or hasattr(ensemble, "estimators")
+            hasattr(ensemble, "n_estimators")
+            or hasattr(ensemble, "estimators")
         ):
             check_equal_missing_label(
                 ensemble.missing_label, self.missing_label_
@@ -181,14 +167,9 @@ class QueryByCommittee(SingleAnnotatorPoolQueryStrategy):
         elif _is_arraylike(ensemble):
             est_arr = deepcopy(ensemble)
             for i in range(len(est_arr)):
-                check_type(
-                    est_arr[i],
-                    f"ensemble[{i}]",
-                    SkactivemlClassifier,
-                )
+                check_type(est_arr[i], f"ensemble[{i}]", SkactivemlClassifier)
                 check_equal_missing_label(
-                    est_arr[i].missing_label,
-                    self.missing_label_,
+                    est_arr[i].missing_label, self.missing_label_
                 )
                 # Fit the ensemble.
                 if fit_ensemble:
@@ -264,11 +245,7 @@ def average_kl_divergence(probas):
     probas_mean = np.mean(probas, axis=0)
     with np.errstate(divide="ignore", invalid="ignore"):
         scores = np.nansum(
-            np.nansum(
-                probas * np.log(probas / probas_mean),
-                axis=2,
-            ),
-            axis=0,
+            np.nansum(probas * np.log(probas / probas_mean), axis=2), axis=0
         )
     scores = scores / probas.shape[0]
 

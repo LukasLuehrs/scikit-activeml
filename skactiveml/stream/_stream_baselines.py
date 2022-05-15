@@ -31,10 +31,7 @@ class StreamRandomSampling(SingleAnnotatorStreamQueryStrategy):
     """
 
     def __init__(
-        self,
-        budget=None,
-        allow_exceeding_budget=True,
-        random_state=None,
+        self, budget=None, allow_exceeding_budget=True, random_state=None
     ):
         super().__init__(budget=budget, random_state=random_state)
         self.allow_exceeding_budget = allow_exceeding_budget
@@ -179,13 +176,14 @@ class StreamRandomSampling(SingleAnnotatorStreamQueryStrategy):
             self.queried_instances_ = 0
 
         check_scalar(
-            self.allow_exceeding_budget,
-            "allow_exceeding_budget",
-            bool,
+            self.allow_exceeding_budget, "allow_exceeding_budget", bool
         )
 
-        (candidates, return_utilities,) = super()._validate_data(
-            candidates, return_utilities, reset=reset, **check_candidates_params
+        candidates, return_utilities = super()._validate_data(
+            candidates,
+            return_utilities,
+            reset=reset,
+            **check_candidates_params
         )
 
         self._validate_random_state()
@@ -342,8 +340,11 @@ class PeriodicSampling(SingleAnnotatorStreamQueryStrategy):
         return_utilities : bool,
             Checked boolean value of `return_utilities`.
         """
-        (candidates, return_utilities,) = super()._validate_data(
-            candidates, return_utilities, reset=reset, **check_candidates_params
+        candidates, return_utilities = super()._validate_data(
+            candidates,
+            return_utilities,
+            reset=reset,
+            **check_candidates_params
         )
 
         self._validate_random_state()

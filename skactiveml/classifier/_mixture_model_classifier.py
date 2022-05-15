@@ -8,10 +8,7 @@ from copy import deepcopy
 
 import numpy as np
 from scipy.spatial.distance import cdist
-from sklearn.mixture import (
-    GaussianMixture,
-    BayesianGaussianMixture,
-)
+from sklearn.mixture import GaussianMixture, BayesianGaussianMixture
 from sklearn.utils.validation import (
     check_array,
     check_is_fitted,
@@ -134,8 +131,7 @@ class MixtureModelClassifier(ClassFrequencyEstimator):
             self.mixture_model_ = bgm
         else:
             if not isinstance(
-                self.mixture_model,
-                (GaussianMixture, BayesianGaussianMixture),
+                self.mixture_model, (GaussianMixture, BayesianGaussianMixture)
             ):
                 raise TypeError(
                     f"`mixture_model` is of the type `{self.mixture_model}` "
@@ -146,10 +142,7 @@ class MixtureModelClassifier(ClassFrequencyEstimator):
             self.mixture_model_ = deepcopy(self.mixture_model)
 
         # Check weight mode.
-        if self.weight_mode not in [
-            "responsibilities",
-            "similarities",
-        ]:
+        if self.weight_mode not in ["responsibilities", "similarities"]:
             raise ValueError(
                 f"`weight_mode` must be either 'responsibilities' or "
                 f"'similarities', got {self.weight_mode} instead."

@@ -128,11 +128,7 @@ class ExpectedModelVarianceReduction(SingleAnnotatorPoolQueryStrategy):
         )
 
         check_type(reg, "reg", ProbabilisticRegressor)
-        check_type(
-            self.integration_dict,
-            "self.integration_dict",
-            dict,
-        )
+        check_type(self.integration_dict, "self.integration_dict", dict)
         check_type(fit_reg, "fit_reg", bool)
         X_cand, mapping = self._transform_candidates(candidates, X, y)
         X_eval = X

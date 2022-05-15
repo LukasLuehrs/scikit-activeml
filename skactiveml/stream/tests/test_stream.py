@@ -9,9 +9,7 @@ from sklearn.datasets import make_classification
 from sklearn.utils import check_random_state
 
 from skactiveml import stream
-from skactiveml.base import (
-    SingleAnnotatorStreamQueryStrategy,
-)
+from skactiveml.base import SingleAnnotatorStreamQueryStrategy
 from skactiveml.classifier import ParzenWindowClassifier
 from skactiveml.utils import call_func
 
@@ -40,8 +38,7 @@ class TestStream(unittest.TestCase):
         )
 
         clf = ParzenWindowClassifier(
-            classes=[0, 1],
-            random_state=rand.randint(2**31 - 1),
+            classes=[0, 1], random_state=rand.randint(2**31 - 1)
         )
 
         X_init = X[:train_init_size, :]
@@ -56,10 +53,7 @@ class TestStream(unittest.TestCase):
         #     query_strategy_classes[s_class] = getattr(stream, s_class)
 
         # Test predictions of classifiers.
-        for (
-            qs_name,
-            qs_class,
-        ) in self.query_strategies.items():
+        for qs_name, qs_class in self.query_strategies.items():
             self._test_query_strategy(
                 rand.randint(2**31 - 1),
                 qs_class,
@@ -261,10 +255,7 @@ class TestStream(unittest.TestCase):
                         f"'{test_func_name}()' missing for parameter "
                         f"'{param}' of query()"
                     )
-                    self.assertTrue(
-                        hasattr(test_obj, test_func_name),
-                        msg,
-                    )
+                    self.assertTrue(hasattr(test_obj, test_func_name), msg)
 
 
 class Dummy:

@@ -122,10 +122,7 @@ class RepresentativenessDiversity(SingleAnnotatorPoolQueryStrategy):
         )
 
         check_type(
-            self.inner_qs,
-            "self.qs",
-            SingleAnnotatorPoolQueryStrategy,
-            None,
+            self.inner_qs, "self.qs", SingleAnnotatorPoolQueryStrategy, None
         )
         check_type(inner_qs_dict, "qs_dict", dict, None)
         if inner_qs_dict is None:

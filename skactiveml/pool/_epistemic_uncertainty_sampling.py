@@ -7,23 +7,13 @@ import warnings
 
 import numpy as np
 from scipy.interpolate import griddata
-from scipy.optimize import (
-    minimize_scalar,
-    minimize,
-    LinearConstraint,
-)
+from scipy.optimize import minimize_scalar, minimize, LinearConstraint
 from sklearn import clone
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model._logistic import _logistic_loss
 
-from ..base import (
-    SingleAnnotatorPoolQueryStrategy,
-    SkactivemlClassifier,
-)
-from ..classifier import (
-    SklearnClassifier,
-    ParzenWindowClassifier,
-)
+from ..base import SingleAnnotatorPoolQueryStrategy, SkactivemlClassifier
+from ..classifier import SklearnClassifier, ParzenWindowClassifier
 from ..utils import (
     is_labeled,
     simple_batch,
@@ -60,14 +50,10 @@ class EpistemicUncertaintySampling(SingleAnnotatorPoolQueryStrategy):
     """
 
     def __init__(
-        self,
-        precompute=False,
-        missing_label=MISSING_LABEL,
-        random_state=None,
+        self, precompute=False, missing_label=MISSING_LABEL, random_state=None
     ):
         super().__init__(
-            missing_label=missing_label,
-            random_state=random_state,
+            missing_label=missing_label, random_state=random_state
         )
         self.precompute = precompute
 
@@ -138,13 +124,8 @@ class EpistemicUncertaintySampling(SingleAnnotatorPoolQueryStrategy):
             refers to samples in candidates.
         """
         # Validate input parameters.
-        (X, y, candidates, batch_size, return_utilities,) = self._validate_data(
-            X,
-            y,
-            candidates,
-            batch_size,
-            return_utilities,
-            reset=True,
+        X, y, candidates, batch_size, return_utilities = self._validate_data(
+            X, y, candidates, batch_size, return_utilities, reset=True
         )
 
         X_cand, mapping = self._transform_candidates(candidates, X, y)
@@ -261,9 +242,7 @@ def _epistemic_uncertainty_pwc(freq, precompute_array=None):
                 precompute_array.shape[1],
             )
             precompute_array = np.append(
-                precompute_array,
-                np.full(new_shape, np.nan),
-                axis=0,
+                precompute_array, np.full(new_shape, np.nan), axis=0
             )
         if precompute_array.shape[1] < np.max(p) + 1:
             new_shape = (
@@ -271,9 +250,7 @@ def _epistemic_uncertainty_pwc(freq, precompute_array=None):
                 int(np.max(p)) - precompute_array.shape[1] + 2,
             )
             precompute_array = np.append(
-                precompute_array,
-                np.full(new_shape, np.nan),
-                axis=1,
+                precompute_array, np.full(new_shape, np.nan), axis=1
             )
 
         # precompute the epistemic uncertainty:
@@ -335,20 +312,12 @@ def _interpolate(precompute_array, freq):
         Array of interpolated values.
     """
     points = np.zeros(
-        (
-            precompute_array.shape[0] * precompute_array.shape[1],
-            2,
-        )
+        (precompute_array.shape[0] * precompute_array.shape[1], 2)
     )
     for n in range(precompute_array.shape[0]):
         for p in range(precompute_array.shape[1]):
             points[n * precompute_array.shape[1] + p] = n, p
-    return griddata(
-        points,
-        precompute_array.flatten(),
-        freq,
-        method="linear",
-    )
+    return griddata(points, precompute_array.flatten(), freq, method="linear")
 
 
 def _pwc_ml_1(theta, n, p):
@@ -468,11 +437,7 @@ def _epistemic_uncertainty_logreg(X_cand, X, y, clf, sample_weight=None):
     # Calculate the maximum likelihood of the logistic function.
     L_ml = np.exp(
         -_loglike_logreg(
-            w=w_ml,
-            X=X,
-            y=y,
-            gamma=gamma,
-            sample_weight=sample_weight,
+            w=w_ml, X=X, y=y, gamma=gamma, sample_weight=sample_weight
         )
     )
 
@@ -582,11 +547,7 @@ def _pi_h(theta, L_ml, X, y, sample_weight=None, gamma=1):
 
     L_theta = np.exp(
         -_loglike_logreg(
-            w=theta,
-            X=X,
-            y=y,
-            sample_weight=sample_weight,
-            gamma=gamma,
+            w=theta, X=X, y=y, sample_weight=sample_weight, gamma=gamma
         )
     )
     return L_theta / L_ml
@@ -621,11 +582,7 @@ def _loglike_logreg(w, X, y, sample_weight=None, gamma=1):
     if len(y) == 0:
         return np.log(2) * len(X)
     return _logistic_loss(
-        w=w,
-        X=X,
-        y=y,
-        alpha=gamma,
-        sample_weight=sample_weight,
+        w=w, X=X, y=y, alpha=gamma, sample_weight=sample_weight
     )
 
 
@@ -661,10 +618,6 @@ def _theta(func, alpha, x0, A, args=()):
     bounds = np.log(alpha / (1 - alpha))
     constraints = LinearConstraint(A=A, lb=bounds, ub=bounds)
     res = minimize(
-        func,
-        x0=x0,
-        method="SLSQP",
-        constraints=constraints,
-        args=args,
+        func, x0=x0, method="SLSQP", constraints=constraints, args=args
     )
     return res.x

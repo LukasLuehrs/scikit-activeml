@@ -1,23 +1,13 @@
 import unittest
 
 import numpy as np
-from sklearn.gaussian_process import (
-    GaussianProcessClassifier,
-)
+from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.naive_bayes import GaussianNB
 
 from skactiveml.base import SkactivemlClassifier
-from skactiveml.classifier import (
-    ParzenWindowClassifier,
-    SklearnClassifier,
-)
-from skactiveml.pool import (
-    MonteCarloEER,
-    ValueOfInformationEER,
-)
-from skactiveml.pool._expected_error_reduction import (
-    ExpectedErrorReduction,
-)
+from skactiveml.classifier import ParzenWindowClassifier, SklearnClassifier
+from skactiveml.pool import MonteCarloEER, ValueOfInformationEER
+from skactiveml.pool._expected_error_reduction import ExpectedErrorReduction
 from skactiveml.utils import MISSING_LABEL, is_labeled
 
 
@@ -30,16 +20,13 @@ class TemplateTestExpectedErrorReduction:
         self.X_eval = np.array([[2, 1], [3, 7]])
         self.y = [0, 1, 2, 1]
         self.classes = [0, 1, 2]
-        self.cost_matrix = np.eye(3)
+        self.cost_matrix = 1 - np.eye(3)
         self.clf = ParzenWindowClassifier(classes=self.classes)
         self.clf_partial = SklearnClassifier(
             GaussianNB(), classes=self.classes
         ).fit(self.X, self.y)
         self.kwargs = dict(
-            X=self.X,
-            y=self.y,
-            candidates=self.candidates,
-            clf=self.clf,
+            X=self.X, y=self.y, candidates=self.candidates, clf=self.clf
         )
 
         class DummyClf(SkactivemlClassifier):
@@ -54,21 +41,27 @@ class TemplateTestExpectedErrorReduction:
 
             def predict_proba(self, X):
                 return np.full(
-                    shape=(len(X), len(self.classes_)),
-                    fill_value=0.5,
+                    shape=(len(X), len(self.classes_)), fill_value=0.5
                 )
 
         self.DummyClf = DummyClf
 
     def test_init_param_cost_matrix(self):
-        for cost_matrix in [
-            np.ones((2, 3)),
-            "string",
-            np.ones((2, 2)),
-        ]:
+        for cost_matrix in [np.ones((2, 3)), "string", np.ones((2, 2))]:
             qs = self.Strategy(cost_matrix=cost_matrix)
             self.assertRaises(ValueError, qs.query, **self.kwargs)
         self.assertTrue(hasattr(qs, "cost_matrix"))
+
+    def test_init_param_subtract_current(self):
+        qs = ValueOfInformationEER()
+        self.assertRaises(
+            TypeError,
+            qs.query,
+            clf=self.clf,
+            X=self.X,
+            y=self.y,
+            subtract_current="string",
+        )
 
     def test_query_param_clf(self):
         qs = self.Strategy()
@@ -95,11 +88,7 @@ class TemplateTestExpectedErrorReduction:
 
     def test_query_param_sample_weight(self):
         qs = self.Strategy()
-        for sw in [
-            self.X_cand,
-            np.empty((len(self.X) - 1)),
-            "string",
-        ]:
+        for sw in [self.X_cand, np.empty((len(self.X) - 1)), "string"]:
             with self.subTest(msg=f"sample_weight={sw}"):
                 self.assertRaises(
                     (IndexError, TypeError, ValueError),
@@ -185,13 +174,7 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X,
-            y,
-            sample_weight,
-            cand,
-            None,
-            X_eval,
-            sample_weight_eval,
+            X, y, sample_weight, cand, None, X_eval, sample_weight_eval
         )
 
         np.testing.assert_equal(len(X_full), len(y_full))
@@ -234,13 +217,7 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X,
-            y,
-            sample_weight,
-            cand,
-            None,
-            X_eval,
-            sample_weight_eval,
+            X, y, sample_weight, cand, None, X_eval, sample_weight_eval
         )
 
         np.testing.assert_equal(len(X_full), len(y_full))
@@ -305,13 +282,7 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X,
-            y,
-            None,
-            cand,
-            sample_weight_cand,
-            X_eval,
-            sample_weight_eval,
+            X, y, None, cand, sample_weight_cand, X_eval, sample_weight_eval
         )
         np.testing.assert_array_equal(
             np.ones(len(idx_train)), w_full[idx_train]
@@ -326,13 +297,7 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X,
-            y,
-            sample_weight,
-            cand,
-            None,
-            X_eval,
-            sample_weight_eval,
+            X, y, sample_weight, cand, None, X_eval, sample_weight_eval
         )
         np.testing.assert_array_equal(np.ones(len(idx_cand)), w_full[idx_cand])
 
@@ -345,13 +310,7 @@ class TestExpectedErrorReduction(unittest.TestCase):
             idx_cand,
             idx_eval,
         ) = qs._concatenate_samples(
-            X,
-            y,
-            sample_weight,
-            cand,
-            sample_weight_cand,
-            None,
-            sample_weight,
+            X, y, sample_weight, cand, sample_weight_cand, None, sample_weight
         )
         np.testing.assert_array_equal(sample_weight, w_full[idx_eval])
 
@@ -494,12 +453,14 @@ class TestMonteCarloEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
         self.assertRaises(TypeError, qs.query, **self.kwargs)
         self.assertTrue(hasattr(qs, "method"))
 
+    def test_init_param_cost_matrix(self):
+        super().test_init_param_cost_matrix()
+        qs = self.Strategy(method="log_loss", cost_matrix=self.cost_matrix)
+        self.assertRaises(ValueError, qs.query, **self.kwargs)
+
     def test_query_param_sample_weight_candidates(self):
         qs = self.Strategy()
-        for swc in [
-            "string",
-            np.empty((len(self.X_cand) - 1)),
-        ]:
+        for swc in ["string", np.empty((len(self.X_cand) - 1))]:
             with self.subTest(msg=f"sample_weight_candidates={swc}"):
                 self.assertRaises(
                     (ValueError, TypeError),
@@ -527,7 +488,9 @@ class TestMonteCarloEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
             None,
             np.empty((len(self.X_eval) - 1)),
         ]:
-            with self.assertRaises(ValueError, msg=f"sample_weight_eval={swe}"):
+            with self.assertRaises(
+                ValueError, msg=f"sample_weight_eval={swe}"
+            ):
                 qs.query(
                     **self.kwargs,
                     X_eval=self.X_eval,
@@ -553,7 +516,7 @@ class TestMonteCarloEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
         X = [[0], [0], [0], [0]]
         y = [0, MISSING_LABEL, MISSING_LABEL, 1]
         candidates = [1, 2]
-        cost_matrix = 1 - np.eye(2)
+        id_cost_matrix = 1 - np.eye(2)
 
         clf = self.DummyClf(classes=classes)
         # clf = ParzenWindowClassifier(classes=classes)
@@ -561,6 +524,8 @@ class TestMonteCarloEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
         params_list = [
             [
                 "log_loss",
+                None,
+                False,
                 candidates,
                 None,
                 np.full(
@@ -569,42 +534,66 @@ class TestMonteCarloEER(TemplateTestExpectedErrorReduction, unittest.TestCase):
                 ),
             ],
             [
-                "misclassification_loss",
+                "log_loss",
+                None,
+                True,
                 candidates,
                 None,
                 np.full(
                     shape=(1, len(candidates)),
-                    fill_value=-0.5 * len(X),
+                    fill_value=0,
                 ),
             ],
             [
                 "misclassification_loss",
+                id_cost_matrix,
+                False,
+                candidates,
+                None,
+                np.full(shape=(1, len(candidates)), fill_value=-0.5 * len(X)),
+            ],
+            [
+                "misclassification_loss",
+                id_cost_matrix,
+                False,
                 X,
                 None,
-                np.full(
-                    shape=(1, len(X)),
-                    fill_value=-0.5 * len(X),
-                ),
+                np.full(shape=(1, len(X)), fill_value=-0.5 * len(X)),
             ],
             [
                 "misclassification_loss",
+                id_cost_matrix,
+                False,
                 candidates,
                 X,
-                np.full(
-                    shape=(1, len(candidates)),
-                    fill_value=-0.5 * len(X),
-                ),
+                np.full(shape=(1, len(candidates)), fill_value=-0.5 * len(X)),
+            ],
+            [
+                "misclassification_loss",
+                id_cost_matrix,
+                True,
+                candidates,
+                X,
+                np.full(shape=(1, len(candidates)), fill_value=0),
             ],
         ]
 
         for (
             method,
+            cost_matrix,
+            subtract_cur,
             cand,
             X_eval,
             expected_utils,
         ) in params_list:
-            with self.subTest(msg=method, cand=cand, eval=X_eval):
-                qs = MonteCarloEER(method=method, cost_matrix=cost_matrix)
+            with self.subTest(
+                msg=method, subtract_cur=subtract_cur, cand=cand, eval=X_eval
+            ):
+                qs = MonteCarloEER(
+                    method=method,
+                    cost_matrix=cost_matrix,
+                    subtract_current=subtract_cur,
+                )
                 qs.query(
                     X,
                     y=np.full(shape=len(X), fill_value=np.nan),
@@ -672,17 +661,6 @@ class TestValueOfInformationEER(
             candidate_to_labeled="string",
         )
 
-    def test_init_param_subtract_current(self):
-        qs = ValueOfInformationEER()
-        self.assertRaises(
-            TypeError,
-            qs.query,
-            clf=self.clf,
-            X=self.X,
-            y=self.y,
-            subtract_current="string",
-        )
-
     def test_init_param_normalize(self):
         qs = ValueOfInformationEER()
         self.assertRaises(
@@ -699,6 +677,7 @@ class TestValueOfInformationEER(
         classes = [0, 1]
         X = [[0], [0], [0], [0]]
         y = [0, MISSING_LABEL, MISSING_LABEL, 1]
+        y2 = [0, 0, MISSING_LABEL, 1]
         cand = [1, 2]
         cost_matrix = 1 - np.eye(2)
         # clf_partial = SklearnClassifier(
@@ -706,15 +685,7 @@ class TestValueOfInformationEER(
         # ).fit(X, y)
 
         params_list = [
-            [
-                "kapoor-sub",
-                True,
-                True,
-                True,
-                True,
-                False,
-                [[0, 0]],
-            ],
+            ["kapoor-sub", True, True, True, True, False, [[0, 0]]],
             [
                 "kapoor",
                 True,
@@ -722,10 +693,7 @@ class TestValueOfInformationEER(
                 True,
                 False,
                 False,
-                np.full(
-                    shape=(1, len(cand)),
-                    fill_value=-0.5 * len(X),
-                ),
+                np.full(shape=(1, len(cand)), fill_value=-0.5 * len(X)),
             ],
             [
                 "Margeniantu",
@@ -824,6 +792,37 @@ class TestValueOfInformationEER(
                 )
                 clf = self.DummyClf()
                 qs.query(candidates=cand, clf=clf, X=X, y=y)
+
+                idxs, utils = qs.query(
+                    candidates=cand,
+                    clf=self.DummyClf(),
+                    X=X,
+                    y=y,
+                    return_utilities=True,
+                )
+                np.testing.assert_array_equal(expected_utils, utils[:, cand])
+
+        # Test Scenario.
+        for (
+            msg,
+            consider_unlabeled,
+            consider_labeled,
+            candidate_to_labeled,
+            substract_current,
+            normalize,
+            expected_utils,
+        ) in params_list:
+            with self.subTest(msg=msg + ": Scenario (last label)"):
+                qs = ValueOfInformationEER(
+                    consider_unlabeled=consider_unlabeled,
+                    consider_labeled=consider_labeled,
+                    candidate_to_labeled=candidate_to_labeled,
+                    subtract_current=substract_current,
+                    normalize=normalize,
+                    cost_matrix=cost_matrix,
+                )
+                clf = self.DummyClf()
+                qs.query(candidates=cand, clf=clf, X=X, y=y2)
 
                 idxs, utils = qs.query(
                     candidates=cand,

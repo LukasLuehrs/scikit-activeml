@@ -11,11 +11,7 @@ from ._label_encoder import ExtLabelEncoder
 
 
 def ext_confusion_matrix(
-    y_true,
-    y_pred,
-    classes=None,
-    missing_label=MISSING_LABEL,
-    normalize=None,
+    y_true, y_pred, classes=None, missing_label=MISSING_LABEL, normalize=None
 ):
     """Compute confusion matrix to evaluate the accuracy of a classification.
 
@@ -67,10 +63,7 @@ def ext_confusion_matrix(
     # Check input.
     y_true = column_or_1d(y_true)
     y_pred = check_array(
-        y_pred,
-        force_all_finite=False,
-        ensure_2d=False,
-        dtype=None,
+        y_pred, force_all_finite=False, ensure_2d=False, dtype=None
     )
     if y_pred.ndim == 1:
         y_pred = y_pred.reshape(-1, 1)

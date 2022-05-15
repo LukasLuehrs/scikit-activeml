@@ -5,10 +5,7 @@ import numpy as np
 from sklearn import clone
 from sklearn.exceptions import NotFittedError
 from sklearn.metrics import pairwise_kernels
-from sklearn.utils.validation import (
-    check_array,
-    check_consistent_length,
-)
+from sklearn.utils.validation import check_array, check_consistent_length
 
 from ..base import SkactivemlClassifier
 from ..classifier import ParzenWindowClassifier
@@ -109,20 +106,12 @@ class IndexClassifierWrapper:
                 )
 
         # Check and use partial fit if applicable
-        check_type(
-            self.ignore_partial_fit,
-            "ignore_partial_fit",
-            bool,
-        )
+        check_type(self.ignore_partial_fit, "ignore_partial_fit", bool)
         self.use_partial_fit = (
             hasattr(self.clf, "partial_fit") and not self.ignore_partial_fit
         )
 
-        check_type(
-            self.enforce_unique_samples,
-            "enforce_unique_samples",
-            bool,
-        )
+        check_type(self.enforce_unique_samples, "enforce_unique_samples", bool)
         self.enforce_unique_samples = (
             "check_unique" if enforce_unique_samples else False
         )
@@ -156,11 +145,7 @@ class IndexClassifierWrapper:
             self.clf_.metric_dict = {}
 
     def precompute(
-        self,
-        idx_fit,
-        idx_pred,
-        fit_params="all",
-        pred_params="all",
+        self, idx_fit, idx_pred, fit_params="all", pred_params="all"
     ):
         """
         Function to describe for which samples we should precompute something.
@@ -196,15 +181,13 @@ class IndexClassifierWrapper:
             elif fit_params == "labeled":
                 idx_fit_ = idx_fit[
                     is_labeled(
-                        self.y[idx_fit],
-                        missing_label=self.missing_label_,
+                        self.y[idx_fit], missing_label=self.missing_label_
                     )
                 ]
             elif fit_params == "unlabeled":
                 idx_fit_ = idx_fit[
                     is_unlabeled(
-                        self.y[idx_fit],
-                        missing_label=self.missing_label_,
+                        self.y[idx_fit], missing_label=self.missing_label_
                     )
                 ]
             else:
@@ -215,15 +198,13 @@ class IndexClassifierWrapper:
             elif pred_params == "labeled":
                 idx_pred_ = idx_pred[
                     is_labeled(
-                        self.y[idx_pred],
-                        missing_label=self.missing_label_,
+                        self.y[idx_pred], missing_label=self.missing_label_
                     )
                 ]
             elif pred_params == "unlabeled":
                 idx_pred_ = idx_pred[
                     is_unlabeled(
-                        self.y[idx_pred],
-                        missing_label=self.missing_label_,
+                        self.y[idx_pred], missing_label=self.missing_label_
                     )
                 ]
             else:
@@ -237,13 +218,7 @@ class IndexClassifierWrapper:
                     **self.pwc_metric_dict_,
                 )
 
-    def fit(
-        self,
-        idx,
-        y=None,
-        sample_weight=None,
-        set_base_clf=False,
-    ):
+    def fit(self, idx, y=None, sample_weight=None, set_base_clf=False):
         """Fit the model using `self.X[idx]` as training data and `self.y[idx]`
         as class labels.
 
@@ -272,10 +247,7 @@ class IndexClassifierWrapper:
         # check idx
         idx = check_array(idx, ensure_2d=False, dtype=int)
         idx = check_indices(
-            idx,
-            self.X,
-            dim=0,
-            unique=self.enforce_unique_samples,
+            idx, self.X, dim=0, unique=self.enforce_unique_samples
         )
 
         # check set_base_clf
@@ -287,11 +259,7 @@ class IndexClassifierWrapper:
             if is_unlabeled(y, missing_label=self.missing_label_).all():
                 warnings.warn("All labels are of `missing_label` in `fit`.")
         else:
-            y = check_array(
-                y,
-                ensure_2d=False,
-                force_all_finite="allow-nan",
-            )
+            y = check_array(y, ensure_2d=False, force_all_finite="allow-nan")
             check_consistent_length(idx, y)
 
         # check sample_weight
@@ -366,10 +334,7 @@ class IndexClassifierWrapper:
         # check idx
         add_idx = check_array(idx, ensure_2d=False, dtype=int)
         add_idx = check_indices(
-            add_idx,
-            self.X,
-            dim=0,
-            unique=self.enforce_unique_samples,
+            add_idx, self.X, dim=0, unique=self.enforce_unique_samples
         )
 
         # check use_base_clf
@@ -401,9 +366,7 @@ class IndexClassifierWrapper:
                 )
         else:
             add_y = check_array(
-                y,
-                ensure_2d=False,
-                force_all_finite="allow-nan",
+                y, ensure_2d=False, force_all_finite="allow-nan"
             )
             check_consistent_length(add_idx, add_y)
 
@@ -448,8 +411,7 @@ class IndexClassifierWrapper:
             self.idx_ = np.concatenate([self.idx_[cur_idx], add_idx], axis=0)
             self.y_ = np.concatenate([self.y_[cur_idx], add_y], axis=0)
             self.sample_weight_ = self._concat_sw(
-                self._get_sw(self.sample_weight_, cur_idx),
-                add_sample_weight,
+                self._get_sw(self.sample_weight_, cur_idx), add_sample_weight
             )
 
             self.fit(
