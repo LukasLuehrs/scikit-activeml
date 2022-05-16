@@ -108,7 +108,7 @@ class TestKLDivergenceMaximization(unittest.TestCase):
         provide_test_regression_query_strategy_init_integration_dict(
             self,
             KLDivergenceMaximization,
-            integration_dict_name="integration_dict_potential_y_val",
+            integration_dict_name="integration_dict_target_val",
         )
 
     def test_init_param_integration_dict_cross_entropy(

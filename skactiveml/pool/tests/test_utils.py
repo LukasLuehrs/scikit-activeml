@@ -100,9 +100,7 @@ class TestIndexClassifierWrapper(unittest.TestCase):
         self.assertTrue(hasattr(self.iclf(), "enforce_unique_samples"))
         self.assertEqual(self.iclf().enforce_unique_samples, False)
 
-        self.assertRaises(
-            TypeError, self.iclf, enforce_unique_samples="string"
-        )
+        self.assertRaises(TypeError, self.iclf, enforce_unique_samples="string")
 
         self.assertWarns(
             Warning,
@@ -602,9 +600,7 @@ class TestIndexClassifierWrapper(unittest.TestCase):
                     iclf.precompute(np.arange(4), np.arange(4))
                 init_idx = [0, 1]
                 iclf.fit(init_idx, set_base_clf=True)
-                sw_ = (
-                    None if sample_weight is None else sample_weight[init_idx]
-                )
+                sw_ = None if sample_weight is None else sample_weight[init_idx]
                 clf.fit(self.X[init_idx], self.y2[init_idx], sample_weight=sw_)
 
                 for add_idx in [[2], [3]]:

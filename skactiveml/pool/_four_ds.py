@@ -48,9 +48,7 @@ class FourDs(SingleAnnotatorPoolQueryStrategy):
     def __init__(
         self, lmbda=None, missing_label=MISSING_LABEL, random_state=None
     ):
-        super().__init__(
-            missing_label=missing_label, random_state=random_state
-        )
+        super().__init__(missing_label=missing_label, random_state=random_state)
         self.lmbda = lmbda
 
     def query(

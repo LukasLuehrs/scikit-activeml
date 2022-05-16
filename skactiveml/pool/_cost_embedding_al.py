@@ -77,9 +77,7 @@ class CostEmbeddingAL(SingleAnnotatorPoolQueryStrategy):
         missing_label=MISSING_LABEL,
         random_state=None,
     ):
-        super().__init__(
-            missing_label=missing_label, random_state=random_state
-        )
+        super().__init__(missing_label=missing_label, random_state=random_state)
         self.classes = classes
         self.base_regressor = base_regressor
         self.cost_matrix = cost_matrix
@@ -457,9 +455,7 @@ def _smacof_single_p(
             disparities[similarities == 0] = 0
 
         # Compute stress
-        _stress = (
-            W.ravel() * ((dis.ravel() - disparities.ravel()) ** 2)
-        ).sum()
+        _stress = (W.ravel() * ((dis.ravel() - disparities.ravel()) ** 2)).sum()
         _stress /= 2
 
         # Update X using the Guttman transform

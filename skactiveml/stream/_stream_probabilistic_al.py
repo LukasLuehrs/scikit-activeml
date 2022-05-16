@@ -271,10 +271,7 @@ class StreamProbabilisticAL(SingleAnnotatorStreamQueryStrategy):
             Checked boolean value of `return_utilities`.
         """
         candidates, return_utilities = super()._validate_data(
-            candidates,
-            return_utilities,
-            reset=reset,
-            **check_candidates_params
+            candidates, return_utilities, reset=reset, **check_candidates_params
         )
         # check if a budgetmanager is set
 
@@ -298,9 +295,7 @@ class StreamProbabilisticAL(SingleAnnotatorStreamQueryStrategy):
         utility_weight = self._validate_utility_weight(
             utility_weight, candidates
         )
-        check_scalar(
-            self.prior, "prior", float, min_val=0, min_inclusive=False
-        )
+        check_scalar(self.prior, "prior", float, min_val=0, min_inclusive=False)
         check_scalar(self.m_max, "m_max", int, min_val=0, min_inclusive=False)
         self._validate_random_state()
 
